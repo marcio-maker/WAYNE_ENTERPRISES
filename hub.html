@@ -585,7 +585,7 @@
         }
 
         /* =========================================== */
-        /* SISTEMA DE WIDGETS */
+        /* SISTEMA DE WIDGETS - RESPONSIVIDADE REVISADA */
         /* =========================================== */
         .widget {
             position: absolute !important;
@@ -610,6 +610,23 @@
             overflow: auto;
             user-select: none;
             transform-origin: center;
+        }
+
+        /* MOBILE: TAMANHO MINIATURA */
+        @media (max-width: 768px) {
+            .widget {
+                min-width: 120px !important;
+                min-height: 100px !important;
+                max-width: 160px !important;
+                max-height: 180px !important;
+                padding: 8px !important;
+                font-size: 0.8em;
+            }
+            
+            .widget.folder-stacked {
+                min-width: 110px !important;
+                min-height: 90px !important;
+            }
         }
 
         /* Animação de entrada do widget */
@@ -651,6 +668,14 @@
             border-top: 4px solid rgba(0, 217, 255, 0.5);
         }
 
+        /* MOBILE: Reduzir efeito de pasta */
+        @media (max-width: 768px) {
+            .widget.folder-stacked {
+                border-width: 1px;
+                border-top: 3px solid rgba(0, 217, 255, 0.5);
+            }
+        }
+
         /* Efeito de "pasta" com borda superior destacada */
         .widget.folder-stacked::before {
             content: '';
@@ -667,6 +692,15 @@
             pointer-events: none;
         }
 
+        /* MOBILE: Ajustar efeito de pasta */
+        @media (max-width: 768px) {
+            .widget.folder-stacked::before {
+                left: 8px;
+                right: 8px;
+                height: 8px;
+            }
+        }
+
         /* Quando o widget está fora da pilha (selecionado) */
         .widget.folder-stacked.selected {
             transform: translateY(-50px) scale(1.08) !important;
@@ -678,6 +712,13 @@
             z-index: 1000 !important;
             cursor: move;
             border-top-color: var(--primary-color);
+        }
+
+        /* MOBILE: Ajustar seleção */
+        @media (max-width: 768px) {
+            .widget.folder-stacked.selected {
+                transform: translateY(-30px) scale(1.05) !important;
+            }
         }
 
         /* Animar todos os widgets da pilha quando um é selecionado */
@@ -739,6 +780,21 @@
             animation: folderJump 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
         }
 
+        /* MOBILE: Ajustar animação de pulo */
+        @media (max-width: 768px) {
+            @keyframes folderJump {
+                0% { 
+                    transform: translateY(0) scale(1) rotate(var(--widget-rotation, 0deg)); 
+                }
+                60% { 
+                    transform: translateY(-40px) scale(1.08) rotate(calc(var(--widget-rotation, 0deg) - 1deg)); 
+                }
+                100% { 
+                    transform: translateY(-30px) scale(1.05) rotate(var(--widget-rotation, 0deg)); 
+                }
+            }
+        }
+
         /* =========================================== */
         /* INDICADOR DE PASTA NA PILHA */
         /* =========================================== */
@@ -761,6 +817,17 @@
             border-bottom: none;
         }
 
+        /* MOBILE: Reduzir aba da pasta */
+        @media (max-width: 768px) {
+            .folder-tab {
+                top: -10px;
+                left: 20px;
+                width: 40px;
+                height: 10px;
+                transform: perspective(8px) rotateX(-10deg);
+            }
+        }
+
         /* Número da pasta */
         .folder-number {
             position: absolute;
@@ -774,6 +841,15 @@
             text-shadow: 0 0 8px rgba(0, 217, 255, 0.8);
             font-family: 'Courier New', monospace;
             letter-spacing: 1px;
+        }
+
+        /* MOBILE: Ajustar número da pasta */
+        @media (max-width: 768px) {
+            .folder-number {
+                top: -12px;
+                left: 25px;
+                font-size: 8px;
+            }
         }
 
         /* Efeito de pilha */
@@ -790,6 +866,13 @@
             border-color: var(--primary-color);
             z-index: 1000 !important;
             transform: translateY(-5px) scale(1.02);
+        }
+
+        /* MOBILE: Reduzir efeito hover */
+        @media (max-width: 768px) {
+            .widget:hover {
+                transform: translateY(-3px) scale(1.01);
+            }
         }
 
         .widget.dragging {
@@ -819,6 +902,14 @@
             padding: 10px 15px;
         }
 
+        /* MOBILE: Reduzir header */
+        @media (max-width: 768px) {
+            .widget-header {
+                padding: 6px 10px;
+                margin-bottom: 8px;
+            }
+        }
+
         .widget-title {
             font-size: 12px;
             color: var(--primary-color);
@@ -828,6 +919,14 @@
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
+        }
+
+        /* MOBILE: Ajustar título */
+        @media (max-width: 768px) {
+            .widget-title {
+                font-size: 10px;
+                letter-spacing: 0.5px;
+            }
         }
 
         .widget-controls {
@@ -849,6 +948,20 @@
             display: flex;
             align-items: center;
             justify-content: center;
+        }
+
+        /* MOBILE: Reduzir botões */
+        @media (max-width: 768px) {
+            .widget-btn {
+                font-size: 10px;
+                padding: 2px 4px;
+                min-width: 20px;
+                height: 20px;
+            }
+            
+            .widget-controls {
+                gap: 4px;
+            }
         }
 
         .widget-btn:hover {
@@ -879,6 +992,14 @@
             border-radius: 0 0 8px 0;
         }
 
+        /* MOBILE: Ajustar alça de redimensionamento */
+        @media (max-width: 768px) {
+            .resize-handle {
+                width: 16px;
+                height: 16px;
+            }
+        }
+
         .resize-handle:hover {
             opacity: 1;
         }
@@ -896,6 +1017,15 @@
             overflow: hidden;
             padding: 12px;
             box-sizing: border-box;
+        }
+
+        /* MOBILE: Reduzir padding do conteúdo */
+        @media (max-width: 768px) {
+            .widget-content {
+                padding: 8px !important;
+                gap: 6px !important;
+                font-size: 0.85em;
+            }
         }
 
         /* Container flexível para métricas */
@@ -931,6 +1061,28 @@
             grid-template-columns: repeat(auto-fill, minmax(70px, 1fr));
         }
 
+        /* MOBILE: Ajustar grids */
+        @media (max-width: 768px) {
+            .grid-2-cols {
+                grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+                gap: 6px;
+            }
+            
+            .grid-3-cols {
+                grid-template-columns: repeat(auto-fill, minmax(60px, 1fr));
+                gap: 5px;
+            }
+            
+            .grid-4-cols {
+                grid-template-columns: repeat(auto-fill, minmax(50px, 1fr));
+                gap: 4px;
+            }
+            
+            .responsive-grid {
+                gap: 8px;
+            }
+        }
+
         /* Texto responsivo */
         .responsive-text {
             font-size: clamp(9px, 1.2vw, 13px);
@@ -947,6 +1099,20 @@
             letter-spacing: 1px;
         }
 
+        /* MOBILE: Ajustar títulos */
+        @media (max-width: 768px) {
+            .responsive-title {
+                font-size: 10px !important;
+                margin: 0 0 6px 0 !important;
+                letter-spacing: 0.5px;
+            }
+            
+            .responsive-text {
+                font-size: 9px !important;
+                line-height: 1.3;
+            }
+        }
+
         /* Valores numéricos responsivos */
         .responsive-value {
             font-size: clamp(13px, 2vw, 20px);
@@ -954,6 +1120,13 @@
             font-family: 'Courier New', monospace;
             margin: 0;
             color: var(--primary-color);
+        }
+
+        /* MOBILE: Ajustar valores */
+        @media (max-width: 768px) {
+            .responsive-value {
+                font-size: 11px !important;
+            }
         }
 
         /* Elementos de interface responsivos */
@@ -973,6 +1146,14 @@
             letter-spacing: 0.5px;
         }
 
+        /* MOBILE: Ajustar labels */
+        @media (max-width: 768px) {
+            .metric-label {
+                font-size: 8px !important;
+                letter-spacing: 0.3px;
+            }
+        }
+
         /* Cards de métrica responsivos */
         .metric-card {
             background: rgba(0, 20, 40, 0.6);
@@ -985,6 +1166,15 @@
             min-height: 80px;
             transition: all 0.3s ease;
             backdrop-filter: blur(5px);
+        }
+
+        /* MOBILE: Reduzir cards */
+        @media (max-width: 768px) {
+            .metric-card {
+                padding: 8px;
+                min-height: 60px;
+                border-radius: 4px;
+            }
         }
 
         .metric-card:hover {
@@ -1005,6 +1195,14 @@
             padding: 10px;
         }
 
+        /* MOBILE: Reduzir containers de gráficos */
+        @media (max-width: 768px) {
+            .chart-container {
+                padding: 6px;
+                border-radius: 4px;
+            }
+        }
+
         /* Para listas dentro dos widgets */
         .responsive-list {
             display: flex;
@@ -1013,6 +1211,14 @@
             flex: 1;
             overflow-y: auto;
             max-height: 200px;
+        }
+
+        /* MOBILE: Ajustar listas */
+        @media (max-width: 768px) {
+            .responsive-list {
+                max-height: 120px;
+                gap: 4px;
+            }
         }
 
         .list-item {
@@ -1025,6 +1231,15 @@
             border: 1px solid rgba(0, 217, 255, 0.1);
             font-size: clamp(9px, 1.1vw, 12px);
             transition: all 0.2s ease;
+        }
+
+        /* MOBILE: Ajustar itens da lista */
+        @media (max-width: 768px) {
+            .list-item {
+                padding: 6px 8px;
+                font-size: 9px;
+                border-radius: 3px;
+            }
         }
 
         .list-item:hover {
@@ -1046,6 +1261,15 @@
             transition: all 0.3s ease;
         }
 
+        /* MOBILE: Ajustar controles */
+        @media (max-width: 768px) {
+            .responsive-control {
+                padding: 6px 8px;
+                font-size: 10px;
+                margin-top: 3px;
+            }
+        }
+
         .responsive-control:focus {
             outline: none;
             border-color: var(--primary-color);
@@ -1065,6 +1289,16 @@
             text-transform: uppercase;
             letter-spacing: 1px;
             font-weight: bold;
+        }
+
+        /* MOBILE: Ajustar botões */
+        @media (max-width: 768px) {
+            .responsive-button {
+                padding: 8px 12px;
+                font-size: 10px;
+                letter-spacing: 0.5px;
+                border-radius: 4px;
+            }
         }
 
         .responsive-button:hover {
@@ -1114,6 +1348,19 @@
             margin: 5px 0;
         }
 
+        /* MOBILE: Reduzir barras de progresso */
+        @media (max-width: 768px) {
+            .progress-bar {
+                height: 4px;
+                margin: 3px 0;
+            }
+            
+            .status-dot {
+                width: 6px;
+                height: 6px;
+            }
+        }
+
         .progress-fill {
             height: 100%;
             border-radius: 3px;
@@ -1122,7 +1369,7 @@
         }
 
         /* =========================================== */
-        /* WIDGET 1: RADAR TÁTICO - COMPLETO */
+        /* WIDGET 1: RADAR TÁTICO - RESPONSIVO */
         /* =========================================== */
         .radar-display {
             background: radial-gradient(circle, 
@@ -1135,6 +1382,14 @@
             min-height: 120px;
             position: relative;
             overflow: hidden;
+        }
+
+        /* MOBILE: Reduzir radar */
+        @media (max-width: 768px) {
+            .radar-display {
+                min-height: 80px;
+                border-width: 1px;
+            }
         }
 
         .radar-sweep {
@@ -1175,6 +1430,14 @@
             filter: drop-shadow(0 0 5px var(--danger-color));
         }
 
+        /* MOBILE: Reduzir alvos do radar */
+        @media (max-width: 768px) {
+            .radar-target {
+                width: 6px;
+                height: 6px;
+            }
+        }
+
         .radar-stats {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
@@ -1184,6 +1447,17 @@
             background: rgba(0, 0, 0, 0.3);
             border-radius: 6px;
             border: 1px solid rgba(0, 217, 255, 0.2);
+        }
+
+        /* MOBILE: Ajustar stats do radar */
+        @media (max-width: 768px) {
+            .radar-stats {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 8px;
+                padding: 8px;
+                margin-top: 8px;
+                border-radius: 4px;
+            }
         }
 
         .radar-stat {
@@ -1197,6 +1471,13 @@
             font-family: 'Courier New', monospace;
         }
 
+        /* MOBILE: Ajustar valores do radar */
+        @media (max-width: 768px) {
+            .radar-stat-value {
+                font-size: 12px;
+            }
+        }
+
         .radar-stat-label {
             font-size: clamp(9px, 1vw, 11px);
             color: var(--text-secondary);
@@ -1204,8 +1485,16 @@
             margin-top: 2px;
         }
 
+        /* MOBILE: Ajustar labels do radar */
+        @media (max-width: 768px) {
+            .radar-stat-label {
+                font-size: 8px;
+                margin-top: 1px;
+            }
+        }
+
         /* =========================================== */
-        /* WIDGET 2: SISTEMA BAT-HUD - COMPLETO */
+        /* WIDGET 2: SISTEMA BAT-HUD - RESPONSIVO */
         /* =========================================== */
         .system-metrics {
             display: flex;
@@ -1213,11 +1502,26 @@
             gap: 12px;
         }
 
+        /* MOBILE: Ajustar métricas do sistema */
+        @media (max-width: 768px) {
+            .system-metrics {
+                gap: 8px;
+            }
+        }
+
         .system-metric {
             background: rgba(0, 0, 0, 0.3);
             padding: 10px;
             border-radius: 6px;
             border: 1px solid rgba(0, 217, 255, 0.2);
+        }
+
+        /* MOBILE: Reduzir métricas */
+        @media (max-width: 768px) {
+            .system-metric {
+                padding: 8px;
+                border-radius: 4px;
+            }
         }
 
         .metric-bar {
@@ -1245,8 +1549,16 @@
             border-top: 1px solid rgba(0, 217, 255, 0.1);
         }
 
+        /* MOBILE: Ajustar status do sistema */
+        @media (max-width: 768px) {
+            .system-status {
+                margin-top: 8px;
+                padding-top: 6px;
+            }
+        }
+
         /* =========================================== */
-        /* WIDGET 3: DETECTOR DE AMEAÇAS - COMPLETO */
+        /* WIDGET 3: DETECTOR DE AMEAÇAS - RESPONSIVO */
         /* =========================================== */
         .threat-scanner {
             background: rgba(0, 0, 0, 0.5);
@@ -1261,10 +1573,26 @@
             border: 1px solid rgba(0, 217, 255, 0.2);
         }
 
+        /* MOBILE: Reduzir scanner de ameaças */
+        @media (max-width: 768px) {
+            .threat-scanner {
+                min-height: 50px;
+                border-radius: 4px;
+            }
+        }
+
         .threat-rings {
             position: relative;
             width: 70px;
             height: 70px;
+        }
+
+        /* MOBILE: Reduzir anéis de ameaça */
+        @media (max-width: 768px) {
+            .threat-rings {
+                width: 50px;
+                height: 50px;
+            }
         }
 
         .threat-ring {
@@ -1294,6 +1622,13 @@
             color: var(--danger-color);
             font-weight: bold;
             text-shadow: 0 0 10px var(--danger-color);
+        }
+
+        /* MOBILE: Ajustar nível de ameaça */
+        @media (max-width: 768px) {
+            .threat-level {
+                font-size: 14px;
+            }
         }
 
         .threat-list {
@@ -1327,8 +1662,24 @@
             font-weight: bold;
         }
 
+        /* MOBILE: Ajustar itens de ameaça */
+        @media (max-width: 768px) {
+            .threat-item {
+                padding: 6px 8px;
+            }
+            
+            .threat-name {
+                font-size: 9px;
+            }
+            
+            .threat-severity {
+                font-size: 8px;
+                padding: 2px 6px;
+            }
+        }
+
         /* =========================================== */
-        /* WIDGET 4: ANÁLISE FORENSE - COMPLETO */
+        /* WIDGET 4: ANÁLISE FORENSE - RESPONSIVO */
         /* =========================================== */
         .dna-strand {
             display: flex;
@@ -1342,11 +1693,28 @@
             border-radius: 6px;
         }
 
+        /* MOBILE: Reduzir DNA */
+        @media (max-width: 768px) {
+            .dna-strand {
+                height: 40px;
+                margin-bottom: 10px;
+                padding: 8px;
+                gap: 3px;
+            }
+        }
+
         .dna-bar {
             width: 3px;
             background: linear-gradient(180deg, var(--primary-color), var(--success-color));
             border-radius: 2px;
             animation: dnaFloat 2s ease-in-out infinite;
+        }
+
+        /* MOBILE: Reduzir barras de DNA */
+        @media (max-width: 768px) {
+            .dna-bar {
+                width: 2px;
+            }
         }
 
         .dna-bar:nth-child(odd) {
@@ -1362,6 +1730,15 @@
             background: rgba(0, 0, 0, 0.3);
             border-radius: 6px;
             padding: 10px;
+        }
+
+        /* MOBILE: Ajustar dados forenses */
+        @media (max-width: 768px) {
+            .forensic-data {
+                padding: 8px;
+                border-radius: 4px;
+                font-size: 9px;
+            }
         }
 
         .forensic-field {
@@ -1384,17 +1761,32 @@
             font-weight: bold;
         }
 
+        /* MOBILE: Ajustar campos forenses */
+        @media (max-width: 768px) {
+            .forensic-field {
+                padding: 4px 0;
+            }
+        }
+
         .scan-progress {
             margin-top: 10px;
         }
 
         /* =========================================== */
-        /* WIDGET 5: VEÍCULOS TÁTICOS - COMPLETO */
+        /* WIDGET 5: VEÍCULOS TÁTICOS - RESPONSIVO */
         /* =========================================== */
         .vehicle-status {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
             gap: 12px;
+        }
+
+        /* MOBILE: Ajustar grid de veículos */
+        @media (max-width: 768px) {
+            .vehicle-status {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 8px;
+            }
         }
 
         .vehicle-card {
@@ -1404,6 +1796,14 @@
             text-align: center;
             border: 1px solid rgba(0, 217, 255, 0.2);
             transition: all 0.3s ease;
+        }
+
+        /* MOBILE: Reduzir cards de veículo */
+        @media (max-width: 768px) {
+            .vehicle-card {
+                padding: 8px;
+                border-radius: 4px;
+            }
         }
 
         .vehicle-card.active {
@@ -1423,11 +1823,27 @@
             filter: drop-shadow(0 0 8px rgba(0, 217, 255, 0.5));
         }
 
+        /* MOBILE: Reduzir ícones de veículo */
+        @media (max-width: 768px) {
+            .vehicle-icon {
+                font-size: 20px;
+                margin-bottom: 6px;
+            }
+        }
+
         .vehicle-name {
             font-size: clamp(11px, 1.3vw, 14px);
             color: var(--primary-color);
             font-weight: bold;
             margin-bottom: 6px;
+        }
+
+        /* MOBILE: Ajustar nomes de veículo */
+        @media (max-width: 768px) {
+            .vehicle-name {
+                font-size: 10px;
+                margin-bottom: 4px;
+            }
         }
 
         .vehicle-stats {
@@ -1451,8 +1867,23 @@
             color: var(--text-secondary);
         }
 
+        /* MOBILE: Ajustar stats de veículo */
+        @media (max-width: 768px) {
+            .vehicle-stats {
+                margin-top: 4px;
+            }
+            
+            .vehicle-stat-value {
+                font-size: 9px;
+            }
+            
+            .vehicle-stat-label {
+                font-size: 7px;
+            }
+        }
+
         /* =========================================== */
-        /* WIDGET 6: CLIMA GOTHAM - COMPLETO */
+        /* WIDGET 6: CLIMA GOTHAM - RESPONSIVO */
         /* =========================================== */
         .weather-main {
             background: rgba(0, 0, 0, 0.3);
@@ -1468,10 +1899,27 @@
             border: 1px solid rgba(0, 217, 255, 0.2);
         }
 
+        /* MOBILE: Reduzir clima */
+        @media (max-width: 768px) {
+            .weather-main {
+                padding: 10px;
+                min-height: 70px;
+                border-radius: 6px;
+            }
+        }
+
         .weather-icon-large {
             font-size: clamp(32px, 4vw, 40px);
             margin-bottom: 10px;
             filter: drop-shadow(0 0 10px rgba(0, 217, 255, 0.5));
+        }
+
+        /* MOBILE: Reduzir ícone do clima */
+        @media (max-width: 768px) {
+            .weather-icon-large {
+                font-size: 24px;
+                margin-bottom: 6px;
+            }
         }
 
         .weather-temp {
@@ -1480,6 +1928,14 @@
             font-weight: bold;
             font-family: 'Courier New', monospace;
             margin-bottom: 6px;
+        }
+
+        /* MOBILE: Ajustar temperatura */
+        @media (max-width: 768px) {
+            .weather-temp {
+                font-size: 18px;
+                margin-bottom: 4px;
+            }
         }
 
         .weather-condition {
@@ -1496,11 +1952,33 @@
             margin-top: 12px;
         }
 
+        /* MOBILE: Ajustar detalhes do clima */
+        @media (max-width: 768px) {
+            .weather-condition {
+                font-size: 10px;
+                margin-bottom: 6px;
+            }
+            
+            .weather-details {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 6px;
+                margin-top: 8px;
+            }
+        }
+
         .weather-detail {
             background: rgba(0, 0, 0, 0.5);
             padding: 8px;
             border-radius: 4px;
             border: 1px solid rgba(0, 217, 255, 0.1);
+        }
+
+        /* MOBILE: Reduzir detalhes do clima */
+        @media (max-width: 768px) {
+            .weather-detail {
+                padding: 6px;
+                border-radius: 3px;
+            }
         }
 
         .weather-detail-label {
@@ -1518,8 +1996,20 @@
             margin-top: 3px;
         }
 
+        /* MOBILE: Ajustar labels e valores do clima */
+        @media (max-width: 768px) {
+            .weather-detail-label {
+                font-size: 7px;
+            }
+            
+            .weather-detail-value {
+                font-size: 9px;
+                margin-top: 2px;
+            }
+        }
+
         /* =========================================== */
-        /* WIDGET 7: DETECTOR DE MOVIMENTO - COMPLETO */
+        /* WIDGET 7: DETECTOR DE MOVIMENTO - RESPONSIVO */
         /* =========================================== */
         .motion-grid {
             display: grid;
@@ -1530,6 +2020,16 @@
             padding: 8px;
             border-radius: 6px;
             border: 1px solid rgba(0, 217, 255, 0.2);
+        }
+
+        /* MOBILE: Reduzir grid de movimento */
+        @media (max-width: 768px) {
+            .motion-grid {
+                grid-template-columns: repeat(6, 1fr);
+                height: 80px;
+                padding: 6px;
+                border-radius: 4px;
+            }
         }
 
         .motion-cell {
@@ -1557,8 +2057,17 @@
             border-radius: 4px;
         }
 
+        /* MOBILE: Ajustar info de movimento */
+        @media (max-width: 768px) {
+            .motion-info {
+                margin-top: 8px;
+                padding: 6px;
+                font-size: 9px;
+            }
+        }
+
         /* =========================================== */
-        /* WIDGET 8: ANÁLISE ESPECTRAL - COMPLETO */
+        /* WIDGET 8: ANÁLISE ESPECTRAL - RESPONSIVO */
         /* =========================================== */
         .spectrum-display {
             background: rgba(0, 0, 0, 0.5);
@@ -1566,6 +2075,15 @@
             border-radius: 6px;
             margin-bottom: 10px;
             border: 1px solid rgba(0, 217, 255, 0.2);
+        }
+
+        /* MOBILE: Reduzir display espectral */
+        @media (max-width: 768px) {
+            .spectrum-display {
+                padding: 10px;
+                margin-bottom: 8px;
+                border-radius: 4px;
+            }
         }
 
         .spectrum-graph {
@@ -1578,6 +2096,14 @@
             padding: 0 10px;
         }
 
+        /* MOBILE: Reduzir gráfico espectral */
+        @media (max-width: 768px) {
+            .spectrum-graph {
+                height: 80px;
+                margin-bottom: 10px;
+            }
+        }
+
         .spectrum-bar {
             flex: 1;
             max-width: 15px;
@@ -1585,6 +2111,13 @@
             border-radius: 2px 2px 0 0;
             transition: height 0.2s;
             animation: spectrumWave 3s ease-in-out infinite;
+        }
+
+        /* MOBILE: Reduzir barras espectrais */
+        @media (max-width: 768px) {
+            .spectrum-bar {
+                max-width: 12px;
+            }
         }
 
         .spectrum-bar:nth-child(1) { animation-delay: 0s; }
@@ -1599,6 +2132,14 @@
             gap: 8px;
         }
 
+        /* MOBILE: Ajustar info espectral */
+        @media (max-width: 768px) {
+            .spectrum-info {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 6px;
+            }
+        }
+
         .spectrum-item {
             background: rgba(0, 0, 0, 0.3);
             padding: 8px;
@@ -1606,6 +2147,15 @@
             font-size: 10px;
             text-align: center;
             border: 1px solid rgba(0, 217, 255, 0.1);
+        }
+
+        /* MOBILE: Reduzir itens espectrais */
+        @media (max-width: 768px) {
+            .spectrum-item {
+                padding: 6px;
+                font-size: 9px;
+                border-radius: 3px;
+            }
         }
 
         .spectrum-label {
@@ -1620,8 +2170,20 @@
             font-size: clamp(12px, 1.5vw, 14px);
         }
 
+        /* MOBILE: Ajustar labels e valores espectrais */
+        @media (max-width: 768px) {
+            .spectrum-label {
+                font-size: 7px;
+                margin-bottom: 2px;
+            }
+            
+            .spectrum-value {
+                font-size: 10px;
+            }
+        }
+
         /* =========================================== */
-        /* WIDGET 9: VIGILÂNCIA SATÉLITE - COMPLETO */
+        /* WIDGET 9: VIGILÂNCIA SATÉLITE - RESPONSIVO */
         /* =========================================== */
         .satellite-view {
             position: relative;
@@ -1632,6 +2194,15 @@
             overflow: hidden;
             margin-bottom: 10px;
             border: 1px solid rgba(0, 217, 255, 0.2);
+        }
+
+        /* MOBILE: Reduzir visão de satélite */
+        @media (max-width: 768px) {
+            .satellite-view {
+                height: 140px;
+                margin-bottom: 8px;
+                border-radius: 4px;
+            }
         }
 
         .orbit-path {
@@ -1662,6 +2233,15 @@
             box-shadow: 0 0 15px var(--primary-color);
         }
 
+        /* MOBILE: Reduzir ícone do satélite */
+        @media (max-width: 768px) {
+            .satellite-icon {
+                width: 18px;
+                height: 18px;
+                font-size: 10px;
+            }
+        }
+
         .earth-center {
             position: absolute;
             top: 50%;
@@ -1674,10 +2254,26 @@
             box-shadow: 0 0 30px rgba(0, 217, 255, 0.5);
         }
 
+        /* MOBILE: Reduzir centro da Terra */
+        @media (max-width: 768px) {
+            .earth-center {
+                width: 40px;
+                height: 40px;
+            }
+        }
+
         .satellite-data {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
             gap: 8px;
+        }
+
+        /* MOBILE: Ajustar dados de satélite */
+        @media (max-width: 768px) {
+            .satellite-data {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 6px;
+            }
         }
 
         .sat-stat {
@@ -1689,11 +2285,28 @@
             border: 1px solid rgba(0, 217, 255, 0.1);
         }
 
+        /* MOBILE: Reduzir stats de satélite */
+        @media (max-width: 768px) {
+            .sat-stat {
+                padding: 6px;
+                font-size: 9px;
+                border-radius: 3px;
+            }
+        }
+
         .sat-stat-value {
             color: var(--primary-color);
             font-weight: bold;
             font-size: clamp(14px, 1.8vw, 16px);
             margin-bottom: 3px;
+        }
+
+        /* MOBILE: Ajustar valores de satélite */
+        @media (max-width: 768px) {
+            .sat-stat-value {
+                font-size: 12px;
+                margin-bottom: 2px;
+            }
         }
 
         .sat-stat-label {
@@ -1702,8 +2315,15 @@
             font-size: clamp(8px, 1vw, 10px);
         }
 
+        /* MOBILE: Ajustar labels de satélite */
+        @media (max-width: 768px) {
+            .sat-stat-label {
+                font-size: 7px;
+            }
+        }
+
         /* =========================================== */
-        /* WIDGET 10: PROTOCOLO EMERGÊNCIA - COMPLETO */
+        /* WIDGET 10: PROTOCOLO EMERGÊNCIA - RESPONSIVO */
         /* =========================================== */
         .emergency-header {
             background: linear-gradient(135deg, rgba(255, 0, 64, 0.2), rgba(255, 50, 50, 0.1));
@@ -1714,6 +2334,16 @@
             border: 2px solid var(--danger-color);
         }
 
+        /* MOBILE: Reduzir header de emergência */
+        @media (max-width: 768px) {
+            .emergency-header {
+                padding: 10px;
+                margin-bottom: 10px;
+                border-width: 1px;
+                border-radius: 4px;
+            }
+        }
+
         .emergency-icon {
             font-size: 48px;
             color: var(--danger-color);
@@ -1721,11 +2351,26 @@
             animation: emergencyPulse 1.5s ease-in-out infinite;
         }
 
+        /* MOBILE: Reduzir ícone de emergência */
+        @media (max-width: 768px) {
+            .emergency-icon {
+                font-size: 32px;
+                margin-bottom: 6px;
+            }
+        }
+
         .emergency-status {
             font-size: clamp(14px, 1.8vw, 16px);
             color: var(--text-primary);
             font-weight: bold;
             text-transform: uppercase;
+        }
+
+        /* MOBILE: Ajustar status de emergência */
+        @media (max-width: 768px) {
+            .emergency-status {
+                font-size: 12px;
+            }
         }
 
         .emergency-protocols {
@@ -1750,6 +2395,16 @@
             gap: 10px;
         }
 
+        /* MOBILE: Reduzir botões de protocolo */
+        @media (max-width: 768px) {
+            .protocol-btn {
+                padding: 8px;
+                gap: 6px;
+                font-size: 9px;
+                border-radius: 4px;
+            }
+        }
+
         .protocol-btn:hover {
             background: rgba(255, 0, 64, 0.2);
             transform: translateX(5px);
@@ -1768,8 +2423,17 @@
             flex-shrink: 0;
         }
 
+        /* MOBILE: Reduzir ícone de protocolo */
+        @media (max-width: 768px) {
+            .protocol-icon {
+                width: 24px;
+                height: 24px;
+                font-size: 12px;
+            }
+        }
+
         /* =========================================== */
-        /* WIDGET 11: RASTREAMENTO DE ALVOS - COMPLETO */
+        /* WIDGET 11: RASTREAMENTO DE ALVOS - RESPONSIVO */
         /* =========================================== */
         .tracking-radar {
             position: relative;
@@ -1779,6 +2443,16 @@
             background: radial-gradient(circle, rgba(0, 217, 255, 0.1), transparent);
             border: 2px solid var(--primary-color);
             border-radius: 50%;
+        }
+
+        /* MOBILE: Reduzir radar de rastreamento */
+        @media (max-width: 768px) {
+            .tracking-radar {
+                width: 120px;
+                height: 120px;
+                margin: 0 auto 10px;
+                border-width: 1px;
+            }
         }
 
         .tracking-sweep {
@@ -1803,11 +2477,28 @@
             transform: translate(-50%, -50%);
         }
 
+        /* MOBILE: Reduzir pontos de alvo */
+        @media (max-width: 768px) {
+            .target-dot {
+                width: 8px;
+                height: 8px;
+            }
+        }
+
         .tracking-info {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
             gap: 10px;
             font-size: 10px;
+        }
+
+        /* MOBILE: Ajustar info de rastreamento */
+        @media (max-width: 768px) {
+            .tracking-info {
+                grid-template-columns: repeat(3, 1fr);
+                gap: 6px;
+                font-size: 9px;
+            }
         }
 
         .tracking-stat {
@@ -1818,11 +2509,26 @@
             border: 1px solid rgba(0, 217, 255, 0.2);
         }
 
+        /* MOBILE: Reduzir stats de rastreamento */
+        @media (max-width: 768px) {
+            .tracking-stat {
+                padding: 6px;
+                border-radius: 3px;
+            }
+        }
+
         .tracking-value {
             font-size: clamp(16px, 2vw, 18px);
             color: var(--warning-color);
             font-weight: bold;
             display: block;
+        }
+
+        /* MOBILE: Ajustar valores de rastreamento */
+        @media (max-width: 768px) {
+            .tracking-value {
+                font-size: 12px;
+            }
         }
 
         .tracking-label {
@@ -1833,13 +2539,28 @@
             margin-top: 2px;
         }
 
+        /* MOBILE: Ajustar labels de rastreamento */
+        @media (max-width: 768px) {
+            .tracking-label {
+                font-size: 7px;
+                margin-top: 1px;
+            }
+        }
+
         /* =========================================== */
-        /* WIDGET 12: ESTATÍSTICAS COMBATE - COMPLETO */
+        /* WIDGET 12: ESTATÍSTICAS COMBATE - RESPONSIVO */
         /* =========================================== */
         .combat-stats {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
             gap: 12px;
+        }
+
+        /* MOBILE: Ajustar stats de combate */
+        @media (max-width: 768px) {
+            .combat-stats {
+                gap: 8px;
+            }
         }
 
         .combat-card {
@@ -1849,6 +2570,14 @@
             text-align: center;
             border: 1px solid rgba(0, 217, 255, 0.2);
             transition: all 0.3s ease;
+        }
+
+        /* MOBILE: Reduzir cards de combate */
+        @media (max-width: 768px) {
+            .combat-card {
+                padding: 8px;
+                border-radius: 4px;
+            }
         }
 
         .combat-card:hover {
@@ -1862,10 +2591,25 @@
             margin-bottom: 5px;
         }
 
+        /* MOBILE: Ajustar números de combate */
+        @media (max-width: 768px) {
+            .combat-number {
+                font-size: 16px;
+                margin-bottom: 3px;
+            }
+        }
+
         .combat-label {
             font-size: clamp(9px, 1vw, 11px);
             color: var(--text-secondary);
             text-transform: uppercase;
+        }
+
+        /* MOBILE: Ajustar labels de combate */
+        @media (max-width: 768px) {
+            .combat-label {
+                font-size: 8px;
+            }
         }
 
         .combat-efficiency {
@@ -1876,13 +2620,30 @@
             border: 1px solid rgba(0, 217, 255, 0.2);
         }
 
+        /* MOBILE: Reduzir eficiência de combate */
+        @media (max-width: 768px) {
+            .combat-efficiency {
+                margin-top: 10px;
+                padding: 8px;
+                border-radius: 4px;
+            }
+        }
+
         /* =========================================== */
-        /* WIDGET 13: COMUNICAÇÕES - COMPLETO */
+        /* WIDGET 13: COMUNICAÇÕES - RESPONSIVO */
         /* =========================================== */
         .comms-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
             gap: 10px;
+        }
+
+        /* MOBILE: Ajustar grid de comunicações */
+        @media (max-width: 768px) {
+            .comms-grid {
+                grid-template-columns: 1fr;
+                gap: 8px;
+            }
         }
 
         .comms-channel {
@@ -1892,6 +2653,14 @@
             text-align: center;
             border: 1px solid rgba(0, 217, 255, 0.2);
             transition: all 0.3s ease;
+        }
+
+        /* MOBILE: Reduzir canais de comunicação */
+        @media (max-width: 768px) {
+            .comms-channel {
+                padding: 8px;
+                border-radius: 4px;
+            }
         }
 
         .comms-channel:hover {
@@ -1906,11 +2675,27 @@
             filter: drop-shadow(0 0 5px rgba(0, 217, 255, 0.5));
         }
 
+        /* MOBILE: Reduzir ícones de comunicação */
+        @media (max-width: 768px) {
+            .comms-icon {
+                font-size: 20px;
+                margin-bottom: 6px;
+            }
+        }
+
         .comms-name {
             font-size: clamp(10px, 1.1vw, 11px);
             color: var(--text-primary);
             margin-bottom: 4px;
             font-weight: bold;
+        }
+
+        /* MOBILE: Ajustar nomes de comunicação */
+        @media (max-width: 768px) {
+            .comms-name {
+                font-size: 9px;
+                margin-bottom: 2px;
+            }
         }
 
         .comms-status {
@@ -1922,13 +2707,29 @@
             display: inline-block;
         }
 
+        /* MOBILE: Ajustar status de comunicação */
+        @media (max-width: 768px) {
+            .comms-status {
+                font-size: 8px;
+                padding: 2px 4px;
+            }
+        }
+
         /* =========================================== */
-        /* WIDGET 14: SISTEMA DE ENERGIA - COMPLETO */
+        /* WIDGET 14: SISTEMA DE ENERGIA - RESPONSIVO */
         /* =========================================== */
         .power-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
             gap: 12px;
+        }
+
+        /* MOBILE: Ajustar grid de energia */
+        @media (max-width: 768px) {
+            .power-grid {
+                grid-template-columns: 1fr;
+                gap: 8px;
+            }
         }
 
         .power-cell {
@@ -1938,6 +2739,14 @@
             text-align: center;
             border: 1px solid rgba(0, 217, 255, 0.2);
             transition: all 0.3s ease;
+        }
+
+        /* MOBILE: Reduzir células de energia */
+        @media (max-width: 768px) {
+            .power-cell {
+                padding: 10px;
+                border-radius: 4px;
+            }
         }
 
         .power-cell:hover {
@@ -1952,10 +2761,25 @@
             margin-bottom: 5px;
         }
 
+        /* MOBILE: Ajustar valores de energia */
+        @media (max-width: 768px) {
+            .power-value {
+                font-size: 16px;
+                margin-bottom: 3px;
+            }
+        }
+
         .power-label {
             font-size: clamp(9px, 1vw, 10px);
             color: var(--text-secondary);
             text-transform: uppercase;
+        }
+
+        /* MOBILE: Ajustar labels de energia */
+        @media (max-width: 768px) {
+            .power-label {
+                font-size: 8px;
+            }
         }
 
         .power-total {
@@ -1966,8 +2790,17 @@
             border: 1px solid rgba(0, 217, 255, 0.2);
         }
 
+        /* MOBILE: Reduzir total de energia */
+        @media (max-width: 768px) {
+            .power-total {
+                margin-top: 10px;
+                padding: 8px;
+                border-radius: 4px;
+            }
+        }
+
         /* =========================================== */
-        /* WIDGET 15: SCANNER BIOMÉTRICO - COMPLETO */
+        /* WIDGET 15: SCANNER BIOMÉTRICO - RESPONSIVO */
         /* =========================================== */
         .biometric-display {
             background: rgba(0, 0, 0, 0.5);
@@ -1982,6 +2815,14 @@
             border: 1px solid rgba(0, 217, 255, 0.2);
         }
 
+        /* MOBILE: Reduzir display biométrico */
+        @media (max-width: 768px) {
+            .biometric-display {
+                min-height: 50px;
+                border-radius: 4px;
+            }
+        }
+
         .fingerprint {
             position: relative;
             width: 60px;
@@ -1991,6 +2832,15 @@
                 repeating-conic-gradient(from 0deg, transparent 0deg 10deg, rgba(0, 217, 255, 0.05) 10deg 20deg);
             border-radius: 50%;
             border: 2px solid rgba(0, 217, 255, 0.3);
+        }
+
+        /* MOBILE: Reduzir fingerprint */
+        @media (max-width: 768px) {
+            .fingerprint {
+                width: 40px;
+                height: 40px;
+                border-width: 1px;
+            }
         }
 
         .scan-line {
@@ -2014,11 +2864,28 @@
             margin-top: 12px;
         }
 
+        /* MOBILE: Ajustar dados biométricos */
+        @media (max-width: 768px) {
+            .biometric-data {
+                grid-template-columns: 1fr;
+                gap: 8px;
+                margin-top: 8px;
+            }
+        }
+
         .bio-field {
             background: rgba(0, 0, 0, 0.3);
             padding: 8px;
             border-radius: 4px;
             border: 1px solid rgba(0, 217, 255, 0.2);
+        }
+
+        /* MOBILE: Reduzir campos biométricos */
+        @media (max-width: 768px) {
+            .bio-field {
+                padding: 6px;
+                border-radius: 3px;
+            }
         }
 
         .bio-label {
@@ -2037,8 +2904,20 @@
             margin-top: 3px;
         }
 
+        /* MOBILE: Ajustar labels e valores biométricos */
+        @media (max-width: 768px) {
+            .bio-label {
+                font-size: 8px;
+            }
+            
+            .bio-value {
+                font-size: 10px;
+                margin-top: 2px;
+            }
+        }
+
         /* =========================================== */
-        /* WIDGET 16: ANÁLISE DE VOZ - COMPLETO */
+        /* WIDGET 16: ANÁLISE DE VOZ - RESPONSIVO */
         /* =========================================== */
         .voice-visualizer {
             background: rgba(0, 0, 0, 0.5);
@@ -2053,6 +2932,16 @@
             border: 1px solid rgba(0, 217, 255, 0.2);
         }
 
+        /* MOBILE: Reduzir visualizador de voz */
+        @media (max-width: 768px) {
+            .voice-visualizer {
+                min-height: 50px;
+                padding: 8px;
+                gap: 2px;
+                border-radius: 4px;
+            }
+        }
+
         .voice-bar {
             width: 5px;
             background: linear-gradient(to top, 
@@ -2063,11 +2952,26 @@
             animation-delay: calc(var(--i, 0) * 0.1s);
         }
 
+        /* MOBILE: Reduzir barras de voz */
+        @media (max-width: 768px) {
+            .voice-bar {
+                width: 4px;
+            }
+        }
+
         .voice-controls {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 10px;
             margin-top: 12px;
+        }
+
+        /* MOBILE: Ajustar controles de voz */
+        @media (max-width: 768px) {
+            .voice-controls {
+                gap: 8px;
+                margin-top: 8px;
+            }
         }
 
         .voice-btn {
@@ -2084,6 +2988,15 @@
             text-align: center;
         }
 
+        /* MOBILE: Reduzir botões de voz */
+        @media (max-width: 768px) {
+            .voice-btn {
+                padding: 6px 8px;
+                font-size: 10px;
+                border-radius: 3px;
+            }
+        }
+
         .voice-btn:hover {
             background: rgba(0, 217, 255, 0.2);
             transform: translateY(-1px);
@@ -2091,164 +3004,319 @@
         }
 
         /* =========================================== */
-        /* RESPONSIVIDADE GERAL */
+        /* PEÇAS DA INTERFACE - RESPONSIVIDADE */
         /* =========================================== */
-        @media (max-width: 1200px) {
-            .widget-content {
-                padding: 10px;
-                gap: 8px;
-            }
-            
-            .grid-2-cols {
-                grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
-            }
-            
-            .grid-3-cols {
-                grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
-            }
-            
-            .grid-4-cols {
-                grid-template-columns: repeat(auto-fill, minmax(60px, 1fr));
-            }
-            
-            .metric-card {
-                padding: 10px;
-                min-height: 70px;
-            }
-            
-            .responsive-value {
-                font-size: clamp(12px, 1.8vw, 18px);
-            }
-            
-            .radar-display {
-                min-height: 100px;
-            }
-            
-            .motion-grid {
-                height: 100px;
-                grid-template-columns: repeat(6, 1fr);
-            }
-            
-            .satellite-view {
-                height: 180px;
-            }
+        .piece-container {
+            position: absolute;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 100;
         }
 
+        .piece-svg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            filter: drop-shadow(0 0 10px rgba(0, 217, 255, 0.3));
+            transition: all 0.3s ease;
+        }
+
+        .piece-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--hud-pieces-bg);
+            clip-path: inherit;
+            transition: all 0.3s ease;
+        }
+
+        .piece-link {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            z-index: 110;
+            padding: 10px;
+            cursor: pointer;
+        }
+
+        .piece-link-icon {
+            font-size: 24px;
+            color: var(--primary-color);
+            margin-bottom: 8px;
+            filter: drop-shadow(0 0 10px rgba(0, 217, 255, 0.5));
+        }
+
+        /* MOBILE: Reduzir ícones das peças */
         @media (max-width: 768px) {
-            .widget-content {
-                padding: 8px;
-                gap: 6px;
-            }
-            
-            .grid-2-cols {
-                grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
-            }
-            
-            .grid-3-cols {
-                grid-template-columns: repeat(auto-fill, minmax(70px, 1fr));
-            }
-            
-            .grid-4-cols {
-                grid-template-columns: repeat(auto-fill, minmax(50px, 1fr));
-            }
-            
-            .metric-card {
-                padding: 8px;
-                min-height: 60px;
-            }
-            
-            .responsive-value {
-                font-size: clamp(11px, 1.6vw, 16px);
-            }
-            
-            .responsive-title {
-                font-size: clamp(10px, 1.3vw, 14px);
-            }
-            
-            .radar-display {
-                min-height: 80px;
-            }
-            
-            .voice-visualizer {
-                min-height: 60px;
-            }
-            
-            .biometric-display {
-                min-height: 60px;
-            }
-            
-            .threat-scanner {
-                min-height: 60px;
-            }
-            
-            .motion-grid {
-                height: 80px;
-                grid-template-columns: repeat(4, 1fr);
-            }
-            
-            .satellite-view {
-                height: 150px;
-            }
-            
-            .tracking-radar {
-                width: 150px;
-                height: 150px;
+            .piece-link-icon {
+                font-size: 18px;
+                margin-bottom: 4px;
             }
         }
 
+        .piece-link-text {
+            color: rgba(0, 217, 255, 0.9);
+            font-size: 11px;
+            font-weight: bold;
+            text-shadow: 0 0 8px rgba(0, 217, 255, 0.7);
+            text-transform: uppercase;
+            text-align: center;
+            line-height: 1.3;
+        }
+
+        /* MOBILE: Reduzir texto das peças */
+        @media (max-width: 768px) {
+            .piece-link-text {
+                font-size: 9px;
+                line-height: 1.2;
+            }
+        }
+
+        /* POSICIONAMENTO DAS PEÇAS */
+        .top-left {
+            top: 0;
+            left: 0;
+            width: 30%;
+            height: 80px;
+            clip-path: polygon(0 0, 100% 0, 70% 100%, 0 100%);
+        }
+
+        .top-center {
+            top: 0;
+            left: 30%;
+            width: 40%;
+            height: 40px;
+            clip-path: polygon(0 0, 100% 0, 90% 100%, 10% 100%);
+        }
+
+        .top-right {
+            top: 0;
+            right: 0;
+            width: 30%;
+            height: 80px;
+            clip-path: polygon(0 0, 100% 0, 100% 100%, 30% 100%);
+        }
+
+        .mid-left {
+            top: 80px;
+            left: 0;
+            width: 35px;
+            height: calc(100% - 160px);
+            clip-path: polygon(0 0, 100% 10%, 100% 90%, 0 100%);
+        }
+
+        .mid-right {
+            top: 80px;
+            right: 0;
+            width: 35px;
+            height: calc(100% - 160px);
+            clip-path: polygon(0 10%, 100% 0, 100% 100%, 0 90%);
+        }
+
+        .bottom-left {
+            bottom: 0;
+            left: 0;
+            width: 30%;
+            height: 80px;
+            clip-path: polygon(0 0, 70% 0, 100% 100%, 0 100%);
+        }
+
+        .bottom-center {
+            bottom: 0;
+            left: 30%;
+            width: 40%;
+            height: 50px;
+            clip-path: polygon(10% 0, 90% 0, 100% 100%, 0 100%);
+        }
+
+        .bottom-right {
+            bottom: 0;
+            right: 0;
+            width: 30%;
+            height: 80px;
+            clip-path: polygon(30% 0, 100% 0, 100% 100%, 0 100%);
+        }
+
+        /* MOBILE: Ajustar tamanho das peças */
+        @media (max-width: 768px) {
+            .top-left,
+            .top-right,
+            .bottom-left,
+            .bottom-right {
+                width: 35%;
+                height: 60px !important;
+            }
+
+            .top-center,
+            .bottom-center {
+                width: 30%;
+                left: 35%;
+                height: 30px !important;
+            }
+
+            .mid-left,
+            .mid-right {
+                top: 60px !important;
+                height: calc(100% - 120px) !important;
+                width: 25px !important;
+            }
+            
+            .widgets-area {
+                top: 65px !important;
+                left: 25px !important;
+                right: 25px !important;
+                bottom: 65px !important;
+            }
+        }
+
+        /* =========================================== */
+        /* MENSAGEM CENTRAL */
+        /* =========================================== */
+        .hint {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: #0af;
+            text-align: center;
+            z-index: 1;
+            pointer-events: none;
+            letter-spacing: 1px;
+            font-size: 16px;
+            width: 90%;
+            max-width: 400px;
+        }
+
+        .hint span {
+            font-size: 11px;
+            opacity: 0.7;
+            display: block;
+            margin-top: 5px;
+        }
+
+        .hint img {
+            width: 180px;
+            height: auto;
+            display: block;
+            margin: 0 auto 20px;
+            filter: drop-shadow(0 0 15px rgba(0, 217, 255, 0.6));
+        }
+
+        /* MOBILE: Ajustar hint */
+        @media (max-width: 768px) {
+            .hint {
+                font-size: 14px;
+            }
+            
+            .hint img {
+                width: 120px;
+                margin: 0 auto 10px;
+            }
+            
+            .hint span {
+                font-size: 9px;
+            }
+        }
+
+        /* =========================================== */
+        /* ANIMAÇÕES GLOBAIS */
+        /* =========================================== */
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+            20%, 40%, 60%, 80% { transform: translateX(5px); }
+        }
+
+        /* =========================================== */
+        /* BUG FIXES */
+        /* =========================================== */
+        .widget.minimized .widget-body {
+            display: none;
+        }
+
+        .widget.minimized {
+            height: auto;
+            min-height: auto;
+            padding-bottom: 5px;
+        }
+
+        .widget.minimized .resize-handle {
+            display: none;
+        }
+
+        .widget-header {
+            cursor: grab;
+        }
+
+        .widget-header:active {
+            cursor: grabbing;
+        }
+
+        /* =========================================== */
+        /* RESPONSIVIDADE MOBILE - ADICIONAIS */
+        /* =========================================== */
         @media (max-width: 480px) {
-            .widget-content {
-                padding: 6px;
-                gap: 5px;
+            .widget {
+                min-width: 100px !important;
+                min-height: 80px !important;
+                max-width: 140px !important;
+                max-height: 150px !important;
+                padding: 6px !important;
+                font-size: 0.7em;
             }
             
-            .grid-2-cols {
-                grid-template-columns: repeat(auto-fill, minmax(70px, 1fr));
+            .widget.folder-stacked {
+                min-width: 90px !important;
+                min-height: 70px !important;
             }
             
-            .grid-3-cols {
-                grid-template-columns: repeat(auto-fill, minmax(60px, 1fr));
+            .widget-title {
+                font-size: 8px;
             }
             
-            .grid-4-cols {
-                grid-template-columns: repeat(auto-fill, minmax(45px, 1fr));
+            .widget-btn {
+                font-size: 8px;
+                min-width: 18px;
+                height: 18px;
             }
             
-            .responsive-value {
-                font-size: clamp(10px, 1.4vw, 14px);
+            .top-left,
+            .top-right,
+            .bottom-left,
+            .bottom-right {
+                width: 40%;
+                height: 50px !important;
+            }
+
+            .top-center,
+            .bottom-center {
+                width: 20%;
+                left: 40%;
+                height: 25px !important;
+            }
+
+            .mid-left,
+            .mid-right {
+                width: 20px;
+                height: calc(100% - 100px);
+                top: 50px !important;
             }
             
-            .responsive-text {
-                font-size: clamp(8px, 1vw, 11px);
-            }
-            
-            .radar-stats {
-                grid-template-columns: repeat(auto-fit, minmax(70px, 1fr));
-            }
-            
-            .vehicle-status {
-                grid-template-columns: 1fr;
-            }
-            
-            .combat-stats {
-                grid-template-columns: repeat(2, 1fr);
-            }
-            
-            .weather-details {
-                grid-template-columns: repeat(2, 1fr);
-            }
-            
-            .comms-grid {
-                grid-template-columns: 1fr;
-            }
-            
-            .power-grid {
-                grid-template-columns: 1fr;
-            }
-            
-            .motion-grid {
-                grid-template-columns: repeat(3, 1fr);
-                height: 60px;
+            .widgets-area {
+                top: 55px !important;
+                left: 20px !important;
+                right: 20px !important;
+                bottom: 55px !important;
             }
         }
 
@@ -2322,298 +3390,6 @@
         @keyframes targetBlink {
             0%, 100% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
             50% { opacity: 0.5; transform: translate(-50%, -50%) scale(1.3); }
-        }
-
-        /* =========================================== */
-        /* PEÇAS DA INTERFACE */
-        /* =========================================== */
-        .piece-container {
-            position: absolute;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            z-index: 100;
-        }
-
-        .piece-svg {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            filter: drop-shadow(0 0 10px rgba(0, 217, 255, 0.3));
-            transition: all 0.3s ease;
-        }
-
-        .piece-bg {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: var(--hud-pieces-bg);
-            clip-path: inherit;
-            transition: all 0.3s ease;
-        }
-
-        .piece-link {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            text-decoration: none;
-            z-index: 110;
-            padding: 10px;
-            cursor: pointer;
-        }
-
-        .piece-link-icon {
-            font-size: 24px;
-            color: var(--primary-color);
-            margin-bottom: 8px;
-            filter: drop-shadow(0 0 10px rgba(0, 217, 255, 0.5));
-        }
-
-        .piece-link-text {
-            color: rgba(0, 217, 255, 0.9);
-            font-size: 11px;
-            font-weight: bold;
-            text-shadow: 0 0 8px rgba(0, 217, 255, 0.7);
-            text-transform: uppercase;
-            text-align: center;
-            line-height: 1.3;
-        }
-
-        /* POSICIONAMENTO DAS PEÇAS */
-        .top-left {
-            top: 0;
-            left: 0;
-            width: 30%;
-            height: 80px;
-            clip-path: polygon(0 0, 100% 0, 70% 100%, 0 100%);
-        }
-
-        .top-center {
-            top: 0;
-            left: 30%;
-            width: 40%;
-            height: 40px;
-            clip-path: polygon(0 0, 100% 0, 90% 100%, 10% 100%);
-        }
-
-        .top-right {
-            top: 0;
-            right: 0;
-            width: 30%;
-            height: 80px;
-            clip-path: polygon(0 0, 100% 0, 100% 100%, 30% 100%);
-        }
-
-        .mid-left {
-            top: 80px;
-            left: 0;
-            width: 35px;
-            height: calc(100% - 160px);
-            clip-path: polygon(0 0, 100% 10%, 100% 90%, 0 100%);
-        }
-
-        .mid-right {
-            top: 80px;
-            right: 0;
-            width: 35px;
-            height: calc(100% - 160px);
-            clip-path: polygon(0 10%, 100% 0, 100% 100%, 0 90%);
-        }
-
-        .bottom-left {
-            bottom: 0;
-            left: 0;
-            width: 30%;
-            height: 80px;
-            clip-path: polygon(0 0, 70% 0, 100% 100%, 0 100%);
-        }
-
-        .bottom-center {
-            bottom: 0;
-            left: 30%;
-            width: 40%;
-            height: 50px;
-            clip-path: polygon(10% 0, 90% 0, 100% 100%, 0 100%);
-        }
-
-        .bottom-right {
-            bottom: 0;
-            right: 0;
-            width: 30%;
-            height: 80px;
-            clip-path: polygon(30% 0, 100% 0, 100% 100%, 0 100%);
-        }
-
-        /* =========================================== */
-        /* MENSAGEM CENTRAL */
-        /* =========================================== */
-        .hint {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            color: #0af;
-            text-align: center;
-            z-index: 1;
-            pointer-events: none;
-            letter-spacing: 1px;
-            font-size: 16px;
-            width: 90%;
-            max-width: 400px;
-        }
-
-        .hint span {
-            font-size: 11px;
-            opacity: 0.7;
-            display: block;
-            margin-top: 5px;
-        }
-
-        .hint img {
-            width: 180px;
-            height: auto;
-            display: block;
-            margin: 0 auto 20px;
-            filter: drop-shadow(0 0 15px rgba(0, 217, 255, 0.6));
-        }
-
-        /* =========================================== */
-        /* ANIMAÇÕES GLOBAIS */
-        /* =========================================== */
-        @keyframes shake {
-            0%, 100% { transform: translateX(0); }
-            10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
-            20%, 40%, 60%, 80% { transform: translateX(5px); }
-        }
-
-        /* =========================================== */
-        /* BUG FIXES */
-        /* =========================================== */
-        .widget.minimized .widget-body {
-            display: none;
-        }
-
-        .widget.minimized {
-            height: auto;
-            min-height: auto;
-            padding-bottom: 5px;
-        }
-
-        .widget.minimized .resize-handle {
-            display: none;
-        }
-
-        .widget-header {
-            cursor: grab;
-        }
-
-        .widget-header:active {
-            cursor: grabbing;
-        }
-
-        /* =========================================== */
-        /* RESPONSIVIDADE MOBILE */
-        /* =========================================== */
-        @media (max-width: 768px) {
-            .hud-frame {
-                overflow: visible;
-            }
-
-            .widgets-area {
-                top: 65px;
-                left: 25px;
-                right: 25px;
-                bottom: 65px;
-            }
-
-            .widget {
-                min-width: 160px;
-                min-height: 120px;
-                padding: 10px;
-                max-width: 90vw;
-                max-height: 70vh;
-            }
-
-            .widget.folder-stacked {
-                min-width: 140px;
-                min-height: 110px;
-            }
-
-            .top-left,
-            .top-right,
-            .bottom-left,
-            .bottom-right {
-                width: 35%;
-                height: 65px !important;
-            }
-
-            .top-center,
-            .bottom-center {
-                width: 30%;
-                left: 35%;
-                height: 35px !important;
-            }
-
-            .mid-left,
-            .mid-right {
-                top: 65px !important;
-                height: calc(100% - 130px) !important;
-                width: 25px !important;
-            }
-
-            .alert-timer {
-                bottom: 40px;
-                right: 10px;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .widgets-area {
-                top: 55px;
-                left: 15px;
-                right: 15px;
-                bottom: 55px;
-            }
-
-            .widget {
-                min-width: 140px;
-                min-height: 100px;
-                padding: 8px;
-            }
-
-            .widget.folder-stacked {
-                min-width: 120px;
-                min-height: 90px;
-            }
-
-            .top-left,
-            .top-right,
-            .bottom-left,
-            .bottom-right {
-                width: 40%;
-                height: 55px !important;
-            }
-
-            .top-center,
-            .bottom-center {
-                width: 20%;
-                left: 40%;
-                height: 30px !important;
-            }
-
-            .mid-left,
-            .mid-right {
-                width: 20px;
-                height: calc(100% - 110px);
-            }
         }
     </style>
 </head>
@@ -2812,17 +3588,24 @@
         // ===========================================
         // BAT-HUD SYSTEM v6.0 - 16 WIDGETS COMO MORCEGOS EM PILHA
         // ===========================================
-        // Versão totalmente corrigida e melhorada com layouts detalhados para cada widget
+        // Versão com responsividade mobile otimizada
 
         const BatHUD = {
             // ===========================================
-            // CONFIGURAÇÕES
+            // CONFIGURAÇÕES RESPONSIVAS
             // ===========================================
             config: {
+                // Desktop
                 widgetMinWidth: 200,
                 widgetMinHeight: 140,
                 widgetMaxWidth: 500,
                 widgetMaxHeight: 500,
+                // Mobile
+                widgetMobileMinWidth: 120,
+                widgetMobileMinHeight: 100,
+                widgetMobileMaxWidth: 160,
+                widgetMobileMaxHeight: 180,
+                
                 boundaryMargin: 5,
                 stackOffsetX: 15,
                 stackOffsetY: 15,
@@ -2855,11 +3638,12 @@
                 threatCount: 3,
                 motionCells: [],
                 voiceRecording: false,
-                dnaBars: []
+                dnaBars: [],
+                isMobile: false
             },
 
             // ===========================================
-            // DADOS DOS WIDGETS - TOTALMENTE OTIMIZADOS
+            // DADOS DOS WIDGETS
             // ===========================================
             data: {
                 users: JSON.parse(localStorage.getItem('wayne_users')) || [
@@ -2870,7 +3654,7 @@
                 ],
                 
                 widgetTemplates: [
-                    // WIDGET 1: Radar Tático - Completamente redesenhado
+                    // WIDGET 1: Radar Tático
                     {
                         id: 'radarWidget',
                         title: 'Radar Tático',
@@ -2884,46 +3668,33 @@
                                     <div class="radar-target" style="top: 30%; left: 40%;"></div>
                                     <div class="radar-target" style="top: 60%; left: 70%;"></div>
                                     <div class="radar-target" style="top: 20%; left: 80%;"></div>
-                                    <div class="radar-target" style="top: 45%; left: 20%;"></div>
-                                    <div class="radar-target" style="top: 75%; left: 60%;"></div>
                                 </div>
                                 <div class="radar-stats">
                                     <div class="radar-stat">
-                                        <div class="radar-stat-value">5</div>
+                                        <div class="radar-stat-value">3</div>
                                         <div class="radar-stat-label">ALVOS</div>
                                     </div>
                                     <div class="radar-stat">
-                                        <div class="radar-stat-value">3.2KM</div>
+                                        <div class="radar-stat-value">1.2KM</div>
                                         <div class="radar-stat-label">ALCANCE</div>
                                     </div>
-                                    <div class="radar-stat">
-                                        <div class="radar-stat-value">360°</div>
-                                        <div class="radar-stat-label">COBERTURA</div>
-                                    </div>
-                                    <div class="radar-stat">
-                                        <div class="radar-stat-value">100%</div>
-                                        <div class="radar-stat-label">ATIVO</div>
-                                    </div>
-                                </div>
-                                <div class="responsive-text" style="text-align: center; margin-top: 8px; color: var(--text-secondary);">
-                                    Última atualização: <span style="color: var(--primary-color);">00:12:45</span>
                                 </div>
                             </div>
                         `
                     },
 
-                    // WIDGET 2: Sistema Bat-HUD - Completamente redesenhado
+                    // WIDGET 2: Sistema Bat-HUD
                     {
                         id: 'systemWidget',
                         title: 'Sistema Bat-HUD',
                         icon: 'fas fa-microchip',
                         content: `
                             <div class="widget-content">
-                                <h4 class="responsive-title">SISTEMA BAT-HUD v6.0</h4>
+                                <h4 class="responsive-title">SISTEMA BAT-HUD</h4>
                                 <div class="system-metrics">
                                     <div class="system-metric">
                                         <div class="metric-header">
-                                            <span class="metric-label">CPU BAT-CORE</span>
+                                            <span class="metric-label">CPU</span>
                                             <span class="responsive-value">78%</span>
                                         </div>
                                         <div class="metric-bar">
@@ -2932,629 +3703,269 @@
                                     </div>
                                     <div class="system-metric">
                                         <div class="metric-header">
-                                            <span class="metric-label">MEMÓRIA</span>
+                                            <span class="metric-label">MEM</span>
                                             <span class="responsive-value">64%</span>
                                         </div>
                                         <div class="metric-bar">
                                             <div class="metric-fill" style="width: 64%;"></div>
                                         </div>
                                     </div>
-                                    <div class="system-metric">
-                                        <div class="metric-header">
-                                            <span class="metric-label">REDE BAT-NET</span>
-                                            <span class="responsive-value">92%</span>
-                                        </div>
-                                        <div class="metric-bar">
-                                            <div class="metric-fill" style="width: 92%;"></div>
-                                        </div>
-                                    </div>
-                                    <div class="system-metric">
-                                        <div class="metric-header">
-                                            <span class="metric-label">ARMAZENAMENTO</span>
-                                            <span class="responsive-value">45%</span>
-                                        </div>
-                                        <div class="metric-bar">
-                                            <div class="metric-fill" style="width: 45%;"></div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="system-status">
-                                    <div class="status-indicator">
-                                        <div class="status-dot" style="background: var(--success-color);"></div>
-                                        <span class="responsive-text">SISTEMA ONLINE</span>
-                                    </div>
-                                    <button class="responsive-button secondary" style="padding: 6px 12px; font-size: 10px;" onclick="BatHUD.restartSystem()">
-                                        REINICIAR
-                                    </button>
                                 </div>
                             </div>
                         `
                     },
 
-                    // WIDGET 3: Detector de Ameaças - Completamente redesenhado
+                    // WIDGET 3: Detector de Ameaças
                     {
                         id: 'threatWidget',
-                        title: 'Detector de Ameaças',
+                        title: 'Detector',
                         icon: 'fas fa-exclamation-triangle',
                         content: `
                             <div class="widget-content">
-                                <h4 class="responsive-title">DETECTOR DE AMEAÇAS</h4>
+                                <h4 class="responsive-title">AMEAÇAS</h4>
                                 <div class="threat-scanner">
-                                    <div class="threat-rings">
-                                        <div class="threat-ring"></div>
-                                        <div class="threat-ring"></div>
-                                        <div class="threat-ring"></div>
-                                    </div>
                                     <div class="threat-level">ALTO</div>
                                 </div>
                                 <div class="threat-list">
                                     <div class="threat-item">
-                                        <span class="threat-name">Intruso - Setor B</span>
+                                        <span class="threat-name">Intruso</span>
                                         <span class="threat-severity">ALTA</span>
                                     </div>
-                                    <div class="threat-item">
-                                        <span class="threat-name">Vigilância Offline</span>
-                                        <span class="threat-severity">MÉDIA</span>
-                                    </div>
-                                    <div class="threat-item">
-                                        <span class="threat-name">Acesso Não Autorizado</span>
-                                        <span class="threat-severity">CRÍTICA</span>
-                                    </div>
-                                    <div class="threat-item">
-                                        <span class="threat-name">Anomalia Térmica</span>
-                                        <span class="threat-severity">BAIXA</span>
-                                    </div>
                                 </div>
-                                <button class="responsive-button danger" style="width: 100%; margin-top: 8px;" onclick="BatHUD.scanThreats()">
-                                    ESCANEAR AMEAÇAS
-                                </button>
                             </div>
                         `
                     },
 
-                    // WIDGET 4: Análise Forense - Completamente redesenhado
+                    // WIDGET 4: Análise Forense
                     {
                         id: 'forensicWidget',
-                        title: 'Análise Forense',
+                        title: 'Forense',
                         icon: 'fas fa-dna',
                         content: `
                             <div class="widget-content">
-                                <h4 class="responsive-title">ANÁLISE FORENSE BAT</h4>
+                                <h4 class="responsive-title">FORENSE</h4>
                                 <div class="dna-strand" id="dnaStrand"></div>
                                 <div class="forensic-data">
                                     <div class="forensic-field">
-                                        <span class="forensic-label">AMOSTRA:</span>
-                                        <span class="forensic-value">DNA-BAT-7829</span>
-                                    </div>
-                                    <div class="forensic-field">
                                         <span class="forensic-label">MATCH:</span>
-                                        <span class="forensic-value" style="color: var(--success-color);">87.4%</span>
-                                    </div>
-                                    <div class="forensic-field">
-                                        <span class="forensic-label">BANCO:</span>
-                                        <span class="forensic-value">GCPD CRIMINAL DB</span>
-                                    </div>
-                                    <div class="forensic-field">
-                                        <span class="forensic-label">STATUS:</span>
-                                        <span class="forensic-value" style="color: var(--primary-color);">ANALISANDO</span>
-                                    </div>
-                                </div>
-                                <div class="scan-progress">
-                                    <div class="progress-bar">
-                                        <div class="progress-fill" style="width: 65%;"></div>
-                                    </div>
-                                    <div class="responsive-text" style="text-align: center; margin-top: 4px;">
-                                        Progresso: 65%
+                                        <span class="forensic-value">87%</span>
                                     </div>
                                 </div>
                             </div>
                         `
                     },
 
-                    // WIDGET 5: Veículos Táticos - Completamente redesenhado
+                    // WIDGET 5: Veículos Táticos
                     {
                         id: 'vehicleWidget',
-                        title: 'Veículos Táticos',
+                        title: 'Veículos',
                         icon: 'fas fa-car',
                         content: `
                             <div class="widget-content">
-                                <h4 class="responsive-title">FROTA BATMAN</h4>
+                                <h4 class="responsive-title">FROTA</h4>
                                 <div class="vehicle-status">
                                     <div class="vehicle-card active">
                                         <div class="vehicle-icon">🚗</div>
                                         <div class="vehicle-name">BATMÓVEL</div>
-                                        <div class="vehicle-stats">
-                                            <div class="vehicle-stat">
-                                                <div class="vehicle-stat-value">98%</div>
-                                                <div class="vehicle-stat-label">COMBUSTÍVEL</div>
-                                            </div>
-                                            <div class="vehicle-stat">
-                                                <div class="vehicle-stat-value">OK</div>
-                                                <div class="vehicle-stat-label">SISTEMA</div>
-                                            </div>
-                                        </div>
                                     </div>
-                                    <div class="vehicle-card active">
+                                    <div class="vehicle-card">
                                         <div class="vehicle-icon">🚁</div>
                                         <div class="vehicle-name">BATWING</div>
-                                        <div class="vehicle-stats">
-                                            <div class="vehicle-stat">
-                                                <div class="vehicle-stat-value">100%</div>
-                                                <div class="vehicle-stat-label">COMBUSTÍVEL</div>
-                                            </div>
-                                            <div class="vehicle-stat">
-                                                <div class="vehicle-stat-value">OK</div>
-                                                <div class="vehicle-stat-label">SISTEMA</div>
-                                            </div>
-                                        </div>
                                     </div>
-                                    <div class="vehicle-card">
-                                        <div class="vehicle-icon">🛥️</div>
-                                        <div class="vehicle-name">BATBOAT</div>
-                                        <div class="vehicle-stats">
-                                            <div class="vehicle-stat">
-                                                <div class="vehicle-stat-value">85%</div>
-                                                <div class="vehicle-stat-label">COMBUSTÍVEL</div>
-                                            </div>
-                                            <div class="vehicle-stat">
-                                                <div class="vehicle-stat-value">MANUT</div>
-                                                <div class="vehicle-stat-label">SISTEMA</div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="vehicle-card">
-                                        <div class="vehicle-icon">🏍️</div>
-                                        <div class="vehicle-name">BATCYCLE</div>
-                                        <div class="vehicle-stats">
-                                            <div class="vehicle-stat">
-                                                <div class="vehicle-stat-value">100%</div>
-                                                <div class="vehicle-stat-label">COMBUSTÍVEL</div>
-                                            </div>
-                                            <div class="vehicle-stat">
-                                                <div class="vehicle-stat-value">OK</div>
-                                                <div class="vehicle-stat-label">SISTEMA</div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="responsive-text" style="text-align: center; margin-top: 8px; color: var(--text-secondary);">
-                                    4 veículos monitorados
                                 </div>
                             </div>
                         `
                     },
 
-                    // WIDGET 6: Clima Gotham - Completamente redesenhado
+                    // WIDGET 6: Clima Gotham
                     {
                         id: 'weatherWidget',
-                        title: 'Clima Gotham',
+                        title: 'Clima',
                         icon: 'fas fa-cloud-rain',
                         content: `
                             <div class="widget-content">
-                                <h4 class="responsive-title">CLIMA GOTHAM CITY</h4>
+                                <h4 class="responsive-title">CLIMA</h4>
                                 <div class="weather-main">
                                     <div class="weather-icon-large">🌧️</div>
                                     <div class="weather-temp">12°C</div>
-                                    <div class="weather-condition">Chuva com Névoa</div>
-                                    <div class="weather-details">
-                                        <div class="weather-detail">
-                                            <span class="weather-detail-label">VENTO</span>
-                                            <span class="weather-detail-value">24 KM/H</span>
-                                        </div>
-                                        <div class="weather-detail">
-                                            <span class="weather-detail-label">UMIDADE</span>
-                                            <span class="weather-detail-value">78%</span>
-                                        </div>
-                                        <div class="weather-detail">
-                                            <span class="weather-detail-label">PRESSÃO</span>
-                                            <span class="weather-detail-value">1013 HPA</span>
-                                        </div>
-                                        <div class="weather-detail">
-                                            <span class="weather-detail-label">VISIBILIDADE</span>
-                                            <span class="weather-detail-value">2.5 KM</span>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="responsive-text" style="text-align: center; margin-top: 8px; color: var(--text-secondary);">
-                                    Próximas 6h: Chuva intensa
+                                    <div class="weather-condition">Chuva</div>
                                 </div>
                             </div>
                         `
                     },
 
-                    // WIDGET 7: Detector de Movimento - Completamente redesenhado
+                    // WIDGET 7: Detector de Movimento
                     {
                         id: 'motionWidget',
-                        title: 'Detector de Movimento',
+                        title: 'Movimento',
                         icon: 'fas fa-running',
                         content: `
                             <div class="widget-content">
-                                <h4 class="responsive-title">DETECÇÃO DE MOVIMENTO</h4>
+                                <h4 class="responsive-title">MOVIMENTO</h4>
                                 <div class="motion-grid" id="motionGrid"></div>
                                 <div class="motion-info">
-                                    <span class="responsive-text">MOVIMENTO: <span style="color: var(--danger-color);">DETECTADO</span></span>
-                                    <span class="responsive-text">ZONAS ATIVAS: <span style="color: var(--warning-color);">7/48</span></span>
-                                </div>
-                                <div class="responsive-control" style="margin-top: 8px; text-align: center;">
-                                    <label>
-                                        <input type="range" min="1" max="100" value="50" style="width: 100%;" onchange="BatHUD.updateSensitivity(this.value)">
-                                        SENSIBILIDADE: <span id="sensitivityValue">50%</span>
-                                    </label>
+                                    <span>ATIVAS: <span style="color: var(--danger-color);">3</span></span>
                                 </div>
                             </div>
                         `
                     },
 
-                    // WIDGET 8: Análise Espectral - Completamente redesenhado
+                    // WIDGET 8: Análise Espectral
                     {
                         id: 'spectralWidget',
-                        title: 'Análise Espectral',
+                        title: 'Espectral',
                         icon: 'fas fa-wave-square',
                         content: `
                             <div class="widget-content">
-                                <h4 class="responsive-title">ANÁLISE ESPECTRAL</h4>
+                                <h4 class="responsive-title">ESPECTRO</h4>
                                 <div class="spectrum-display">
-                                    <div class="spectrum-graph">
-                                        <div class="spectrum-bar" style="height: 40%;"></div>
-                                        <div class="spectrum-bar" style="height: 60%;"></div>
-                                        <div class="spectrum-bar" style="height: 80%;"></div>
-                                        <div class="spectrum-bar" style="height: 50%;"></div>
-                                        <div class="spectrum-bar" style="height: 70%;"></div>
-                                        <div class="spectrum-bar" style="height: 30%;"></div>
-                                        <div class="spectrum-bar" style="height: 90%;"></div>
-                                    </div>
+                                    <div class="spectrum-graph"></div>
                                     <div class="spectrum-info">
                                         <div class="spectrum-item">
-                                            <span class="spectrum-label">FREQUÊNCIA</span>
                                             <span class="spectrum-value">2.4 GHz</span>
-                                        </div>
-                                        <div class="spectrum-item">
-                                            <span class="spectrum-label">AMPLITUDE</span>
-                                            <span class="spectrum-value">-45 dBm</span>
-                                        </div>
-                                        <div class="spectrum-item">
-                                            <span class="spectrum-label">LARGURA</span>
-                                            <span class="spectrum-value">20 MHz</span>
-                                        </div>
-                                        <div class="spectrum-item">
-                                            <span class="spectrum-label">SNR</span>
-                                            <span class="spectrum-value">42 dB</span>
                                         </div>
                                     </div>
                                 </div>
-                                <button class="responsive-button" style="width: 100%;" onclick="BatHUD.analyzeSpectrum()">
-                                    ANALISAR ESPECTRO
-                                </button>
                             </div>
                         `
                     },
 
-                    // WIDGET 9: Vigilância Satélite - Completamente redesenhado
+                    // WIDGET 9: Vigilância Satélite
                     {
                         id: 'satelliteWidget',
-                        title: 'Vigilância Satélite',
+                        title: 'Satélite',
                         icon: 'fas fa-satellite',
                         content: `
                             <div class="widget-content">
-                                <h4 class="responsive-title">VIGILÂNCIA SATÉLITE</h4>
+                                <h4 class="responsive-title">SATÉLITE</h4>
                                 <div class="satellite-view">
-                                    <div class="orbit-path"></div>
-                                    <div class="orbit-path"></div>
-                                    <div class="orbit-path"></div>
                                     <div class="earth-center"></div>
                                     <div class="satellite-icon">
                                         <i class="fas fa-satellite-dish"></i>
                                     </div>
                                 </div>
-                                <div class="satellite-data">
-                                    <div class="sat-stat">
-                                        <div class="sat-stat-value">408KM</div>
-                                        <div class="sat-stat-label">ALTITUDE</div>
-                                    </div>
-                                    <div class="sat-stat">
-                                        <div class="sat-stat-value">7.66 KM/S</div>
-                                        <div class="sat-stat-label">VELOCIDADE</div>
-                                    </div>
-                                    <div class="sat-stat">
-                                        <div class="sat-stat-value">92.7 MIN</div>
-                                        <div class="sat-stat-label">ÓRBITA</div>
-                                    </div>
-                                    <div class="sat-stat">
-                                        <div class="sat-stat-value">100%</div>
-                                        <div class="sat-stat-label">CONEXÃO</div>
-                                    </div>
-                                </div>
                             </div>
                         `
                     },
 
-                    // WIDGET 10: Protocolo Emergência - Completamente redesenhado
+                    // WIDGET 10: Protocolo Emergência
                     {
                         id: 'emergencyWidget',
-                        title: 'Protocolo Emergência',
+                        title: 'Emergência',
                         icon: 'fas fa-exclamation-circle',
                         content: `
                             <div class="widget-content">
-                                <h4 class="responsive-title">PROTOCOLOS DE EMERGÊNCIA</h4>
+                                <h4 class="responsive-title">EMERGÊNCIA</h4>
                                 <div class="emergency-header">
-                                    <div class="emergency-icon">
-                                        <i class="fas fa-shield-alt"></i>
-                                    </div>
-                                    <div class="emergency-status">SISTEMA STANDBY</div>
+                                    <div class="emergency-status">STANDBY</div>
                                 </div>
                                 <div class="emergency-protocols">
                                     <button class="protocol-btn" onclick="BatHUD.activateProtocol('lockdown')">
-                                        <div class="protocol-icon">
-                                            <i class="fas fa-lock"></i>
-                                        </div>
-                                        <span>LOCKDOWN TOTAL</span>
+                                        <span>LOCKDOWN</span>
                                     </button>
-                                    <button class="protocol-btn" onclick="BatHUD.activateProtocol('evacuation')">
-                                        <div class="protocol-icon">
-                                            <i class="fas fa-running"></i>
-                                        </div>
-                                        <span>PROTOCOLO EVACUAÇÃO</span>
-                                    </button>
-                                    <button class="protocol-btn" onclick="BatHUD.activateProtocol('signal')">
-                                        <div class="protocol-icon">
-                                            <i class="fas fa-broadcast-tower"></i>
-                                        </div>
-                                        <span>ATIVAR BAT-SINAL</span>
-                                    </button>
-                                    <button class="protocol-btn" onclick="BatHUD.activateProtocol('backup')">
-                                        <div class="protocol-icon">
-                                            <i class="fas fa-user-shield"></i>
-                                        </div>
-                                        <span>CHAMAR REFORÇOS</span>
-                                    </button>
-                                </div>
-                                <div class="responsive-text" style="text-align: center; margin-top: 8px; color: var(--text-secondary);">
-                                    Sistema de emergência ativo
                                 </div>
                             </div>
                         `
                     },
 
-                    // WIDGET 11: Rastreamento de Alvos - Completamente redesenhado
+                    // WIDGET 11: Rastreamento de Alvos
                     {
                         id: 'trackingWidget',
-                        title: 'Rastreamento de Alvos',
+                        title: 'Rastreamento',
                         icon: 'fas fa-crosshairs',
                         content: `
                             <div class="widget-content">
-                                <h4 class="responsive-title">RASTREAMENTO DE ALVOS</h4>
+                                <h4 class="responsive-title">RASTREAR</h4>
                                 <div class="tracking-radar">
                                     <div class="tracking-sweep"></div>
                                     <div class="target-dot" style="top: 30%; left: 40%;"></div>
-                                    <div class="target-dot" style="top: 60%; left: 70%;"></div>
-                                    <div class="target-dot" style="top: 45%; left: 25%;"></div>
-                                    <div class="target-dot" style="top: 75%; left: 55%;"></div>
-                                    <div class="target-dot" style="top: 20%; left: 65%;"></div>
-                                    <div class="target-dot" style="top: 50%; left: 85%;"></div>
                                 </div>
-                                <div class="tracking-info">
-                                    <div class="tracking-stat">
-                                        <div class="tracking-value">6</div>
-                                        <div class="tracking-label">ALVOS</div>
-                                    </div>
-                                    <div class="tracking-stat">
-                                        <div class="tracking-value">1.8KM</div>
-                                        <div class="tracking-label">DISTÂNCIA</div>
-                                    </div>
-                                    <div class="tracking-stat">
-                                        <div class="tracking-value">100%</div>
-                                        <div class="tracking-label">PRECISÃO</div>
-                                    </div>
-                                </div>
-                                <button class="responsive-button warning" style="width: 100%; margin-top: 8px;" onclick="BatHUD.initiateTracking()">
-                                    INICIAR RASTREAMENTO
-                                </button>
                             </div>
                         `
                     },
 
-                    // WIDGET 12: Estatísticas Combate - Completamente redesenhado
+                    // WIDGET 12: Estatísticas Combate
                     {
                         id: 'combatWidget',
-                        title: 'Estatísticas Combate',
+                        title: 'Combate',
                         icon: 'fas fa-fist-raised',
                         content: `
                             <div class="widget-content">
-                                <h4 class="responsive-title">ESTATÍSTICAS DE COMBATE</h4>
+                                <h4 class="responsive-title">COMBATE</h4>
                                 <div class="combat-stats">
                                     <div class="combat-card">
-                                        <div class="combat-number" style="color: var(--primary-color);">147</div>
+                                        <div class="combat-number">147</div>
                                         <div class="combat-label">CONFRONTOS</div>
                                     </div>
-                                    <div class="combat-card">
-                                        <div class="combat-number" style="color: var(--success-color);">98%</div>
-                                        <div class="combat-label">TAXA SUCESSO</div>
-                                    </div>
-                                    <div class="combat-card">
-                                        <div class="combat-number" style="color: var(--warning-color);">2.4</div>
-                                        <div class="combat-label">TEMPO MÉDIO</div>
-                                    </div>
-                                    <div class="combat-card">
-                                        <div class="combat-number" style="color: var(--danger-color);">512</div>
-                                        <div class="combat-label">NEUTRALIZADOS</div>
-                                    </div>
                                 </div>
-                                <div class="combat-efficiency">
-                                    <div class="progress-bar">
-                                        <div class="progress-fill" style="width: 95%;"></div>
-                                    </div>
-                                    <div class="responsive-text" style="text-align: center; margin-top: 5px; color: var(--text-secondary);">
-                                        EFICIÊNCIA DE COMBATE: <span style="color: var(--success-color);">95%</span>
-                                    </div>
-                                </div>
-                                <button class="responsive-button" style="width: 100%; margin-top: 8px;" onclick="BatHUD.generateCombatReport()">
-                                    GERAR RELATÓRIO
-                                </button>
                             </div>
                         `
                     },
 
-                    // WIDGET 13: Comunicações - Completamente redesenhado
+                    // WIDGET 13: Comunicações
                     {
                         id: 'commsWidget',
                         title: 'Comunicações',
                         icon: 'fas fa-broadcast-tower',
                         content: `
                             <div class="widget-content">
-                                <h4 class="responsive-title">REDE DE COMUNICAÇÃO</h4>
+                                <h4 class="responsive-title">COMUNICAÇÃO</h4>
                                 <div class="comms-grid">
                                     <div class="comms-channel">
-                                        <div class="comms-icon">📡</div>
-                                        <div class="comms-name">BAT-CHANNEL 1</div>
+                                        <div class="comms-name">BAT-CHANNEL</div>
                                         <div class="comms-status">ATIVO</div>
-                                    </div>
-                                    <div class="comms-channel">
-                                        <div class="comms-icon">📻</div>
-                                        <div class="comms-name">GCPD LINK</div>
-                                        <div class="comms-status">ATIVO</div>
-                                    </div>
-                                    <div class="comms-channel">
-                                        <div class="comms-icon">🛰️</div>
-                                        <div class="comms-name">SAT-COM</div>
-                                        <div class="comms-status">ATIVO</div>
-                                    </div>
-                                    <div class="comms-channel">
-                                        <div class="comms-icon">🔊</div>
-                                        <div class="comms-name">EMERGENCY</div>
-                                        <div class="comms-status">STANDBY</div>
                                     </div>
                                 </div>
-                                <div class="responsive-control" style="margin-top: 12px;">
-                                    <input type="text" class="responsive-control" placeholder="Digite mensagem..." id="commsMessage">
-                                </div>
-                                <button class="responsive-button" style="width: 100%; margin-top: 8px;" onclick="BatHUD.sendCommsMessage()">
-                                    ENVIAR MENSAGEM
-                                </button>
                             </div>
                         `
                     },
 
-                    // WIDGET 14: Sistema de Energia - Completamente redesenhado
+                    // WIDGET 14: Sistema de Energia
                     {
                         id: 'powerWidget',
-                        title: 'Sistema de Energia',
+                        title: 'Energia',
                         icon: 'fas fa-bolt',
                         content: `
                             <div class="widget-content">
-                                <h4 class="responsive-title">ENERGIA BATCAVE</h4>
+                                <h4 class="responsive-title">ENERGIA</h4>
                                 <div class="power-grid">
                                     <div class="power-cell">
                                         <div class="power-value">98%</div>
                                         <div class="power-label">NÚCLEO</div>
                                     </div>
-                                    <div class="power-cell">
-                                        <div class="power-value">87%</div>
-                                        <div class="power-label">BACKUP</div>
-                                    </div>
-                                    <div class="power-cell">
-                                        <div class="power-value">42%</div>
-                                        <div class="power-label">VEÍCULOS</div>
-                                    </div>
-                                    <div class="power-cell">
-                                        <div class="power-value">65%</div>
-                                        <div class="power-label">SISTEMAS</div>
-                                    </div>
                                 </div>
-                                <div class="power-total">
-                                    <div class="progress-bar">
-                                        <div class="progress-fill" style="width: 73%;"></div>
-                                    </div>
-                                    <div class="responsive-text" style="text-align: center; margin-top: 8px; color: var(--text-secondary);">
-                                        CONSUMO TOTAL: <span style="color: var(--primary-color);">73%</span>
-                                    </div>
-                                </div>
-                                <button class="responsive-button secondary" style="width: 100%; margin-top: 8px;" onclick="BatHUD.powerManagement()">
-                                    GERENCIAR ENERGIA
-                                </button>
                             </div>
                         `
                     },
 
-                    // WIDGET 15: Scanner Biométrico - Completamente redesenhado
+                    // WIDGET 15: Scanner Biométrico
                     {
                         id: 'biometricWidget',
-                        title: 'Scanner Biométrico',
+                        title: 'Biométrico',
                         icon: 'fas fa-fingerprint',
                         content: `
                             <div class="widget-content">
-                                <h4 class="responsive-title">SCANNER BIOMÉTRICO</h4>
+                                <h4 class="responsive-title">SCAN</h4>
                                 <div class="biometric-display">
                                     <div class="fingerprint"></div>
-                                    <div class="scan-line"></div>
                                 </div>
-                                <div class="biometric-data">
-                                    <div class="bio-field">
-                                        <span class="bio-label">ID:</span>
-                                        <span class="bio-value">BAT-001</span>
-                                    </div>
-                                    <div class="bio-field">
-                                        <span class="bio-label">STATUS:</span>
-                                        <span class="bio-value" style="color: var(--success-color);">ATIVO</span>
-                                    </div>
-                                    <div class="bio-field">
-                                        <span class="bio-label">VITAL:</span>
-                                        <span class="bio-value">98%</span>
-                                    </div>
-                                    <div class="bio-field">
-                                        <span class="bio-label">TENSÃO:</span>
-                                        <span class="bio-value">NORMAL</span>
-                                    </div>
-                                </div>
-                                <div class="responsive-control" style="margin-top: 8px;">
-                                    <select class="responsive-control" onchange="BatHUD.scanBiometric(this.value)">
-                                        <option value="">Selecionar alvo...</option>
-                                        <option value="batman">BATMAN</option>
-                                        <option value="robin">ROBIN</option>
-                                        <option value="gcpd">GCPD</option>
-                                        <option value="civilians">CIVILIANOS</option>
-                                    </select>
-                                </div>
-                                <button class="responsive-button" style="width: 100%; margin-top: 8px;" onclick="BatHUD.initiateBiometricScan()">
-                                    INICIAR SCAN
-                                </button>
                             </div>
                         `
                     },
 
-                    // WIDGET 16: Análise de Voz - Completamente redesenhado
+                    // WIDGET 16: Análise de Voz
                     {
                         id: 'voiceWidget',
-                        title: 'Análise de Voz',
+                        title: 'Voz',
                         icon: 'fas fa-microphone',
                         content: `
                             <div class="widget-content">
-                                <h4 class="responsive-title">ANÁLISE VOCAL BAT</h4>
-                                <div class="voice-visualizer" id="voiceVisualizer">
-                                    <div class="voice-bar" style="--i: 0;"></div>
-                                    <div class="voice-bar" style="--i: 1;"></div>
-                                    <div class="voice-bar" style="--i: 2;"></div>
-                                    <div class="voice-bar" style="--i: 3;"></div>
-                                    <div class="voice-bar" style="--i: 4;"></div>
-                                    <div class="voice-bar" style="--i: 5;"></div>
-                                    <div class="voice-bar" style="--i: 6;"></div>
-                                    <div class="voice-bar" style="--i: 7;"></div>
-                                    <div class="voice-bar" style="--i: 8;"></div>
-                                    <div class="voice-bar" style="--i: 9;"></div>
-                                </div>
+                                <h4 class="responsive-title">VOZ</h4>
+                                <div class="voice-visualizer" id="voiceVisualizer"></div>
                                 <div class="voice-controls">
-                                    <button class="voice-btn" id="recordBtn" onclick="BatHUD.toggleVoiceRecording()">
-                                        <i class="fas fa-microphone"></i> GRAVAR
+                                    <button class="voice-btn" onclick="BatHUD.toggleVoiceRecording()">
+                                        GRAVAR
                                     </button>
-                                    <button class="voice-btn" onclick="BatHUD.analyzeVoice()">
-                                        <i class="fas fa-chart-bar"></i> ANALISAR
-                                    </button>
-                                </div>
-                                <div class="responsive-text" style="text-align: center; margin-top: 8px; color: var(--text-secondary);" id="voiceStatus">
-                                    Sistema de voz pronto
-                                </div>
-                                <div class="responsive-control" style="margin-top: 8px;">
-                                    <input type="range" min="1" max="100" value="50" style="width: 100%;" onchange="BatHUD.updateVoiceSensitivity(this.value)">
-                                    SENSIBILIDADE VOZ: <span id="voiceSensitivity">50%</span>
                                 </div>
                             </div>
                         `
@@ -3566,9 +3977,15 @@
             // INICIALIZAÇÃO
             // ===========================================
             init() {
+                this.detectMobile();
                 this.initializeSystem();
                 this.setupEventListeners();
                 this.setupRainEffect();
+            },
+
+            detectMobile() {
+                this.state.isMobile = window.innerWidth <= 768;
+                console.log('[SISTEMA] Modo:', this.state.isMobile ? 'MOBILE' : 'DESKTOP');
             },
 
             initializeSystem() {
@@ -3608,6 +4025,7 @@
                 document.addEventListener('touchend', () => this.handleMouseUp());
 
                 window.addEventListener('resize', () => {
+                    this.detectMobile();
                     this.constrainAllWidgets();
                     this.adjustWidgetsContent();
                 });
@@ -3744,20 +4162,21 @@
                         const headerHeight = widget.querySelector('.widget-header')?.clientHeight || 0;
                         
                         // Ajusta altura máxima do conteúdo
-                        content.style.maxHeight = `${widgetHeight - headerHeight - 30}px`;
+                        content.style.maxHeight = `${widgetHeight - headerHeight - 20}px`;
                         
                         // Ajusta grids baseado no tamanho disponível
                         const grids = content.querySelectorAll('.responsive-grid');
                         grids.forEach(grid => {
                             const availableWidth = grid.clientWidth;
                             
-                            // Ajusta minmax para grids baseado na largura disponível
-                            if (grid.classList.contains('grid-2-cols') && availableWidth < 300) {
-                                grid.style.gridTemplateColumns = 'repeat(auto-fill, minmax(100px, 1fr))';
-                            }
-                            
-                            if (grid.classList.contains('grid-3-cols') && availableWidth < 400) {
-                                grid.style.gridTemplateColumns = 'repeat(auto-fill, minmax(80px, 1fr))';
+                            if (this.state.isMobile) {
+                                if (grid.classList.contains('grid-2-cols')) {
+                                    grid.style.gridTemplateColumns = 'repeat(auto-fill, minmax(80px, 1fr))';
+                                }
+                                
+                                if (grid.classList.contains('grid-3-cols')) {
+                                    grid.style.gridTemplateColumns = 'repeat(auto-fill, minmax(60px, 1fr))';
+                                }
                             }
                         });
                     }
@@ -3800,9 +4219,12 @@
                 const widgetsArea = document.getElementById('widgetsArea');
                 const areaRect = widgetsArea.getBoundingClientRect();
                 
-                // Posição final do widget (dentro da área limitada)
-                const maxX = areaRect.width - 200; // widget min width
-                const maxY = areaRect.height - 140; // widget min height
+                // Configurações baseadas no dispositivo
+                const minWidth = this.state.isMobile ? this.config.widgetMobileMinWidth : this.config.widgetMinWidth;
+                const minHeight = this.state.isMobile ? this.config.widgetMobileMinHeight : this.config.widgetMinHeight;
+                
+                const maxX = areaRect.width - minWidth;
+                const maxY = areaRect.height - minHeight;
                 
                 const stackX = 20 + (index * this.config.stackOffsetX);
                 const stackY = 20 + (index * this.config.stackOffsetY);
@@ -3815,11 +4237,11 @@
                 const bat = this.createBatElement();
                 document.body.appendChild(bat);
                 
-                // Posição inicial aleatória (fora da tela)
+                // Posição inicial aleatória
                 const startX = Math.random() * window.innerWidth;
                 const startY = -100;
                 
-                // Posição final (dentro da área dos widgets)
+                // Posição final
                 const endX = areaRect.left + finalX;
                 const endY = areaRect.top + finalY;
                 
@@ -3854,12 +4276,14 @@
             },
 
             showWidgetAtStackPosition(widget, x, y, index) {
-                // Garantir que está dentro dos limites
                 const widgetsArea = document.getElementById('widgetsArea');
                 const areaRect = widgetsArea.getBoundingClientRect();
                 
-                const maxX = areaRect.width - 200;
-                const maxY = areaRect.height - 140;
+                const minWidth = this.state.isMobile ? this.config.widgetMobileMinWidth : this.config.widgetMinWidth;
+                const minHeight = this.state.isMobile ? this.config.widgetMobileMinHeight : this.config.widgetMinHeight;
+                
+                const maxX = areaRect.width - minWidth;
+                const maxY = areaRect.height - minHeight;
                 
                 const finalX = Math.min(x, maxX);
                 const finalY = Math.min(y, maxY);
@@ -3872,7 +4296,7 @@
                 widget.style.setProperty('--widget-index', index);
                 
                 // Calcular posição da pilha com rotação aleatória
-                const rotation = (Math.random() * 1) - 0.5; // -0.5° a 0.5°
+                const rotation = (Math.random() * 1) - 0.5;
                 widget.style.setProperty('--widget-rotation', `${rotation}deg`);
                 
                 const stackX = finalX + (index * this.config.stackOffsetX * 0.5);
@@ -3961,11 +4385,11 @@
             raiseOtherWidgets(excludeId) {
                 Object.values(this.state.widgets).forEach(otherWidget => {
                     if (otherWidget.id !== excludeId && otherWidget.style.display !== 'none') {
-                        // Levantar um pouco os outros widgets
                         const currentTransform = otherWidget.style.transform || '';
                         const rotationMatch = currentTransform.match(/rotate\(([^)]+)\)/);
                         const rotation = rotationMatch ? rotationMatch[1] : '0deg';
-                        otherWidget.style.transform = `translateY(-8px) ${rotation}`;
+                        const liftAmount = this.state.isMobile ? -5 : -8;
+                        otherWidget.style.transform = `translateY(${liftAmount}px) ${rotation}`;
                     }
                 });
             },
@@ -3973,7 +4397,6 @@
             lowerOtherWidgets() {
                 Object.values(this.state.widgets).forEach(widget => {
                     if (widget.style.display !== 'none') {
-                        // Restaurar rotação original
                         const currentTransform = widget.style.transform || '';
                         const rotationMatch = currentTransform.match(/rotate\(([^)]+)\)/);
                         const rotation = rotationMatch ? rotationMatch[1] : '0deg';
@@ -4008,7 +4431,24 @@
                     <div class="resize-handle"></div>
                 `;
 
+                // Aplicar tamanhos baseados no dispositivo
+                this.applyWidgetSizes(widget);
+
                 return widget;
+            },
+
+            applyWidgetSizes(widget) {
+                if (this.state.isMobile) {
+                    widget.style.minWidth = this.config.widgetMobileMinWidth + 'px';
+                    widget.style.minHeight = this.config.widgetMobileMinHeight + 'px';
+                    widget.style.maxWidth = this.config.widgetMobileMaxWidth + 'px';
+                    widget.style.maxHeight = this.config.widgetMobileMaxHeight + 'px';
+                } else {
+                    widget.style.minWidth = this.config.widgetMinWidth + 'px';
+                    widget.style.minHeight = this.config.widgetMinHeight + 'px';
+                    widget.style.maxWidth = this.config.widgetMaxWidth + 'px';
+                    widget.style.maxHeight = this.config.widgetMaxHeight + 'px';
+                }
             },
 
             // ===========================================
@@ -4027,7 +4467,6 @@
                         this.state.dnaBars.push(bar);
                     }
                     
-                    // Animar DNA continuamente
                     setInterval(() => {
                         this.state.dnaBars.forEach((bar, i) => {
                             const newHeight = 30 + Math.random() * 70;
@@ -4040,18 +4479,20 @@
             initMotionGrid() {
                 const grid = document.getElementById('motionGrid');
                 if (grid) {
-                    for (let i = 0; i < 48; i++) {
+                    const columns = this.state.isMobile ? 6 : 8;
+                    const total = columns * 6;
+                    
+                    for (let i = 0; i < total; i++) {
                         const cell = document.createElement('div');
                         cell.className = 'motion-cell';
                         grid.appendChild(cell);
                         this.state.motionCells.push(cell);
                     }
 
-                    // Simular detecções de movimento aleatórias
                     setInterval(() => {
                         this.state.motionCells.forEach(cell => cell.classList.remove('active'));
                         
-                        const numActive = Math.floor(Math.random() * 8) + 3;
+                        const numActive = Math.floor(Math.random() * 5) + 2;
                         for (let i = 0; i < numActive; i++) {
                             const randomIndex = Math.floor(Math.random() * this.state.motionCells.length);
                             this.state.motionCells[randomIndex].classList.add('active');
@@ -4063,7 +4504,16 @@
             initVoiceVisualizer() {
                 const visualizer = document.getElementById('voiceVisualizer');
                 if (visualizer) {
-                    // Simular animação de voz
+                    const barsCount = this.state.isMobile ? 8 : 10;
+                    
+                    for (let i = 0; i < barsCount; i++) {
+                        const bar = document.createElement('div');
+                        bar.className = 'voice-bar';
+                        bar.style.setProperty('--i', i);
+                        bar.style.height = `${20 + Math.random() * 60}%`;
+                        visualizer.appendChild(bar);
+                    }
+                    
                     setInterval(() => {
                         const bars = visualizer.querySelectorAll('.voice-bar');
                         bars.forEach((bar, i) => {
@@ -4079,46 +4529,39 @@
             // ===========================================
             restartSystem() {
                 alert('Sistema Bat-HUD reiniciando...');
-                console.log('[SISTEMA] Reiniciando sistema Bat-HUD');
             },
 
             scanThreats() {
                 alert('Escaneamento de ameaças iniciado...');
-                console.log('[AMEAÇAS] Iniciando escaneamento completo');
             },
 
             analyzeSpectrum() {
                 alert('Análise espectral em progresso...');
-                console.log('[ESPECTRAL] Análise espectral iniciada');
             },
 
             activateProtocol(type) {
                 const messages = {
-                    lockdown: 'PROTOCOLO DE LOCKDOWN ATIVADO! Batcave totalmente selado.',
-                    evacuation: 'PROTOCOLO DE EVACUAÇÃO INICIADO! Todos os civis devem evacuar.',
-                    signal: 'BAT-SINAL ATIVADO! Chamando o Cavaleiro das Trevas.',
-                    backup: 'REFORÇOS SOLICITADOS! GCPD e aliados alertados.'
+                    lockdown: 'PROTOCOLO DE LOCKDOWN ATIVADO!',
+                    evacuation: 'PROTOCOLO DE EVACUAÇÃO INICIADO!',
+                    signal: 'BAT-SINAL ATIVADO!',
+                    backup: 'REFORÇOS SOLICITADOS!'
                 };
                 
                 alert(messages[type] || 'Protocolo Ativado');
-                console.log(`[EMERGÊNCIA] ${messages[type]}`);
             },
 
             initiateTracking() {
                 alert('Rastreamento de alvos iniciado...');
-                console.log('[RASTREAMENTO] Iniciando rastreamento de alvos');
             },
 
             generateCombatReport() {
                 alert('Relatório de combate gerado com sucesso!');
-                console.log('[COMBATE] Relatório de combate gerado');
             },
 
             sendCommsMessage() {
                 const message = document.getElementById('commsMessage')?.value;
                 if (message) {
                     alert(`Mensagem enviada: "${message}"`);
-                    console.log('[COMUNICAÇÕES] Mensagem enviada:', message);
                     document.getElementById('commsMessage').value = '';
                 } else {
                     alert('Digite uma mensagem primeiro!');
@@ -4127,19 +4570,16 @@
 
             powerManagement() {
                 alert('Gerenciamento de energia aberto...');
-                console.log('[ENERGIA] Gerenciamento de energia iniciado');
             },
 
             scanBiometric(target) {
                 if (target) {
                     alert(`Scanner biométrico iniciado para: ${target.toUpperCase()}`);
-                    console.log('[BIOMÉTRICO] Scan iniciado para:', target);
                 }
             },
 
             initiateBiometricScan() {
                 alert('Scanner biométrico iniciado...');
-                console.log('[BIOMÉTRICO] Scan biométrico iniciado');
             },
 
             toggleVoiceRecording() {
@@ -4152,32 +4592,37 @@
                     recordBtn.innerHTML = '<i class="fas fa-stop"></i> PARAR';
                     recordBtn.style.background = 'rgba(255, 0, 64, 0.2)';
                     recordBtn.style.borderColor = 'var(--danger-color)';
-                    voiceStatus.textContent = 'GRAVAÇÃO EM ANDAMENTO...';
-                    voiceStatus.style.color = 'var(--danger-color)';
-                    console.log('[VOZ] Gravação iniciada');
+                    if (voiceStatus) {
+                        voiceStatus.textContent = 'GRAVANDO...';
+                        voiceStatus.style.color = 'var(--danger-color)';
+                    }
                 } else {
                     recordBtn.innerHTML = '<i class="fas fa-microphone"></i> GRAVAR';
                     recordBtn.style.background = 'rgba(0, 217, 255, 0.1)';
                     recordBtn.style.borderColor = 'var(--primary-color)';
-                    voiceStatus.textContent = 'GRAVAÇÃO CONCLUÍDA - PRONTO PARA ANÁLISE';
-                    voiceStatus.style.color = 'var(--success-color)';
-                    console.log('[VOZ] Gravação parada');
+                    if (voiceStatus) {
+                        voiceStatus.textContent = 'PRONTO';
+                        voiceStatus.style.color = 'var(--success-color)';
+                    }
                 }
             },
 
             analyzeVoice() {
                 alert('Análise de voz em processamento...');
-                console.log('[VOZ] Análise de voz iniciada');
             },
 
             updateSensitivity(value) {
-                document.getElementById('sensitivityValue').textContent = `${value}%`;
-                console.log('[MOVIMENTO] Sensibilidade ajustada para:', value);
+                const element = document.getElementById('sensitivityValue');
+                if (element) {
+                    element.textContent = `${value}%`;
+                }
             },
 
             updateVoiceSensitivity(value) {
-                document.getElementById('voiceSensitivity').textContent = `${value}%`;
-                console.log('[VOZ] Sensibilidade ajustada para:', value);
+                const element = document.getElementById('voiceSensitivity');
+                if (element) {
+                    element.textContent = `${value}%`;
+                }
             },
 
             // ===========================================
@@ -4205,7 +4650,6 @@
                 e.preventDefault();
                 e.stopPropagation();
                 
-                // Remover classe de seleção de pasta ao começar a arrastar
                 if (widget.classList.contains('selected')) {
                     widget.classList.remove('selected');
                 }
@@ -4235,7 +4679,6 @@
                 e.preventDefault();
                 e.stopPropagation();
                 
-                // Remover classe de seleção de pasta ao começar a redimensionar
                 if (widget.classList.contains('selected')) {
                     widget.classList.remove('selected');
                 }
@@ -4283,7 +4726,6 @@
                     const newLeft = this.state.startLeft + dx;
                     const newTop = this.state.startTop + dy;
                     
-                    // Aplicar limites da área dos widgets
                     const constrainedPosition = this.constrainWidgetPosition(
                         newLeft, 
                         newTop, 
@@ -4297,15 +4739,23 @@
                     let newWidth = this.state.startWidth + dx;
                     let newHeight = this.state.startHeight + dy;
 
-                    newWidth = Math.max(this.config.widgetMinWidth,
-                        Math.min(newWidth, this.config.widgetMaxWidth));
-                    newHeight = Math.max(this.config.widgetMinHeight,
-                        Math.min(newHeight, this.config.widgetMaxHeight));
+                    // Aplicar limites baseados no dispositivo
+                    if (this.state.isMobile) {
+                        newWidth = Math.max(this.config.widgetMobileMinWidth,
+                            Math.min(newWidth, this.config.widgetMobileMaxWidth));
+                        newHeight = Math.max(this.config.widgetMobileMinHeight,
+                            Math.min(newHeight, this.config.widgetMobileMaxHeight));
+                    } else {
+                        newWidth = Math.max(this.config.widgetMinWidth,
+                            Math.min(newWidth, this.config.widgetMaxWidth));
+                        newHeight = Math.max(this.config.widgetMinHeight,
+                            Math.min(newHeight, this.config.widgetMaxHeight));
+                    }
 
                     this.state.dragWidget.style.width = newWidth + 'px';
                     this.state.dragWidget.style.height = newHeight + 'px';
                     
-                    // Após redimensionar, garantir que o widget ainda está dentro dos limites
+                    // Garantir que o widget ainda está dentro dos limites
                     const currentLeft = parseFloat(this.state.dragWidget.style.left) || 0;
                     const currentTop = parseFloat(this.state.dragWidget.style.top) || 0;
                     const constrainedPosition = this.constrainWidgetPosition(
@@ -4321,7 +4771,6 @@
                     }
                 }
                 
-                // Atualizar conteúdo responsivo durante o redimensionamento
                 if (this.state.isResizing) {
                     setTimeout(() => {
                         this.adjustWidgetsContent();
@@ -4333,11 +4782,9 @@
                 const widgetsArea = document.getElementById('widgetsArea');
                 const areaRect = widgetsArea.getBoundingClientRect();
                 
-                // Calcular limites
                 const maxLeft = areaRect.width - width - this.config.boundaryMargin;
                 const maxTop = areaRect.height - height - this.config.boundaryMargin;
                 
-                // Aplicar limites
                 const constrainedLeft = Math.max(this.config.boundaryMargin, Math.min(left, maxLeft));
                 const constrainedTop = Math.max(this.config.boundaryMargin, Math.min(top, maxTop));
                 
@@ -4357,14 +4804,12 @@
                         this.state.dragWidget.classList.remove('dragging');
                         this.state.dragWidget.classList.remove('resizing');
                         
-                        // Reaplicar classe de pasta se não estiver sendo redimensionada
                         if (!this.state.isResizing) {
                             setTimeout(() => {
                                 this.state.dragWidget.classList.add('folder-stacked');
                             }, 100);
                         }
                         
-                        // Garantir posição final dentro dos limites
                         const constrainedPosition = this.constrainWidgetPosition(
                             parseFloat(this.state.dragWidget.style.left) || 0,
                             parseFloat(this.state.dragWidget.style.top) || 0,
@@ -4375,7 +4820,6 @@
                         this.state.dragWidget.style.left = constrainedPosition.left + 'px';
                         this.state.dragWidget.style.top = constrainedPosition.top + 'px';
                         
-                        // Salvar nova posição
                         this.saveWidgetPosition(this.state.dragWidget.id, {
                             left: constrainedPosition.left,
                             top: constrainedPosition.top,
@@ -4384,7 +4828,6 @@
                             zIndex: parseInt(this.state.dragWidget.style.zIndex) || 10
                         });
                         
-                        // Ajustar conteúdo após interação
                         setTimeout(() => {
                             this.adjustWidgetsContent();
                         }, 100);
@@ -4395,7 +4838,6 @@
                 this.state.isResizing = false;
                 this.state.dragWidget = null;
                 
-                // Rebaixar todos os widgets
                 this.lowerOtherWidgets();
             },
 
@@ -4423,7 +4865,6 @@
                 if (widget) {
                     widget.classList.toggle('minimized');
                     if (!widget.classList.contains('minimized')) {
-                        // Quando expandir, ajustar conteúdo
                         setTimeout(() => {
                             this.adjustWidgetsContent();
                         }, 300);
@@ -4432,7 +4873,6 @@
             },
 
             constrainAllWidgets() {
-                // Mantém widgets dentro da área visível
                 Object.values(this.state.widgets).forEach(widget => {
                     if (widget.style.display !== 'none') {
                         const left = parseFloat(widget.style.left) || 0;
@@ -4449,7 +4889,6 @@
                     }
                 });
                 
-                // Ajustar conteúdo
                 this.adjustWidgetsContent();
             },
 
@@ -4464,7 +4903,6 @@
                         const levels = ['BAIXO', 'MÉDIO', 'ALTO', 'CRÍTICO'];
                         threatValue.textContent = levels[this.state.threatCount - 1];
                         
-                        // Atualizar cor baseado no nível
                         const colors = [this.state.threatCount === 1 ? 'var(--success-color)' : 
                                        this.state.threatCount === 2 ? 'var(--warning-color)' : 
                                        this.state.threatCount === 3 ? 'var(--danger-color)' : 
