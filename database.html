@@ -1,0 +1,941 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Batman Sistema de Vilões - Compacto</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* RESET E CONFIGURAÇÕES GERAIS */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial Black', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%);
+            color: #fff;
+            min-height: 200vh;
+            overflow-x: hidden;
+        }
+
+        /* HEADER - Menor e mais discreto */
+        .header {
+            text-align: center;
+            padding: 12px;
+            max-width: 650px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 20;
+        }
+
+        h1 {
+            font-size: 1.5rem;
+            margin-bottom: 4px;
+            color: #ffd700;
+            text-shadow: 0 0 8px rgba(255, 215, 0, 0.5);
+            letter-spacing: 1.2px;
+            font-weight: 800;
+        }
+
+        .subtitle {
+            font-size: 0.75rem;
+            color: #aaaaaa;
+            margin-bottom: 8px;
+            font-weight: 300;
+        }
+
+        .instructions {
+            background: rgba(30, 30, 30, 0.7);
+            border-radius: 6px;
+            padding: 6px 10px;
+            border: 1px solid #333;
+            font-size: 0.7rem;
+            display: inline-block;
+            color: #cccccc;
+            font-weight: 300;
+        }
+
+        /* CONTAINER DO CARROSSEL - REDUZIDO */
+        .carousel-container {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 100%;
+            height: 55vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            perspective: 700px;
+            z-index: 10;
+        }
+
+        .carousel {
+            position: relative;
+            width: 170px;
+            height: 260px;
+            transform-style: preserve-3d;
+            transition: transform 0.08s ease-out;
+        }
+
+        /* ESTILO DOS CARDS - MUITO MENORES */
+        .card {
+            position: absolute;
+            width: 150px;
+            height: 220px;
+            border-radius: 10px;
+            overflow: hidden;
+            transform-style: preserve-3d;
+            transition: transform 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+            cursor: pointer;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.7);
+            backface-visibility: visible;
+        }
+
+        /* CORES DOS CARDS */
+        .card.coringa { --card-color: #8b0000; }
+        .card.bane { --card-color: #2d5a27; }
+        .card.mulher-gato { --card-color: #8a2be2; }
+        .card.pinguim { --card-color: #2f4f4f; }
+        .card.charada { --card-color: #228b22; }
+        .card.duas-caras { --card-color: #696969; }
+        .card.espantalho { --card-color: #8b4513; }
+        .card.harley-quinn { --card-color: #dc143c; }
+
+        .card-front {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            border-radius: 10px;
+            background-color: var(--card-color);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card-front::before {
+            content: '';
+            position: absolute;
+            top: 6px;
+            left: 6px;
+            right: 6px;
+            bottom: 6px;
+            border: 1.5px solid rgba(255, 255, 255, 0.6);
+            border-radius: 6px;
+            z-index: 1;
+        }
+
+        .ellipse {
+            position: absolute;
+            width: 130%;
+            height: 80%;
+            background-color: rgba(255, 255, 255, 0.9);
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotate(-25deg);
+            border-radius: 50%;
+            z-index: 2;
+        }
+
+        .character-box {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            z-index: 3;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .character-img {
+            width: 110%;
+            height: 110%;
+            object-fit: cover;
+            filter: saturate(1.1);
+        }
+
+        /* ELEMENTOS INTERNOS REDUZIDOS E MAIS DISCRETOS */
+        .card-number {
+            position: absolute;
+            top: 8px;
+            left: 8px;
+            font-size: 1.3rem;
+            font-weight: 800;
+            color: rgba(255, 255, 255, 0.85);
+            text-shadow: 1px 1px 2px #000;
+            z-index: 4;
+        }
+
+        .card-number-bottom {
+            position: absolute;
+            bottom: 8px;
+            right: 8px;
+            font-size: 1.3rem;
+            font-weight: 800;
+            color: rgba(255, 255, 255, 0.85);
+            text-shadow: 1px 1px 2px #000;
+            z-index: 4;
+            transform: rotate(180deg);
+        }
+
+        .card-title {
+            position: absolute;
+            bottom: 8px;
+            left: 0;
+            width: 100%;
+            text-align: center;
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: rgba(255, 255, 255, 0.9);
+            z-index: 4;
+            padding: 4px;
+            background: rgba(0, 0, 0, 0.5);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .villain-status {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            z-index: 4;
+            padding: 2px 6px;
+            border-radius: 8px;
+            font-size: 0.55rem;
+            background: rgba(0, 0, 0, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            font-weight: 600;
+            letter-spacing: 0.3px;
+        }
+
+        /* STATUS COLORS */
+        .status-encarcerado { color: #00ff88; }
+        .status-foragido { color: #ff0040; }
+        .status-ativo { color: #ffaa00; }
+        .status-planejando { color: #7b2ff7; }
+        .status-negocios { color: #00d9ff; }
+
+        /* DASHBOARD & CONTROLS - Compactos */
+        .dashboard {
+            position: fixed;
+            top: 12px;
+            right: 12px;
+            width: 220px;
+            background: rgba(15, 15, 15, 0.95);
+            border-radius: 8px;
+            padding: 10px;
+            border: 1px solid #333;
+            z-index: 100;
+            display: none;
+            font-size: 0.75rem;
+        }
+        .dashboard.active { display: block; }
+
+        .toggle-dashboard {
+            position: fixed;
+            top: 12px;
+            right: 12px;
+            background: rgba(30, 30, 30, 0.9);
+            border: 1px solid #444;
+            color: #cccccc;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            cursor: pointer;
+            z-index: 101;
+            font-size: 0.9rem;
+        }
+
+        .progress-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: rgba(20, 20, 20, 0.8);
+            z-index: 1000;
+        }
+        .progress-bar { height: 100%; background: #ffd700; width: 0%; }
+
+        /* CONTROLES DIREITA */
+        .controls {
+            position: fixed;
+            bottom: 12px;
+            right: 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            z-index: 100;
+        }
+        
+        /* CONTROLES ESQUERDA - VELOCIDADE E DIREÇÃO */
+        .left-controls {
+            position: fixed;
+            bottom: 12px;
+            left: 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            z-index: 100;
+        }
+        
+        .control-btn {
+            background: rgba(25, 25, 25, 0.9);
+            border: 1px solid #444;
+            color: #cccccc;
+            padding: 5px 10px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 0.7rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+            min-width: 110px;
+            font-weight: 500;
+            letter-spacing: 0.3px;
+        }
+        
+        .direction-btn {
+            border-color: #00a8cc;
+            color: #00a8cc;
+        }
+        
+        .speed-btn {
+            border-color: #cc8800;
+            color: #cc8800;
+        }
+
+        /* MODAL REDESENHADO - Mais foco na imagem e melhor responsividade */
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.97);
+            display: none; 
+            justify-content: center; 
+            align-items: center; 
+            z-index: 2000;
+            padding: 15px;
+        }
+        
+        .modal-content {
+            background: linear-gradient(135deg, #1a1a1a 0%, #0f0f0f 100%);
+            width: 100%; 
+            max-width: 700px;
+            border-radius: 12px; 
+            border: 2px solid #333;
+            overflow: hidden;
+            box-shadow: 0 0 40px rgba(255, 215, 0, 0.25);
+            max-height: 95vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 15px;
+            background: rgba(0, 0, 0, 0.8);
+            border-bottom: 1px solid #333;
+        }
+        
+        .modal-title {
+            color: #ffd700;
+            font-size: 1.3rem;
+            font-weight: 800;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            text-shadow: 0 0 5px rgba(255, 215, 0, 0.3);
+        }
+        
+        .modal-close {
+            background: rgba(255, 215, 0, 0.1);
+            border: 1px solid #ffd700;
+            color: #ffd700;
+            font-size: 1rem;
+            cursor: pointer;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .modal-body {
+            display: flex;
+            flex-direction: row;
+            padding: 0;
+            height: 100%;
+            flex: 1;
+            overflow: hidden;
+        }
+        
+        .modal-image {
+            flex: 1.2;
+            min-height: 350px;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #000;
+        }
+        
+        .modal-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: center 25%;
+        }
+        
+        .modal-info {
+            flex: 1;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            overflow-y: auto;
+            max-height: 60vh;
+        }
+        
+        .info-item {
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid #222;
+        }
+        
+        .info-label {
+            color: #aaaaaa;
+            font-size: 0.7rem;
+            font-weight: 500;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+        
+        .info-value {
+            color: #ffffff;
+            font-weight: 600;
+            font-size: 0.85rem;
+        }
+        
+        .modal-desc {
+            color: #cccccc;
+            font-size: 0.8rem;
+            line-height: 1.4;
+            background: rgba(30, 30, 30, 0.7);
+            padding: 12px;
+            border-radius: 0;
+            border-top: 2px solid #ffd700;
+            margin-top: auto;
+            max-height: 150px;
+            overflow-y: auto;
+        }
+
+        /* Ajuste para dispositivos móveis */
+        @media (max-width: 768px) {
+            .carousel-container {
+                height: 45vh;
+            }
+            
+            .carousel {
+                width: 140px;
+                height: 210px;
+            }
+            
+            .card {
+                width: 130px;
+                height: 190px;
+            }
+            
+            .card-title {
+                font-size: 0.65rem;
+                padding: 3px;
+            }
+            
+            .villain-status {
+                font-size: 0.5rem;
+                padding: 1px 4px;
+            }
+            
+            .header {
+                padding: 8px;
+            }
+            
+            h1 {
+                font-size: 1.2rem;
+            }
+            
+            .controls, .left-controls {
+                flex-direction: row;
+                bottom: 8px;
+            }
+            
+            .control-btn {
+                font-size: 0.65rem;
+                padding: 4px 7px;
+                min-width: auto;
+            }
+            
+            /* Responsividade aprimorada para o modal */
+            .modal-body {
+                flex-direction: column;
+                max-height: 75vh;
+            }
+            
+            .modal-image {
+                min-height: 250px;
+                flex: none;
+                height: 250px;
+            }
+            
+            .modal-info {
+                padding: 15px;
+                overflow-y: visible;
+                max-height: none;
+                gap: 10px;
+            }
+            
+            .modal-desc {
+                max-height: 120px;
+                font-size: 0.75rem;
+                padding: 10px;
+            }
+            
+            .modal-title {
+                font-size: 1.1rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .modal-content {
+                max-height: 90vh;
+            }
+            
+            .modal-image {
+                height: 200px;
+            }
+            
+            .modal-info {
+                padding: 12px;
+            }
+            
+            .info-item {
+                gap: 2px;
+                padding-bottom: 6px;
+            }
+            
+            .info-label {
+                font-size: 0.65rem;
+            }
+            
+            .info-value {
+                font-size: 0.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="progress-container"><div class="progress-bar" id="progressBar"></div></div>
+
+    <button class="toggle-dashboard" id="toggleDashboard"><i class="fas fa-bars"></i></button>
+
+    <div class="dashboard" id="villainDashboard">
+        <h3 style="color:#00a8ff; margin-bottom:6px; font-size:0.9rem;">GOTHAM MONITOR</h3>
+        <div id="villainList" style="max-height: 220px; overflow-y: auto;"></div>
+    </div>
+
+    <div class="header">
+        <h1>BATMAN VILLAINS</h1>
+        <p class="subtitle">Monitoramento de Segurança Nível 5</p>
+        <div class="instructions">Use o Scroll para girar o carrossel</div>
+    </div>
+
+    <div class="carousel-container">
+        <div class="carousel" id="carousel"></div>
+    </div>
+
+    <!-- CONTROLES DIREITA -->
+    <div class="controls">
+        <button class="control-btn" id="autoRotateBtn"><i class="fas fa-play"></i> AUTO</button>
+        <button class="control-btn" id="resetBtn">RESET</button>
+    </div>
+    
+    <!-- CONTROLES ESQUERDA - VELOCIDADE E DIREÇÃO -->
+    <div class="left-controls">
+        <button class="control-btn direction-btn" id="reverseDirectionBtn">
+            <i class="fas fa-exchange-alt"></i> INVERTER
+        </button>
+        <button class="control-btn speed-btn" id="speedDownBtn">
+            <i class="fas fa-minus"></i> MAIS LENTO
+        </button>
+        <button class="control-btn speed-btn" id="speedUpBtn">
+            <i class="fas fa-plus"></i> MAIS RÁPIDO
+        </button>
+    </div>
+
+    <!-- MODAL REDESENHADO -->
+    <div class="modal-overlay" id="modalOverlay">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-title" id="modalTitle"></div>
+                <button class="modal-close" onclick="closeModal()"><i class="fas fa-times"></i></button>
+            </div>
+            
+            <div class="modal-body">
+                <div class="modal-image">
+                    <img id="modalImage" src="" alt="Vilão">
+                </div>
+                
+                <div class="modal-info">
+                    <div class="info-item">
+                        <span class="info-label">STATUS</span>
+                        <span class="info-value" id="modalStatus"></span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">NÍVEL DE PERIGO</span>
+                        <span class="info-value" id="modalDanger"></span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">LOCAL</span>
+                        <span class="info-value" id="modalLocation"></span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">ÚLTIMA ATIVIDADE</span>
+                        <span class="info-value" id="modalLastActivity"></span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">ESPECIALIDADE</span>
+                        <span class="info-value" id="modalSpecialty"></span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">RECOMPENSA</span>
+                        <span class="info-value" id="modalReward"></span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="modal-desc" id="modalDesc"></div>
+        </div>
+    </div>
+
+    <script>
+        const villains = [
+            { 
+                id: 0, 
+                name: "CORINGA", 
+                status: "ENCARCERADO", 
+                img: "https://i.pinimg.com/736x/c6/96/f3/c696f3b7b6de9cbc06a963b83a27403c.jpg", 
+                desc: "O Príncipe Palhaço do Crime, psicopata com senso de humor perturbador. Mestre em criar caos e desestabilizar a ordem social de Gotham.",
+                danger: "NÍVEL 5",
+                location: "ASILO ARKHAM",
+                lastActivity: "48 HORAS ATRÁS",
+                specialty: "CAOS E ANARQUIA",
+                reward: "$10,000,000"
+            },
+            { 
+                id: 1, 
+                name: "BANE", 
+                status: "FORAGIDO", 
+                img: "https://i.pinimg.com/736x/b3/21/40/b32140d08af4e47034b8b21b667aa164.jpg", 
+                desc: "Força física sobre-humana através do Veneno (Venom). Intelecto tático superior combinado com força bruta.",
+                danger: "NÍVEL 5",
+                location: "SUBTERRÂNEO DE GOTHAM",
+                lastActivity: "24 HORAS ATRÁS",
+                specialty: "FORÇA BRUTA / ESTRATÉGIA",
+                reward: "$8,500,000"
+            },
+            { 
+                id: 2, 
+                name: "MULHER-GATO", 
+                status: "ATIVA", 
+                img: "https://i.pinimg.com/1200x/4a/96/77/4a96773d328348a499e53dc9dc65186a.jpg", 
+                desc: "Especialista em invasão e furto. Mestra em acrobacias e combate corpo-a-corpo. Periculosidade moderada, mas imprevisível.",
+                danger: "NÍVEL 3",
+                location: "EAST END",
+                lastActivity: "6 HORAS ATRÁS",
+                specialty: "FURTO / INFILTRAÇÃO",
+                reward: "$2,000,000"
+            },
+            { 
+                id: 3, 
+                name: "PINGÜIM", 
+                status: "NEGÓCIOS", 
+                img: "https://i.pinimg.com/736x/11/e7/a1/11e7a118c64ad7138fab4626388b6ef2.jpg", 
+                desc: "Oswald Cobblepot, chefe do crime organizado. Domina o submundo através do Iceberg Lounge. Mais negociador do que combatente.",
+                danger: "NÍVEL 4",
+                location: "ICE LOUNGE",
+                lastActivity: "AGORA",
+                specialty: "CRIME ORGANIZADO",
+                reward: "$5,000,000"
+            },
+            { 
+                id: 4, 
+                name: "CHARADA", 
+                status: "PLANEJANDO", 
+                img: "https://i.pinimg.com/736x/92/c2/be/92c2bede6b905be1e7ab6a96ac512d69.jpg", 
+                desc: "Edward Nigma, obsessão por enigmas e quebra-cabeças mortais. Inteligência acima da média com complexo de superioridade.",
+                danger: "NÍVEL 4",
+                location: "ESCONDERIJO DESCONHECIDO",
+                lastActivity: "72 HORAS ATRÁS",
+                specialty: "ENIGMAS / ARMADILHAS",
+                reward: "$4,500,000"
+            },
+            { 
+                id: 5, 
+                name: "DUAS-CARAS", 
+                status: "ATIVO", 
+                img: "https://i.pinimg.com/736x/f5/03/6e/f5036e4a524f2a9a2dca4dc392f0fe66.jpg", 
+                desc: "Harvey Dent, ex-promotor distrital. Decisões baseadas na sorte de uma moeda de duas faces. Personalidade dividida entre justiça e crime.",
+                danger: "NÍVEL 4",
+                location: "TRIBUNAL DE GOTHAM",
+                lastActivity: "12 HORAS ATRÁS",
+                specialty: "DUALIDADE / SORTE",
+                reward: "$3,500,000"
+            },
+            { 
+                id: 6, 
+                name: "ESPANTALHO", 
+                status: "ENCARCERADO", 
+                img: "https://i.pinimg.com/736x/9c/59/99/9c5999ca52359276ab3c7618c5e042f4.jpg", 
+                desc: "Jonathan Crane, ex-psiquiatra. Mestre das toxinas do medo que exploram as fobias das vítimas. Pesquisador de terror psicológico.",
+                danger: "NÍVEL 4",
+                location: "ASILO ARKHAM",
+                lastActivity: "5 DIAS ATRÁS",
+                specialty: "TOXINAS DO MEDO",
+                reward: "$3,000,000"
+            },
+            { 
+                id: 7, 
+                name: "HARLEY QUINN", 
+                status: "ATIVA", 
+                img: "https://i.pinimg.com/736x/d7/dc/d4/d7dcd4b8e0358051075b8a559c05b710.jpg", 
+                desc: "Ex-psiquiatra do Coringa, altamente imprevisível e ágil em combate. Armada com martelo gigante e personalidade volátil.",
+                danger: "NÍVEL 3",
+                location: "NORTH GOTHAM",
+                lastActivity: "3 HORAS ATRÁS",
+                specialty: "IMPREVISIBILIDADE",
+                reward: "$2,500,000"
+            }
+        ];
+
+        const totalCards = villains.length;
+        const radius = 280;
+        const angleStep = 360 / totalCards;
+        let rotation = 0;
+        let autoRotationActive = false;
+        let autoRotationSpeed = 0.15;
+        let scrollSpeedMultiplier = 0.08;
+        let rotationDirection = 1;
+
+        const carousel = document.getElementById('carousel');
+
+        function createCards() {
+            villains.forEach((v, i) => {
+                const card = document.createElement('div');
+                card.className = `card ${v.name.toLowerCase().replace(' ', '-')}`;
+                card.dataset.cardIndex = i;
+                
+                let sClass = v.status.toLowerCase().includes('ativ') ? 'status-ativo' : 
+                             v.status === 'ENCARCERADO' ? 'status-encarcerado' : 
+                             v.status === 'FORAGIDO' ? 'status-foragido' :
+                             v.status === 'PLANEJANDO' ? 'status-planejando' : 'status-negocios';
+
+                card.innerHTML = `
+                    <div class="card-front">
+                        <div class="ellipse"></div>
+                        <div class="character-box"><img src="${v.img}" class="character-img"></div>
+                        <div class="card-number">${i + 1}</div>
+                        <div class="card-number-bottom">${i + 1}</div>
+                        <div class="card-title">${v.name}</div>
+                        <div class="villain-status ${sClass}">${v.status}</div>
+                    </div>
+                `;
+                card.onclick = () => openModal(i);
+                carousel.appendChild(card);
+            });
+        }
+
+        function updateConveyor() {
+            const cards = document.querySelectorAll('.card');
+            cards.forEach((card, i) => {
+                const cardAngle = (i * angleStep) + rotation;
+                const rad = (cardAngle * Math.PI) / 180;
+                
+                const x = Math.sin(rad) * radius;
+                const z = Math.cos(rad) * radius;
+                
+                const normalizedAngle = ((cardAngle % 360) + 360) % 360;
+                const isFront = normalizedAngle < 15 || normalizedAngle > 345;
+
+                let scale = isFront ? 1.1 : 0.8;
+                let opacity = isFront ? 1 : 0.4;
+                let zIndex = Math.round(z + radius);
+
+                card.style.transform = `translateX(${x}px) translateZ(${z}px) scale(${scale})`;
+                card.style.opacity = opacity;
+                card.style.zIndex = zIndex;
+            });
+        }
+
+        function openModal(index) {
+            const v = villains[index];
+            
+            // Preencher informações no modal
+            document.getElementById('modalTitle').textContent = v.name;
+            document.getElementById('modalImage').src = v.img;
+            document.getElementById('modalDesc').textContent = v.desc;
+            document.getElementById('modalStatus').textContent = v.status;
+            document.getElementById('modalDanger').textContent = v.danger;
+            document.getElementById('modalLocation').textContent = v.location;
+            document.getElementById('modalLastActivity').textContent = v.lastActivity;
+            document.getElementById('modalSpecialty').textContent = v.specialty;
+            document.getElementById('modalReward').textContent = v.reward;
+            
+            // Destacar status por cor
+            const statusElem = document.getElementById('modalStatus');
+            statusElem.className = 'info-value';
+            if (v.status === 'ENCARCERADO') statusElem.style.color = '#00ff88';
+            else if (v.status === 'FORAGIDO') statusElem.style.color = '#ff0040';
+            else if (v.status === 'ATIVO' || v.status === 'ATIVA') statusElem.style.color = '#ffaa00';
+            else if (v.status === 'PLANEJANDO') statusElem.style.color = '#7b2ff7';
+            else statusElem.style.color = '#00d9ff';
+            
+            // Mostrar modal
+            document.getElementById('modalOverlay').style.display = 'flex';
+            document.body.style.overflow = 'hidden'; // Evitar scroll enquanto modal aberto
+        }
+
+        function closeModal() {
+            document.getElementById('modalOverlay').style.display = 'none';
+            document.body.style.overflow = 'auto'; // Restaurar scroll após fechar modal
+        }
+
+        // Fechar modal com ESC
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeModal();
+            }
+        });
+
+        // Fechar modal clicando fora
+        document.getElementById('modalOverlay').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeModal();
+            }
+        });
+
+        window.addEventListener('scroll', () => {
+            rotation = window.scrollY * scrollSpeedMultiplier * rotationDirection;
+            const progress = (window.scrollY / (document.body.scrollHeight - window.innerHeight)) * 100;
+            document.getElementById('progressBar').style.width = progress + "%";
+            updateConveyor();
+        });
+
+        document.getElementById('autoRotateBtn').onclick = () => {
+            autoRotationActive = !autoRotationActive;
+            const btnIcon = document.querySelector('#autoRotateBtn i');
+            if (autoRotationActive) {
+                btnIcon.className = 'fas fa-pause';
+                animate();
+            } else {
+                btnIcon.className = 'fas fa-play';
+            }
+        };
+
+        function animate() {
+            if(!autoRotationActive) return;
+            rotation += autoRotationSpeed * rotationDirection;
+            updateConveyor();
+            requestAnimationFrame(animate);
+        }
+
+        // Botão para inverter direção
+        document.getElementById('reverseDirectionBtn').onclick = () => {
+            rotationDirection *= -1;
+            const directionIcon = document.querySelector('#reverseDirectionBtn i');
+            if (rotationDirection === 1) {
+                directionIcon.className = 'fas fa-exchange-alt';
+                document.getElementById('reverseDirectionBtn').innerHTML = '<i class="fas fa-exchange-alt"></i> INVERTER';
+            } else {
+                directionIcon.className = 'fas fa-exchange-alt fa-rotate-90';
+                document.getElementById('reverseDirectionBtn').innerHTML = '<i class="fas fa-exchange-alt fa-rotate-90"></i> INVERTER';
+            }
+        };
+
+        // Controles de velocidade
+        document.getElementById('speedDownBtn').onclick = () => {
+            autoRotationSpeed = Math.max(0.05, autoRotationSpeed - 0.05);
+            scrollSpeedMultiplier = Math.max(0.03, scrollSpeedMultiplier - 0.01);
+            updateSpeedDisplay();
+        };
+
+        document.getElementById('speedUpBtn').onclick = () => {
+            autoRotationSpeed = Math.min(0.5, autoRotationSpeed + 0.05);
+            scrollSpeedMultiplier = Math.min(0.2, scrollSpeedMultiplier + 0.01);
+            updateSpeedDisplay();
+        };
+
+        function updateSpeedDisplay() {
+            // Criar ou atualizar display de velocidade
+            let speedInfo = document.getElementById('speedInfo');
+            if (!speedInfo) {
+                speedInfo = document.createElement('div');
+                speedInfo.id = 'speedInfo';
+                speedInfo.style.position = 'fixed';
+                speedInfo.style.top = '45px';
+                speedInfo.style.left = '12px';
+                speedInfo.style.background = 'rgba(0,0,0,0.7)';
+                speedInfo.style.color = '#00ff88';
+                speedInfo.style.padding = '4px 8px';
+                speedInfo.style.borderRadius = '4px';
+                speedInfo.style.fontSize = '0.7rem';
+                speedInfo.style.zIndex = '1000';
+                document.body.appendChild(speedInfo);
+            }
+            
+            const directionSymbol = rotationDirection === 1 ? '→' : '←';
+            speedInfo.innerHTML = `VEL: ${autoRotationSpeed.toFixed(2)} | DIR: ${directionSymbol}`;
+            
+            // Remover após 2 segundos
+            setTimeout(() => {
+                if (document.getElementById('speedInfo')) {
+                    document.getElementById('speedInfo').remove();
+                }
+            }, 2000);
+        }
+
+        // Botão RESET
+        document.getElementById('resetBtn').onclick = () => {
+            rotation = 0;
+            rotationDirection = 1;
+            const directionIcon = document.querySelector('#reverseDirectionBtn i');
+            directionIcon.className = 'fas fa-exchange-alt';
+            document.getElementById('reverseDirectionBtn').innerHTML = '<i class="fas fa-exchange-alt"></i> INVERTER';
+            
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            
+            if (autoRotationActive) {
+                autoRotationActive = false;
+                const btnIcon = document.querySelector('#autoRotateBtn i');
+                btnIcon.className = 'fas fa-play';
+            }
+            
+            updateConveyor();
+            updateSpeedDisplay();
+        };
+
+        document.getElementById('toggleDashboard').onclick = () => 
+            document.getElementById('villainDashboard').classList.toggle('active');
+
+        createCards();
+        updateConveyor();
+        updateSpeedDisplay();
+    </script>
+</body>
+</html>

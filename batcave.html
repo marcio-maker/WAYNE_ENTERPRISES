@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BATCAVE - WAYNE ENTERPRISES</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Copie todo o CSS do index.html aqui */
+        :root { /* ... */ }
+        * { /* ... */ }
+        body { /* ... */ }
+        /* TODOS OS ESTILOS DO ARQUIVO ORIGINAL */
+    </style>
+</head>
+<body>
+    <!-- Efeito de chuva Gotham -->
+    <div class="rain-overlay" id="rainOverlay"></div>
+    
+    <!-- Indicador de Usuário -->
+    <div class="user-indicator" id="userIndicator">
+        <span id="userName">BATMAN</span>
+        <button class="logout-btn" onclick="window.location.href='index.html?logout=true'">LOGOUT</button>
+    </div>
+    
+    <!-- Botão Voltar -->
+    <a href="index.html" style="position: fixed; top: 20px; left: 20px; z-index: 1000; 
+           background: rgba(0, 217, 255, 0.2); border: 1px solid #00d9ff; 
+           color: #00d9ff; padding: 10px 15px; border-radius: 4px; 
+           text-decoration: none; font-size: 12px; text-transform: uppercase;
+           letter-spacing: 1px; transition: all 0.3s ease;">
+        <i class="fas fa-arrow-left"></i> VOLTAR AO HUD
+    </a>
+    
+    <!-- Conteúdo da Página Específica -->
+    <div class="modal-content" style="margin: 80px auto; width: 90%; max-width: 1200px;">
+        <div class="modal-header">
+            <h2 class="modal-title">🦇 BATCAVE SYSTEMS CONTROL</h2>
+        </div>
+        <div class="modal-body">
+            <div style="text-align: center; padding: 40px;">
+                <i class="fas fa-server" style="font-size: 80px; color: #00d9ff; margin-bottom: 20px;"></i>
+                <h3 style="color: #00d9ff; margin-bottom: 20px;">SISTEMA BATCAVE ONLINE</h3>
+                <p style="color: #cccccc;">Controle central da Batcaverna</p>
+                
+                <!-- Adicione seu conteúdo específico aqui -->
+                <div style="margin-top: 30px; padding: 20px; background: rgba(0, 30, 60, 0.3); border-radius: 8px;">
+                    <h4 style="color: #00d9ff;">STATUS DO SISTEMA</h4>
+                    <p style="color: #cccccc;">• Sistema principal: ONLINE</p>
+                    <p style="color: #cccccc;">• Defesas: ATIVAS</p>
+                    <p style="color: #cccccc;">• Energia: 100%</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Widgets (opcional) -->
+    <div class="radar-widget" id="radarWidget">
+        <!-- Conteúdo do widget -->
+    </div>
+    
+    <script>
+        // Inicializações básicas
+        document.addEventListener('DOMContentLoaded', function() {
+            // Verificar se está logado
+            const savedUser = localStorage.getItem('wayne_current_user');
+            if (savedUser) {
+                document.getElementById('userName').textContent = savedUser.toUpperCase();
+            } else {
+                window.location.href = 'index.html';
+            }
+            
+            // Inicializar widgets se necessário
+        });
+    </script>
+</body>
+</html>

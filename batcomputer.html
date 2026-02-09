@@ -1,0 +1,753 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BATCOMPUTER • ADVANCED HOLOGRAPHIC DIAGNOSTIC</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: radial-gradient(ellipse at center, #001a2e 0%, #000000 100%);
+            overflow: hidden;
+            font-family: 'Courier New', 'Consolas', monospace;
+            color: #00d4ff;
+            position: relative;
+        }
+
+        /* PARTÍCULAS DE FUNDO */
+        .particles-bg {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                radial-gradient(2px 2px at 20% 30%, #00d4ff, transparent),
+                radial-gradient(2px 2px at 60% 70%, #0af, transparent),
+                radial-gradient(1px 1px at 50% 50%, #fff, transparent),
+                radial-gradient(1px 1px at 80% 10%, #00d4ff, transparent);
+            background-size: 200% 200%;
+            animation: sparkle 8s ease-in-out infinite;
+        }
+
+        @keyframes sparkle {
+            0%, 100% { opacity: 1; background-position: 0% 0%; }
+            50% { opacity: 0.5; background-position: 100% 100%; }
+        }
+
+        /* GRID TECNOLÓGICO */
+        .tech-grid {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(rgba(0, 212, 255, 0.05) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 212, 255, 0.05) 1px, transparent 1px);
+            background-size: 40px 40px;
+            animation: gridFloat 25s linear infinite;
+        }
+
+        @keyframes gridFloat {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(40px, 40px); }
+        }
+
+        /* CONTAINER PRINCIPAL */
+        .hologram-stage {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* CABEÇALHO */
+        .system-title {
+            position: absolute;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            text-align: center;
+            z-index: 100;
+        }
+
+        .system-title h1 {
+            font-size: 28px;
+            font-weight: 900;
+            letter-spacing: 12px;
+            color: #00d4ff;
+            text-shadow: 
+                0 0 10px #00d4ff,
+                0 0 20px #00d4ff,
+                0 0 40px #0066ff,
+                0 0 80px #0066ff;
+            animation: titlePulse 2s ease-in-out infinite;
+        }
+
+        .system-title .sub {
+            font-size: 11px;
+            letter-spacing: 4px;
+            color: #0af;
+            margin-top: 8px;
+            opacity: 0.8;
+        }
+
+        @keyframes titlePulse {
+            0%, 100% { text-shadow: 0 0 10px #00d4ff, 0 0 20px #00d4ff, 0 0 40px #0066ff; }
+            50% { text-shadow: 0 0 20px #00d4ff, 0 0 40px #00d4ff, 0 0 80px #0066ff; }
+        }
+
+        /* BATMAN CENTRAL */
+        .batman-hologram {
+            position: relative;
+            width: 450px;
+            height: 650px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            animation: floatBatman 5s ease-in-out infinite;
+            filter: drop-shadow(0 0 40px rgba(0, 212, 255, 0.8));
+        }
+
+        @keyframes floatBatman {
+            0%, 100% { transform: translateY(0px) scale(1); }
+            50% { transform: translateY(-25px) scale(1.02); }
+        }
+
+        /* SILHUETA DO BATMAN */
+        .batman-figure {
+            position: relative;
+            width: 100%;
+            height: 100%;
+        }
+
+        .batman-svg {
+            width: 100%;
+            height: 100%;
+            filter: 
+                drop-shadow(0 0 20px #00d4ff)
+                drop-shadow(0 0 40px #0066ff)
+                drop-shadow(0 0 60px rgba(0, 100, 255, 0.5));
+        }
+
+        /* RAIOS ELÉTRICOS */
+        .lightning-container {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            pointer-events: none;
+        }
+
+        .lightning {
+            position: absolute;
+            width: 3px;
+            background: linear-gradient(180deg, transparent, #00d4ff, #fff, #00d4ff, transparent);
+            box-shadow: 
+                0 0 10px #00d4ff,
+                0 0 20px #00d4ff,
+                0 0 30px #0066ff;
+            animation: lightning 2s ease-in-out infinite;
+            opacity: 0;
+        }
+
+        @keyframes lightning {
+            0%, 100% { opacity: 0; transform: translateX(0) scaleY(1); }
+            10% { opacity: 1; transform: translateX(-5px) scaleY(1.2); }
+            20% { opacity: 0; transform: translateX(5px) scaleY(0.8); }
+            30% { opacity: 1; transform: translateX(-3px) scaleY(1.1); }
+            40% { opacity: 0; }
+        }
+
+        .lightning1 { left: 10%; top: 20%; height: 150px; animation-delay: 0s; }
+        .lightning2 { right: 10%; top: 25%; height: 180px; animation-delay: 0.3s; }
+        .lightning3 { left: 15%; bottom: 30%; height: 120px; animation-delay: 0.6s; }
+        .lightning4 { right: 15%; bottom: 25%; height: 140px; animation-delay: 0.9s; }
+        .lightning5 { left: 30%; top: 40%; height: 100px; animation-delay: 1.2s; }
+        .lightning6 { right: 30%; top: 45%; height: 110px; animation-delay: 1.5s; }
+
+        /* ENERGIA PULSANTE */
+        .energy-aura {
+            position: absolute;
+            width: 120%;
+            height: 120%;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(0, 212, 255, 0.3), transparent 70%);
+            animation: energyPulse 3s ease-in-out infinite;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        @keyframes energyPulse {
+            0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 0.5; }
+            50% { transform: translate(-50%, -50%) scale(1.2); opacity: 0.8; }
+        }
+
+        /* BASE HOLOGRÁFICA */
+        .hologram-platform {
+            position: absolute;
+            bottom: -80px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 400px;
+            height: 120px;
+        }
+
+        .platform-ring {
+            position: absolute;
+            border: 2px solid;
+            border-radius: 50%;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .ring-1 {
+            width: 400px;
+            height: 40px;
+            bottom: 0;
+            border-color: rgba(0, 212, 255, 0.6);
+            box-shadow: 
+                0 0 20px rgba(0, 212, 255, 0.6),
+                inset 0 0 20px rgba(0, 212, 255, 0.3);
+            animation: rotateRing 10s linear infinite;
+        }
+
+        .ring-2 {
+            width: 350px;
+            height: 35px;
+            bottom: 15px;
+            border-color: rgba(0, 212, 255, 0.5);
+            box-shadow: 
+                0 0 15px rgba(0, 212, 255, 0.5),
+                inset 0 0 15px rgba(0, 212, 255, 0.2);
+            animation: rotateRing 8s linear infinite reverse;
+        }
+
+        .ring-3 {
+            width: 300px;
+            height: 30px;
+            bottom: 30px;
+            border-color: rgba(0, 212, 255, 0.4);
+            box-shadow: 
+                0 0 10px rgba(0, 212, 255, 0.4),
+                inset 0 0 10px rgba(0, 212, 255, 0.1);
+            animation: rotateRing 12s linear infinite;
+        }
+
+        .ring-inner {
+            width: 250px;
+            height: 25px;
+            bottom: 45px;
+            border-color: rgba(0, 212, 255, 0.3);
+            box-shadow: 0 0 8px rgba(0, 212, 255, 0.3);
+            animation: rotateRing 15s linear infinite reverse;
+        }
+
+        @keyframes rotateRing {
+            from { transform: translateX(-50%) rotate(0deg); }
+            to { transform: translateX(-50%) rotate(360deg); }
+        }
+
+        /* LUZ DA BASE */
+        .base-light {
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 300px;
+            height: 150px;
+            background: radial-gradient(ellipse at bottom, rgba(0, 212, 255, 0.4), transparent);
+            animation: lightPulse 2s ease-in-out infinite;
+        }
+
+        @keyframes lightPulse {
+            0%, 100% { opacity: 0.6; }
+            50% { opacity: 1; }
+        }
+
+        /* PAINÉIS DE DADOS */
+        .hud-panel {
+            position: absolute;
+            background: rgba(0, 15, 30, 0.85);
+            border: 1px solid rgba(0, 212, 255, 0.6);
+            padding: 18px 22px;
+            min-width: 240px;
+            backdrop-filter: blur(15px);
+            box-shadow: 
+                0 0 30px rgba(0, 212, 255, 0.4),
+                inset 0 0 30px rgba(0, 212, 255, 0.1);
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .hud-panel::before {
+            content: '';
+            position: absolute;
+            top: -1px;
+            left: -1px;
+            right: -1px;
+            bottom: -1px;
+            background: linear-gradient(45deg, transparent, rgba(0, 212, 255, 0.5), transparent);
+            opacity: 0;
+            transition: opacity 0.4s;
+            pointer-events: none;
+        }
+
+        .hud-panel:hover {
+            background: rgba(0, 212, 255, 0.15);
+            border-color: #00d4ff;
+            box-shadow: 
+                0 0 50px rgba(0, 212, 255, 0.8),
+                inset 0 0 40px rgba(0, 212, 255, 0.2);
+            transform: scale(1.05);
+        }
+
+        .hud-panel:hover::before {
+            opacity: 1;
+        }
+
+        .hud-panel h3 {
+            font-size: 13px;
+            font-weight: 700;
+            color: #00d4ff;
+            margin-bottom: 12px;
+            letter-spacing: 3px;
+            text-shadow: 0 0 8px rgba(0, 212, 255, 0.8);
+            border-bottom: 1px solid rgba(0, 212, 255, 0.3);
+            padding-bottom: 8px;
+        }
+
+        .hud-panel p {
+            font-size: 11px;
+            color: #66ddff;
+            margin: 8px 0;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .stat-bar {
+            width: 100%;
+            height: 10px;
+            background: rgba(0, 50, 80, 0.5);
+            border: 1px solid rgba(0, 212, 255, 0.3);
+            margin: 10px 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #00d4ff, #0066ff, #00d4ff);
+            background-size: 200% 100%;
+            box-shadow: 
+                0 0 15px rgba(0, 212, 255, 0.8),
+                inset 0 0 10px rgba(255, 255, 255, 0.3);
+            animation: barFlow 3s linear infinite;
+        }
+
+        @keyframes barFlow {
+            0% { background-position: 0% 0%; }
+            100% { background-position: 200% 0%; }
+        }
+
+        .stat-fill.critical {
+            background: linear-gradient(90deg, #ff3300, #ff6600, #ff3300);
+            box-shadow: 
+                0 0 15px rgba(255, 102, 0, 0.8),
+                inset 0 0 10px rgba(255, 255, 255, 0.3);
+            animation: barFlow 3s linear infinite, blink 1s ease-in-out infinite;
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        /* POSICIONAMENTO DOS PAINÉIS */
+        .panel-tl {
+            top: 80px;
+            left: 40px;
+        }
+
+        .panel-bl {
+            bottom: 100px;
+            left: 40px;
+        }
+
+        .panel-tr {
+            top: 80px;
+            right: 40px;
+        }
+
+        .panel-br {
+            bottom: 100px;
+            right: 40px;
+        }
+
+        /* LINHAS DE CONEXÃO */
+        .connection-line {
+            position: absolute;
+            stroke: rgba(0, 212, 255, 0.5);
+            stroke-width: 1;
+            fill: none;
+            filter: drop-shadow(0 0 5px rgba(0, 212, 255, 0.8));
+            pointer-events: none;
+        }
+
+        /* SCANLINES */
+        .scanlines {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(
+                transparent 50%,
+                rgba(0, 212, 255, 0.02) 50%
+            );
+            background-size: 100% 4px;
+            pointer-events: none;
+            animation: scan 10s linear infinite;
+            opacity: 0.5;
+        }
+
+        @keyframes scan {
+            0% { transform: translateY(0); }
+            100% { transform: translateY(4px); }
+        }
+
+        /* ALERTA */
+        .alert-text {
+            color: #ff6600 !important;
+            text-shadow: 0 0 10px #ff6600;
+        }
+
+        /* ÍCONES */
+        .icon {
+            display: inline-block;
+            margin-right: 8px;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Partículas de fundo -->
+    <div class="particles-bg"></div>
+    <div class="tech-grid"></div>
+
+    <!-- Palco do holograma -->
+    <div class="hologram-stage">
+        
+        <!-- Título do sistema -->
+        <div class="system-title">
+            <h1>◢ BATCOMPUTER ◣</h1>
+            <div class="sub">TACTICAL SUIT ANALYSIS • PROTOCOL v5.2 • GOTHAM DEFENSE NETWORK</div>
+        </div>
+
+        <!-- Batman holográfico -->
+        <div class="batman-hologram">
+            <!-- Aura de energia -->
+            <div class="energy-aura"></div>
+            
+            <!-- Container de raios -->
+            <div class="lightning-container">
+                <div class="lightning lightning1"></div>
+                <div class="lightning lightning2"></div>
+                <div class="lightning lightning3"></div>
+                <div class="lightning lightning4"></div>
+                <div class="lightning lightning5"></div>
+                <div class="lightning lightning6"></div>
+            </div>
+
+            <!-- Figura do Batman -->
+            <div class="batman-figure">
+                <svg class="batman-svg" viewBox="0 0 400 700" xmlns="http://www.w3.org/2000/svg">
+                    <!-- Cabeça -->
+                    <ellipse cx="200" cy="90" rx="45" ry="55" stroke="#00d4ff" stroke-width="3" fill="none" opacity="0.4"/>
+                    
+                    <!-- Orelhas -->
+                    <path d="M 165 55 L 170 15 L 175 55" stroke="#00d4ff" stroke-width="3" fill="none" opacity="0.7">
+                        <animate attributeName="opacity" values="0.7;0.5;0.7" dur="2s" repeatCount="indefinite"/>
+                    </path>
+                    <path d="M 235 55 L 230 15 L 225 55" stroke="#00d4ff" stroke-width="3" fill="none" opacity="0.7">
+                        <animate attributeName="opacity" values="0.7;0.5;0.7" dur="2s" begin="0.5s" repeatCount="indefinite"/>
+                    </path>
+                    
+                    <!-- Olhos brilhantes -->
+                    <ellipse cx="180" cy="85" rx="8" ry="6" fill="#00d4ff" opacity="0.9">
+                        <animate attributeName="opacity" values="0.9;1;0.9" dur="3s" repeatCount="indefinite"/>
+                    </ellipse>
+                    <ellipse cx="220" cy="85" rx="8" ry="6" fill="#00d4ff" opacity="0.9">
+                        <animate attributeName="opacity" values="0.9;1;0.9" dur="3s" repeatCount="indefinite"/>
+                    </ellipse>
+                    
+                    <!-- Pescoço -->
+                    <rect x="185" y="130" width="30" height="25" stroke="#00d4ff" stroke-width="2" fill="none" opacity="0.3"/>
+                    
+                    <!-- Torso -->
+                    <path d="M 145 160 L 130 220 L 120 320 L 125 400 L 145 450 L 200 465 L 255 450 L 275 400 L 280 320 L 270 220 L 255 160 Z" 
+                          stroke="#00d4ff" stroke-width="3" fill="rgba(0, 212, 255, 0.05)" opacity="0.6"/>
+                    
+                    <!-- Símbolo do Bat (grande e brilhante) -->
+                    <path d="M 200 240 L 170 260 L 150 245 L 165 285 L 190 270 L 200 260 L 210 270 L 235 285 L 250 245 L 230 260 Z" 
+                          stroke="#00d4ff" stroke-width="4" fill="rgba(0, 212, 255, 0.3)" opacity="0.9">
+                        <animate attributeName="opacity" values="0.9;1;0.9" dur="2s" repeatCount="indefinite"/>
+                    </path>
+                    
+                    <!-- Placas do peito -->
+                    <rect x="160" y="180" width="35" height="40" stroke="#00d4ff" stroke-width="2" fill="none" opacity="0.4" rx="5"/>
+                    <rect x="205" y="180" width="35" height="40" stroke="#00d4ff" stroke-width="2" fill="none" opacity="0.4" rx="5"/>
+                    
+                    <!-- Abdômen -->
+                    <line x1="185" y1="300" x2="185" y2="380" stroke="#00d4ff" stroke-width="2" opacity="0.3"/>
+                    <line x1="200" y1="300" x2="200" y2="380" stroke="#00d4ff" stroke-width="2" opacity="0.3"/>
+                    <line x1="215" y1="300" x2="215" y2="380" stroke="#00d4ff" stroke-width="2" opacity="0.3"/>
+                    
+                    <!-- Braço esquerdo -->
+                    <path d="M 130 190 L 95 240 L 70 310 L 60 380 L 58 440" 
+                          stroke="#00d4ff" stroke-width="3" fill="none" opacity="0.5"/>
+                    <circle cx="70" cy="310" r="15" stroke="#00d4ff" stroke-width="2" fill="none" opacity="0.4"/>
+                    
+                    <!-- Braço direito (CRÍTICO) -->
+                    <path d="M 270 190 L 305 240 L 330 310 L 340 380 L 342 440" 
+                          stroke="#ff6600" stroke-width="3" fill="none" opacity="0.8">
+                        <animate attributeName="opacity" values="0.8;0.3;0.8" dur="1s" repeatCount="indefinite"/>
+                    </path>
+                    <circle cx="330" cy="310" r="18" stroke="#ff6600" stroke-width="3" fill="rgba(255, 102, 0, 0.2)" opacity="0.9">
+                        <animate attributeName="r" values="18;22;18" dur="1s" repeatCount="indefinite"/>
+                    </circle>
+                    
+                    <!-- Cinto -->
+                    <rect x="160" y="400" width="80" height="15" stroke="#00d4ff" stroke-width="2" fill="rgba(0, 212, 255, 0.1)" opacity="0.6"/>
+                    <circle cx="200" cy="407" r="8" stroke="#00d4ff" stroke-width="2" fill="rgba(0, 212, 255, 0.3)" opacity="0.8"/>
+                    
+                    <!-- Pernas -->
+                    <path d="M 160 450 L 155 530 L 150 610 L 145 680" stroke="#00d4ff" stroke-width="3" fill="none" opacity="0.5"/>
+                    <path d="M 240 450 L 245 530 L 250 610 L 255 680" stroke="#00d4ff" stroke-width="3" fill="none" opacity="0.5"/>
+                    
+                    <!-- Joelhos -->
+                    <circle cx="152" cy="550" r="12" stroke="#00d4ff" stroke-width="2" fill="none" opacity="0.4"/>
+                    <circle cx="248" cy="550" r="12" stroke="#00d4ff" stroke-width="2" fill="none" opacity="0.4"/>
+                    
+                    <!-- Capa (fluida) -->
+                    <path d="M 140 170 Q 80 300 90 480" stroke="#00d4ff" stroke-width="2" fill="none" opacity="0.2">
+                        <animate attributeName="d" 
+                                 values="M 140 170 Q 80 300 90 480;M 140 170 Q 70 300 85 480;M 140 170 Q 80 300 90 480" 
+                                 dur="4s" repeatCount="indefinite"/>
+                    </path>
+                    <path d="M 260 170 Q 320 300 310 480" stroke="#00d4ff" stroke-width="2" fill="none" opacity="0.2">
+                        <animate attributeName="d" 
+                                 values="M 260 170 Q 320 300 310 480;M 260 170 Q 330 300 315 480;M 260 170 Q 320 300 310 480" 
+                                 dur="4s" repeatCount="indefinite"/>
+                    </path>
+                    
+                    <!-- Pontos de scan animados -->
+                    <circle cx="200" cy="90" r="4" fill="#00d4ff" opacity="0">
+                        <animate attributeName="opacity" values="0;1;0" dur="2s" repeatCount="indefinite"/>
+                        <animate attributeName="r" values="4;7;4" dur="2s" repeatCount="indefinite"/>
+                    </circle>
+                    <circle cx="200" cy="260" r="4" fill="#00d4ff" opacity="0">
+                        <animate attributeName="opacity" values="0;1;0" dur="2s" begin="0.7s" repeatCount="indefinite"/>
+                        <animate attributeName="r" values="4;7;4" dur="2s" begin="0.7s" repeatCount="indefinite"/>
+                    </circle>
+                    <circle cx="330" cy="310" r="5" fill="#ff6600" opacity="0">
+                        <animate attributeName="opacity" values="0;1;0" dur="1s" repeatCount="indefinite"/>
+                        <animate attributeName="r" values="5;10;5" dur="1s" repeatCount="indefinite"/>
+                    </circle>
+                </svg>
+            </div>
+
+            <!-- Plataforma holográfica -->
+            <div class="hologram-platform">
+                <div class="base-light"></div>
+                <div class="platform-ring ring-1"></div>
+                <div class="platform-ring ring-2"></div>
+                <div class="platform-ring ring-3"></div>
+                <div class="platform-ring ring-inner"></div>
+            </div>
+        </div>
+
+        <!-- Linhas de conexão SVG -->
+        <svg style="position: absolute; width: 100%; height: 100%; top: 0; left: 0; pointer-events: none;">
+            <line x1="280" y1="200" x2="calc(100% - 300px)" y2="130" class="connection-line" stroke-dasharray="5,5">
+                <animate attributeName="stroke-dashoffset" from="0" to="10" dur="1s" repeatCount="indefinite"/>
+            </line>
+            <line x1="120" y1="200" x2="280" y2="130" class="connection-line" stroke-dasharray="5,5">
+                <animate attributeName="stroke-dashoffset" from="0" to="10" dur="1s" repeatCount="indefinite"/>
+            </line>
+            <line x1="120" y1="450" x2="280" y2="calc(100% - 150px)" class="connection-line" stroke-dasharray="5,5">
+                <animate attributeName="stroke-dashoffset" from="0" to="10" dur="1s" repeatCount="indefinite"/>
+            </line>
+            <line x1="280" y1="450" x2="calc(100% - 300px)" y2="calc(100% - 150px)" class="connection-line" stroke-dasharray="5,5">
+                <animate attributeName="stroke-dashoffset" from="0" to="10" dur="1s" repeatCount="indefinite"/>
+            </line>
+        </svg>
+
+        <!-- Painel: Integridade da Armadura -->
+        <div class="hud-panel panel-tl">
+            <h3><span class="icon">◢</span>ARMOR INTEGRITY</h3>
+            <p><span>Cowl Module</span><span>100%</span></p>
+            <div class="stat-bar"><div class="stat-fill" style="width: 100%"></div></div>
+            
+            <p><span>Chest Plate</span><span>98%</span></p>
+            <div class="stat-bar"><div class="stat-fill" style="width: 98%"></div></div>
+            
+            <p class="alert-text"><span>Right Arm</span><span>⚠ 64%</span></p>
+            <div class="stat-bar"><div class="stat-fill critical" style="width: 64%"></div></div>
+            
+            <p><span>Leg Servos</span><span>95%</span></p>
+            <div class="stat-bar"><div class="stat-fill" style="width: 95%"></div></div>
+        </div>
+
+        <!-- Painel: Sinais Vitais -->
+        <div class="hud-panel panel-bl">
+            <h3><span class="icon">◢</span>VITAL SIGNS</h3>
+            <p><span>Heart Rate</span><span>68 BPM</span></p>
+            <p><span>Blood Oxygen</span><span>98%</span></p>
+            <p><span>Core Temperature</span><span>36.8°C</span></p>
+            <p><span>Adrenaline</span><span>NORMAL</span></p>
+            <p><span>Status</span><span style="color: #0f0; text-shadow: 0 0 8px #0f0;">● OPTIMAL</span></p>
+        </div>
+
+        <!-- Painel: Arsenal -->
+        <div class="hud-panel panel-tr">
+            <h3><span class="icon">◢</span>GADGET STATUS</h3>
+            <p><span>Batarangs</span><span>12/15</span></p>
+            <div class="stat-bar"><div class="stat-fill" style="width: 80%"></div></div>
+            
+            <p><span>Grapnel Gun</span><span>100%</span></p>
+            <div class="stat-bar"><div class="stat-fill" style="width: 100%"></div></div>
+            
+            <p><span>Smoke Pellets</span><span>8/10</span></p>
+            <div class="stat-bar"><div class="stat-fill" style="width: 80%"></div></div>
+            
+            <p><span>EMP Charges</span><span>5/5</span></p>
+            <div class="stat-bar"><div class="stat-fill" style="width: 100%"></div></div>
+        </div>
+
+        <!-- Painel: Análise Biométrica -->
+        <div class="hud-panel panel-br">
+            <h3><span class="icon">◢</span>BIO-SCAN ANALYSIS</h3>
+            <p><span>DNA Match</span><span>Bruce Wayne</span></p>
+            <p><span>Retinal Scan</span><span style="color: #0f0;">✓ VERIFIED</span></p>
+            <p><span>Voice Print</span><span style="color: #0f0;">✓ VERIFIED</span></p>
+            <p><span>Fingerprint</span><span style="color: #0f0;">✓ VERIFIED</span></p>
+            <p><span>Clearance Level</span><span style="color: #0f0; font-weight: 900;">ALPHA-1</span></p>
+        </div>
+
+    </div>
+
+    <!-- Scanlines -->
+    <div class="scanlines"></div>
+
+    <script>
+        // INTERATIVIDADE DOS PAINÉIS
+        const panels = document.querySelectorAll('.hud-panel');
+        
+        panels.forEach(panel => {
+            panel.addEventListener('click', function() {
+                // Flash de scan
+                this.style.background = 'rgba(0, 212, 255, 0.4)';
+                this.style.borderColor = '#fff';
+                
+                // Som simulado (visual)
+                const pulse = document.createElement('div');
+                pulse.style.cssText = `
+                    position: absolute;
+                    top: 50%; left: 50%;
+                    width: 0; height: 0;
+                    border-radius: 50%;
+                    background: rgba(0, 212, 255, 0.6);
+                    transform: translate(-50%, -50%);
+                    pointer-events: none;
+                `;
+                this.appendChild(pulse);
+                
+                // Animação de pulso
+                let size = 0;
+                const expand = setInterval(() => {
+                    size += 20;
+                    pulse.style.width = size + 'px';
+                    pulse.style.height = size + 'px';
+                    pulse.style.opacity = 1 - (size / 200);
+                    
+                    if (size >= 200) {
+                        clearInterval(expand);
+                        pulse.remove();
+                    }
+                }, 20);
+                
+                setTimeout(() => {
+                    this.style.background = 'rgba(0, 15, 30, 0.85)';
+                    this.style.borderColor = 'rgba(0, 212, 255, 0.6)';
+                }, 400);
+            });
+        });
+
+        // EFEITO DE GLITCH PERIÓDICO
+        setInterval(() => {
+            const batman = document.querySelector('.batman-svg');
+            batman.style.opacity = '0.2';
+            batman.style.transform = 'translateX(2px)';
+            
+            setTimeout(() => {
+                batman.style.opacity = '1';
+                batman.style.transform = 'translateX(0)';
+            }, 80);
+            
+            setTimeout(() => {
+                batman.style.opacity = '0.5';
+                batman.style.transform = 'translateX(-2px)';
+            }, 120);
+            
+            setTimeout(() => {
+                batman.style.opacity = '1';
+                batman.style.transform = 'translateX(0)';
+            }, 160);
+        }, 9000);
+
+        // PARTÍCULAS ADICIONAIS
+        function createParticle() {
+            const particle = document.createElement('div');
+            particle.style.cssText = `
+                position: fixed;
+                width: 2px;
+                height: 2px;
+                background: #00d4ff;
+                border-radius: 50%;
+                box-shadow: 0 0 4px #00d4ff;
+                pointer-events: none;
+                z-index: 1;
+            `;
+            particle.style.left = Math.random() * window.innerWidth + 'px';
+            particle.style.top = window.innerHeight + 'px';
+            
+            document.body.appendChild(particle);
+            
+            const duration = 5000 + Math.random() * 5000;
+            const startTime = Date.now();
+            
+            function animate() {
+                const elapsed = Date.now() - startTime;
+                const progress = elapsed / duration;
+                
+                if (progress < 1) {
+                    particle.style.top = (window.innerHeight - (progress * window.innerHeight * 1.2)) + 'px';
+                    particle.style.opacity = Math.sin(progress * Math.PI);
+                    requestAnimationFrame(animate);
+                } else {
+                    particle.remove();
+                }
+            }
+            
+            animate();
+        }
+
+        setInterval(createParticle, 300);
+    </script>
+</body>
+</html>
