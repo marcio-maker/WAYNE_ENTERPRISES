@@ -1,0 +1,4572 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WAYNE ENTERPRISES - BAT-HUD SYSTEM v6.0 - MORCEGOS EM PILHA</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* =========================================== */
+        /* VARIÁVEIS CSS GLOBAIS */
+        /* =========================================== */
+        :root {
+            --primary-color: #00d9ff;
+            --primary-dark: #0066cc;
+            --success-color: #00ff88;
+            --warning-color: #ffaa00;
+            --danger-color: #ff0040;
+            --info-color: #bb86fc;
+            --purple-color: #9d4edd;
+            --background-dark: #000;
+            --background-light: rgba(10, 20, 40, 0.95);
+            --text-primary: #ffffff;
+            --text-secondary: #cccccc;
+            --border-color: rgba(0, 217, 255, 0.3);
+            --widget-bg: rgba(10, 20, 40, 0.92);
+            --widget-border: rgba(0, 217, 255, 0.4);
+            --hud-pieces-bg: rgba(0, 150, 255, 0.1);
+            --folder-shadow: rgba(0, 0, 0, 0.4);
+        }
+
+        /* =========================================== */
+        /* CONFIGURAÇÕES GERAIS */
+        /* =========================================== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: var(--background-dark);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            overflow: hidden;
+            font-family: 'Arial', sans-serif;
+            color: var(--text-primary);
+            touch-action: manipulation;
+            user-select: none;
+        }
+
+        /* =========================================== */
+        /* EFEITO DE MORCEGOS VOANDO */
+        /* =========================================== */
+        .bat-effect {
+            position: absolute;
+            width: 40px;
+            height: 20px;
+            pointer-events: none;
+            z-index: 1001;
+            filter: drop-shadow(0 0 10px var(--primary-color));
+        }
+
+        .bat-wing {
+            position: absolute;
+            width: 15px;
+            height: 20px;
+            background: var(--primary-color);
+            opacity: 0.3;
+            border-radius: 50%;
+        }
+
+        .bat-wing.left {
+            left: 0;
+            transform-origin: right center;
+            animation: flapLeft 0.3s ease-in-out infinite;
+        }
+
+        .bat-wing.right {
+            right: 0;
+            transform-origin: left center;
+            animation: flapRight 0.3s ease-in-out infinite;
+        }
+
+        .bat-body {
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            width: 10px;
+            height: 10px;
+            background: var(--primary-color);
+            border-radius: 50%;
+            opacity: 0.5;
+        }
+
+        @keyframes flapLeft {
+            0%, 100% { transform: rotate(0deg); }
+            50% { transform: rotate(-30deg); }
+        }
+
+        @keyframes flapRight {
+            0%, 100% { transform: rotate(0deg); }
+            50% { transform: rotate(30deg); }
+        }
+
+        @keyframes batFly {
+            0% {
+                transform: translate(var(--start-x), var(--start-y)) rotate(0deg);
+                opacity: 0;
+            }
+            20% {
+                opacity: 1;
+            }
+            80% {
+                opacity: 1;
+            }
+            100% {
+                transform: translate(var(--end-x), var(--end-y)) rotate(-5deg);
+                opacity: 0;
+            }
+        }
+
+        /* =========================================== */
+        /* EFEITO DE NEBLINA GOTHAM */
+        /* =========================================== */
+        .rain-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.2);
+            background-image:
+                radial-gradient(circle at 20% 30%, rgba(255, 255, 255, 0.05) 0%, transparent 40%),
+                radial-gradient(circle at 80% 70%, rgba(255, 255, 255, 0.03) 0%, transparent 50%);
+            filter: blur(25px);
+            z-index: 0;
+            pointer-events: auto;
+            transition: opacity 0.5s ease;
+        }
+
+        body:hover .rain-overlay {
+            background-image:
+                radial-gradient(circle at var(--x, 50%) var(--y, 50%),
+                    rgba(255, 255, 255, 0.15) 0%,
+                    transparent 50%);
+        }
+
+        .rain-overlay::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(circle at center, rgba(255, 255, 255, 0.05), transparent);
+            animation: fogPulse 8s infinite alternate;
+        }
+
+        @keyframes fogPulse {
+            0% { transform: scale(1); opacity: 0.3; }
+            100% { transform: scale(1.2); opacity: 0.6; }
+        }
+
+        /* =========================================== */
+        /* SISTEMA DE ALERTA */
+        /* =========================================== */
+        .emergency-alert {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 0, 0, 0.95);
+            z-index: 9999;
+            animation: emergencyPulse 0.5s infinite alternate;
+            cursor: pointer;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .emergency-content {
+            background: rgba(0, 0, 0, 0.9);
+            padding: 40px;
+            border-radius: 15px;
+            border: 5px solid #fff;
+            box-shadow: 0 0 50px rgba(255, 0, 0, 0.8);
+            max-width: 600px;
+            animation: shake 0.5s infinite;
+        }
+
+        .emergency-title {
+            font-size: 42px;
+            color: #fff;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            letter-spacing: 5px;
+            text-shadow: 0 0 20px #ff0000;
+            font-weight: bold;
+        }
+
+        .emergency-subtitle {
+            font-size: 24px;
+            color: #ff4444;
+            margin-bottom: 30px;
+            text-transform: uppercase;
+        }
+
+        .emergency-message {
+            font-size: 18px;
+            color: #fff;
+            margin-bottom: 30px;
+            line-height: 1.6;
+        }
+
+        .emergency-countdown {
+            font-size: 36px;
+            color: #ff0000;
+            margin: 20px 0;
+            font-weight: bold;
+            text-shadow: 0 0 10px #ff0000;
+        }
+
+        @keyframes emergencyPulse {
+            0% { background: rgba(255, 0, 0, 0.95); }
+            100% { background: rgba(255, 50, 50, 0.95); }
+        }
+
+        /* =========================================== */
+        /* WIDGET DO TIMER */
+        /* =========================================== */
+        .alert-timer {
+            display: none;
+            position: fixed;
+            bottom: 85px;
+            right: 40px;
+            background: rgba(20, 0, 0, 0.4);
+            border: 1px solid rgba(255, 0, 0, 0.4);
+            border-radius: 4px;
+            padding: 6px 12px;
+            color: #fff;
+            z-index: 100;
+            align-items: center;
+            gap: 8px;
+            backdrop-filter: blur(8px);
+            font-family: 'Courier New', monospace;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
+            animation: alertFadeIn 0.4s ease-out;
+        }
+
+        .alert-label {
+            font-size: 10px;
+            color: rgba(255, 136, 136, 0.8);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .timer-value {
+            font-size: 13px;
+            color: #ff3333;
+            font-weight: bold;
+        }
+
+        .timer-skip {
+            background: rgba(255, 0, 0, 0.5);
+            border: 1px solid #ff0000;
+            color: #fff;
+            padding: 3px 8px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: 0.3s;
+            font-size: 10px;
+            font-family: 'Arial', sans-serif;
+        }
+
+        .timer-skip:hover {
+            background: rgba(255, 0, 0, 0.8);
+        }
+
+        @keyframes alertFadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* =========================================== */
+        /* SISTEMA DE AUTENTICAÇÃO */
+        /* =========================================== */
+        .auth-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 10;
+            backdrop-filter: blur(5px);
+            padding: 20px;
+        }
+
+        .auth-frame {
+            background: var(--background-light);
+            border: 2px solid var(--border-color);
+            width: 100%;
+            max-width: 400px;
+            padding: 30px 20px;
+            position: relative;
+            box-shadow: 0 0 50px rgba(0, 217, 255, 0.2);
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .auth-frame::before,
+        .auth-frame::after {
+            content: '';
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            border: 2px solid var(--primary-color);
+        }
+
+        .auth-frame::before {
+            top: -2px;
+            left: -2px;
+            border-right: none;
+            border-bottom: none;
+        }
+
+        .auth-frame::after {
+            bottom: -2px;
+            right: -2px;
+            border-left: none;
+            border-top: none;
+        }
+
+        .bat-logo {
+            text-align: center;
+            margin-bottom: 30px;
+            position: relative;
+        }
+
+        .bat-logo h1 {
+            color: var(--text-secondary);
+            font-size: 11px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            font-weight: normal;
+            margin-bottom: 15px;
+        }
+
+        .bat-symbol {
+            width: 60px;
+            height: 30px;
+            margin: 0 auto;
+            position: relative;
+            filter: drop-shadow(0 0 10px rgba(0, 217, 255, 0.3));
+        }
+
+        .bat-symbol::before {
+            content: '▼';
+            font-size: 30px;
+            color: var(--primary-color);
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            animation: batPulse 2s infinite;
+        }
+
+        @keyframes batPulse {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 1; }
+        }
+
+        .auth-form {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .form-group {
+            position: relative;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 12px 0;
+            background: transparent;
+            border: none;
+            border-bottom: 1px solid rgba(0, 217, 255, 0.3);
+            color: var(--primary-color);
+            font-size: 16px;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        .form-input:focus {
+            border-bottom-color: var(--primary-color);
+            box-shadow: 0 1px 0 rgba(0, 217, 255, 0.2);
+        }
+
+        .form-label {
+            position: absolute;
+            top: 12px;
+            left: 0;
+            color: rgba(0, 217, 255, 0.5);
+            font-size: 14px;
+            pointer-events: none;
+            transition: all 0.3s ease;
+        }
+
+        .form-input:focus+.form-label,
+        .form-input:valid+.form-label {
+            top: -10px;
+            font-size: 12px;
+            color: var(--primary-color);
+        }
+
+        .auth-button {
+            background: transparent;
+            border: 1px solid var(--primary-color);
+            color: var(--primary-color);
+            padding: 12px;
+            font-size: 14px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            cursor: pointer;
+            margin-top: 10px;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .auth-button:hover {
+            background: rgba(0, 217, 255, 0.1);
+            box-shadow: 0 0 20px rgba(0, 217, 255, 0.2);
+        }
+
+        .auth-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(0, 217, 255, 0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .auth-button:hover::before {
+            left: 100%;
+        }
+
+        .auth-switch {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        .auth-switch a {
+            color: var(--primary-color);
+            text-decoration: none;
+            margin-left: 5px;
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+
+        .auth-switch a:hover {
+            color: #fff;
+            text-shadow: 0 0 10px rgba(0, 217, 255, 0.5);
+        }
+
+        .auth-error {
+            background: rgba(255, 50, 50, 0.1);
+            border-left: 3px solid #ff5555;
+            padding: 10px;
+            margin-top: 15px;
+            font-size: 12px;
+            color: #ff5555;
+            display: none;
+            animation: shake 0.5s;
+        }
+
+        /* =========================================== */
+        /* INDICADOR DE USUÁRIO */
+        /* =========================================== */
+        .user-indicator {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            background: var(--background-light);
+            border: 2px solid var(--border-color);
+            padding: 8px 15px;
+            font-size: 11px;
+            color: var(--primary-color);
+            z-index: 100;
+            backdrop-filter: blur(5px);
+            display: none;
+            border-radius: 4px;
+            box-shadow: 0 0 20px rgba(0, 217, 255, 0.1);
+            max-width: 200px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .user-indicator .logout-btn {
+            margin-left: 8px;
+            background: none;
+            border: none;
+            color: rgba(255, 255, 255, 0.5);
+            cursor: pointer;
+            font-size: 9px;
+            transition: color 0.3s ease;
+            white-space: nowrap;
+        }
+
+        .user-indicator .logout-btn:hover {
+            color: #ff5555;
+        }
+
+        /* =========================================== */
+        /* INTERFACE HUD PRINCIPAL */
+        /* =========================================== */
+        .hud-frame {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+            display: none;
+            z-index: 5;
+            overflow: hidden;
+        }
+
+        /* =========================================== */
+        /* ÁREA DOS WIDGETS - COM LIMITES DAS PEÇAS */
+        /* =========================================== */
+        .widgets-area {
+            position: absolute;
+            top: 80px; /* Começa abaixo da peça top */
+            left: 35px; /* Começa depois da peça left */
+            right: 35px; /* Termina antes da peça right */
+            bottom: 80px; /* Termina antes da peça bottom */
+            z-index: 6;
+            overflow: visible;
+            background: rgba(0, 0, 0, 0.05);
+            border-radius: 8px;
+            /* Borda de limite visível (apenas para debug) */
+            border: 1px dashed rgba(0, 217, 255, 0.1);
+        }
+
+        /* Overlay de limite visual (opcional) */
+        .boundary-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 5;
+        }
+
+        .boundary-overlay::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            border: 2px solid rgba(0, 217, 255, 0.1);
+            border-radius: 8px;
+            box-shadow: inset 0 0 20px rgba(0, 217, 255, 0.05);
+        }
+
+        /* =========================================== */
+        /* SISTEMA DE WIDGETS */
+        /* =========================================== */
+        .widget {
+            position: absolute !important;
+            background: var(--widget-bg);
+            border: 1px solid var(--widget-border);
+            border-radius: 8px;
+            padding: 15px;
+            min-width: 200px;
+            min-height: 140px;
+            max-width: 500px;
+            max-height: 500px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4),
+                0 0 20px rgba(0, 217, 255, 0.1);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 10;
+            cursor: move;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            resize: both;
+            overflow: auto;
+            user-select: none;
+            transform-origin: center;
+        }
+
+        /* Animação de entrada do widget */
+        @keyframes widgetLand {
+            0% {
+                transform: scale(0) rotate(-10deg);
+                opacity: 0;
+            }
+            50% {
+                transform: scale(1.1) rotate(5deg);
+                opacity: 1;
+            }
+            100% {
+                transform: scale(1) rotate(0deg);
+                opacity: 1;
+            }
+        }
+
+        .widget.landing {
+            animation: widgetLand 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+        }
+
+        /* =========================================== */
+        /* ANIMAÇÃO DE PILHA DE PASTAS */
+        /* =========================================== */
+        .widget.folder-stacked {
+            position: absolute !important;
+            transform-origin: top left;
+            box-shadow: 
+                0 1px 3px rgba(0, 0, 0, 0.3),
+                0 0 0 1px rgba(0, 217, 255, 0.15),
+                inset 0 -3px 8px rgba(0, 0, 0, 0.4);
+            border-width: 2px;
+            border-style: solid;
+            border-color: var(--widget-border);
+            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            pointer-events: auto;
+            cursor: pointer;
+            border-top: 4px solid rgba(0, 217, 255, 0.5);
+        }
+
+        /* Efeito de "pasta" com borda superior destacada */
+        .widget.folder-stacked::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: 15px;
+            right: 15px;
+            height: 10px;
+            background: linear-gradient(180deg, 
+                rgba(0, 217, 255, 0.4) 0%, 
+                transparent 100%);
+            border-radius: 5px 5px 0 0;
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        /* Quando o widget está fora da pilha (selecionado) */
+        .widget.folder-stacked.selected {
+            transform: translateY(-50px) scale(1.08) !important;
+            box-shadow: 
+                0 20px 50px rgba(0, 0, 0, 0.7),
+                0 0 50px rgba(0, 217, 255, 0.4),
+                0 0 0 3px var(--primary-color);
+            border-color: var(--primary-color);
+            z-index: 1000 !important;
+            cursor: move;
+            border-top-color: var(--primary-color);
+        }
+
+        /* Animar todos os widgets da pilha quando um é selecionado */
+        .widgets-area:hover .widget.folder-stacked:not(:hover):not(.selected) {
+            transform: translateY(-8px) !important;
+            transition-delay: 0.1s;
+        }
+
+        /* Efeito de "respiro" na pilha */
+        @keyframes folderBreathe {
+            0%, 100% { 
+                transform: translateY(0) rotate(var(--widget-rotation, 0deg)); 
+                box-shadow: 
+                    0 1px 3px rgba(0, 0, 0, 0.3),
+                    0 0 0 1px rgba(0, 217, 255, 0.15);
+            }
+            50% { 
+                transform: translateY(-3px) rotate(calc(var(--widget-rotation, 0deg) + 0.3deg)); 
+                box-shadow: 
+                    0 3px 8px rgba(0, 0, 0, 0.4),
+                    0 0 0 1px rgba(0, 217, 255, 0.25);
+            }
+        }
+
+        .widget.folder-stacked {
+            animation: folderBreathe 4s ease-in-out infinite;
+            animation-delay: calc(var(--widget-index, 0) * 0.2s);
+        }
+
+        .widget.folder-stacked {
+            transition: 
+                transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1),
+                box-shadow 0.4s ease,
+                border-color 0.3s ease,
+                z-index 0.3s ease;
+        }
+
+        .widget.folder-stacked:hover {
+            transition: 
+                transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1),
+                box-shadow 0.3s ease,
+                border-color 0.2s ease;
+        }
+
+        /* Efeito de "pular" mais pronunciado */
+        @keyframes folderJump {
+            0% { 
+                transform: translateY(0) scale(1) rotate(var(--widget-rotation, 0deg)); 
+            }
+            60% { 
+                transform: translateY(-60px) scale(1.12) rotate(calc(var(--widget-rotation, 0deg) - 1.5deg)); 
+            }
+            100% { 
+                transform: translateY(-50px) scale(1.08) rotate(var(--widget-rotation, 0deg)); 
+            }
+        }
+
+        .widget.folder-stacked.selected {
+            animation: folderJump 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+        }
+
+        /* =========================================== */
+        /* INDICADOR DE PASTA NA PILHA */
+        /* =========================================== */
+        .folder-tab {
+            position: absolute;
+            top: -14px;
+            left: 25px;
+            width: 50px;
+            height: 14px;
+            background: linear-gradient(180deg, 
+                var(--primary-color) 0%, 
+                rgba(0, 150, 255, 0.9) 100%);
+            border-radius: 5px 5px 0 0;
+            z-index: 3;
+            pointer-events: none;
+            opacity: 0.9;
+            transform: perspective(12px) rotateX(-15deg);
+            box-shadow: 0 -3px 8px rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(0, 217, 255, 0.6);
+            border-bottom: none;
+        }
+
+        /* Número da pasta */
+        .folder-number {
+            position: absolute;
+            top: -16px;
+            left: 30px;
+            font-size: 10px;
+            color: rgba(255, 255, 255, 0.95);
+            font-weight: bold;
+            z-index: 4;
+            pointer-events: none;
+            text-shadow: 0 0 8px rgba(0, 217, 255, 0.8);
+            font-family: 'Courier New', monospace;
+            letter-spacing: 1px;
+        }
+
+        /* Efeito de pilha */
+        .widget.stacked {
+            transition: all 0.4s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+            box-shadow: 
+                0 2px 4px rgba(0, 0, 0, 0.3),
+                0 0 20px rgba(0, 217, 255, 0.1);
+        }
+
+        .widget:hover {
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.6),
+                0 0 30px rgba(0, 217, 255, 0.2);
+            border-color: var(--primary-color);
+            z-index: 1000 !important;
+            transform: translateY(-5px) scale(1.02);
+        }
+
+        .widget.dragging {
+            opacity: 0.9;
+            cursor: grabbing !important;
+            z-index: 1000 !important;
+            box-shadow: 0 0 30px rgba(0, 217, 255, 0.4) !important;
+            border-color: var(--primary-color) !important;
+        }
+
+        .widget.resizing {
+            cursor: nwse-resize !important;
+        }
+
+        .widget-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid rgba(0, 217, 255, 0.2);
+            flex-shrink: 0;
+            cursor: move;
+            user-select: none;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 6px 6px 0 0;
+            padding: 10px 15px;
+        }
+
+        .widget-title {
+            font-size: 12px;
+            color: var(--primary-color);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: bold;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .widget-controls {
+            display: flex;
+            gap: 8px;
+        }
+
+        .widget-btn {
+            background: transparent;
+            border: none;
+            color: var(--text-secondary);
+            cursor: pointer;
+            font-size: 12px;
+            padding: 4px 8px;
+            border-radius: 3px;
+            transition: all 0.2s;
+            min-width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .widget-btn:hover {
+            color: var(--primary-color);
+            background: rgba(0, 217, 255, 0.1);
+            transform: scale(1.1);
+        }
+
+        .widget-body {
+            flex: 1;
+            overflow: hidden;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            min-height: 0;
+        }
+
+        .resize-handle {
+            position: absolute;
+            right: 0;
+            bottom: 0;
+            width: 20px;
+            height: 20px;
+            cursor: nwse-resize;
+            z-index: 1001;
+            background: linear-gradient(135deg, transparent 50%, var(--primary-color) 50%);
+            opacity: 0.5;
+            border-radius: 0 0 8px 0;
+        }
+
+        .resize-handle:hover {
+            opacity: 1;
+        }
+
+        /* =========================================== */
+        /* CONTEÚDO DOS WIDGETS - RESPONSIVO BAT-HUD */
+        /* =========================================== */
+        .widget-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            min-height: 0;
+            gap: 10px;
+            overflow: hidden;
+            padding: 12px;
+            box-sizing: border-box;
+        }
+
+        /* Container flexível para métricas */
+        .metrics-container {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            flex: 1;
+            min-height: 0;
+            overflow: hidden;
+        }
+
+        /* Grids responsivos com tema Batman */
+        .responsive-grid {
+            display: grid;
+            gap: 12px;
+            flex: 1;
+            min-height: 0;
+        }
+
+        /* Para grids com 2 colunas */
+        .grid-2-cols {
+            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+        }
+
+        /* Para grids com 3 colunas */
+        .grid-3-cols {
+            grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
+        }
+
+        /* Para grids com 4 colunas */
+        .grid-4-cols {
+            grid-template-columns: repeat(auto-fill, minmax(70px, 1fr));
+        }
+
+        /* Texto responsivo */
+        .responsive-text {
+            font-size: clamp(9px, 1.2vw, 13px);
+            line-height: 1.4;
+            color: var(--text-secondary);
+        }
+
+        .responsive-title {
+            font-size: clamp(11px, 1.5vw, 16px);
+            font-weight: bold;
+            margin: 0 0 10px 0;
+            color: var(--primary-color);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Valores numéricos responsivos */
+        .responsive-value {
+            font-size: clamp(13px, 2vw, 20px);
+            font-weight: bold;
+            font-family: 'Courier New', monospace;
+            margin: 0;
+            color: var(--primary-color);
+        }
+
+        /* Elementos de interface responsivos */
+        .metric-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+            flex-wrap: wrap;
+            gap: 4px;
+        }
+
+        .metric-label {
+            font-size: clamp(8px, 1vw, 11px);
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        /* Cards de métrica responsivos */
+        .metric-card {
+            background: rgba(0, 20, 40, 0.6);
+            border: 1px solid rgba(0, 217, 255, 0.3);
+            border-radius: 6px;
+            padding: 12px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            min-height: 80px;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(5px);
+        }
+
+        .metric-card:hover {
+            transform: translateY(-2px);
+            border-color: var(--primary-color);
+            box-shadow: 0 4px 20px rgba(0, 217, 255, 0.2);
+        }
+
+        /* Contêiner flexível para gráficos e elementos visuais */
+        .chart-container {
+            flex: 1;
+            min-height: 0;
+            position: relative;
+            width: 100%;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 6px;
+            border: 1px solid rgba(0, 217, 255, 0.2);
+            padding: 10px;
+        }
+
+        /* Para listas dentro dos widgets */
+        .responsive-list {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            flex: 1;
+            overflow-y: auto;
+            max-height: 200px;
+        }
+
+        .list-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 10px;
+            background: rgba(0, 10, 30, 0.5);
+            border-radius: 4px;
+            border: 1px solid rgba(0, 217, 255, 0.1);
+            font-size: clamp(9px, 1.1vw, 12px);
+            transition: all 0.2s ease;
+        }
+
+        .list-item:hover {
+            background: rgba(0, 30, 60, 0.6);
+            border-color: rgba(0, 217, 255, 0.3);
+        }
+
+        /* Controles responsivos */
+        .responsive-control {
+            width: 100%;
+            padding: 8px 10px;
+            background: rgba(0, 10, 30, 0.8);
+            border: 1px solid rgba(0, 217, 255, 0.3);
+            border-radius: 4px;
+            color: var(--text-primary);
+            font-size: clamp(10px, 1.1vw, 13px);
+            margin-top: 5px;
+            box-sizing: border-box;
+            transition: all 0.3s ease;
+        }
+
+        .responsive-control:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 10px rgba(0, 217, 255, 0.3);
+        }
+
+        .responsive-button {
+            padding: 10px 15px;
+            border: none;
+            border-radius: 6px;
+            background: linear-gradient(135deg, rgba(0, 217, 255, 0.3), rgba(0, 150, 255, 0.2));
+            color: var(--primary-color);
+            font-size: clamp(10px, 1.2vw, 14px);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(0, 217, 255, 0.3);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: bold;
+        }
+
+        .responsive-button:hover {
+            background: linear-gradient(135deg, rgba(0, 217, 255, 0.4), rgba(0, 150, 255, 0.3));
+            box-shadow: 0 0 15px rgba(0, 217, 255, 0.4);
+            transform: translateY(-1px);
+        }
+
+        .responsive-button.secondary {
+            background: linear-gradient(135deg, rgba(108, 117, 125, 0.3), rgba(73, 80, 87, 0.2));
+            color: #adb5bd;
+        }
+
+        .responsive-button.danger {
+            background: linear-gradient(135deg, rgba(220, 53, 69, 0.3), rgba(185, 28, 28, 0.2));
+            color: #ff6b6b;
+        }
+
+        .trend-indicator {
+            font-size: clamp(12px, 1.5vw, 16px);
+            font-weight: bold;
+        }
+
+        /* Indicadores de status responsivos */
+        .status-indicator {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: clamp(9px, 1vw, 12px);
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--success-color);
+            box-shadow: 0 0 10px var(--success-color);
+        }
+
+        /* Barras de progresso responsivas */
+        .progress-bar {
+            width: 100%;
+            height: 6px;
+            background: rgba(0, 0, 0, 0.5);
+            border-radius: 3px;
+            overflow: hidden;
+            margin: 5px 0;
+        }
+
+        .progress-fill {
+            height: 100%;
+            border-radius: 3px;
+            background: linear-gradient(90deg, var(--primary-color), var(--success-color));
+            transition: width 0.5s ease;
+        }
+
+        /* =========================================== */
+        /* WIDGET 1: RADAR TÁTICO - COMPLETO */
+        /* =========================================== */
+        .radar-display {
+            background: radial-gradient(circle, 
+                rgba(0, 217, 255, 0.05) 0%, 
+                rgba(0, 150, 255, 0.1) 30%,
+                transparent 70%);
+            border-radius: 50%;
+            border: 2px solid rgba(0, 217, 255, 0.3);
+            flex: 1;
+            min-height: 120px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .radar-sweep {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 50%;
+            height: 2px;
+            background: linear-gradient(90deg, 
+                transparent, 
+                var(--primary-color) 20%,
+                var(--primary-color) 80%,
+                transparent);
+            transform-origin: left center;
+            animation: radarSweep 3s linear infinite;
+            filter: drop-shadow(0 0 3px var(--primary-color));
+        }
+
+        .radar-grid {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                radial-gradient(circle at center, transparent 0%, rgba(0, 217, 255, 0.05) 100%),
+                repeating-conic-gradient(from 0deg, transparent 0deg 15deg, rgba(0, 217, 255, 0.05) 15deg 30deg);
+        }
+
+        .radar-target {
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            background: var(--danger-color);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            animation: targetPulse 2s infinite;
+            filter: drop-shadow(0 0 5px var(--danger-color));
+        }
+
+        .radar-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+            gap: 10px;
+            margin-top: 12px;
+            padding: 10px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 6px;
+            border: 1px solid rgba(0, 217, 255, 0.2);
+        }
+
+        .radar-stat {
+            text-align: center;
+        }
+
+        .radar-stat-value {
+            font-size: clamp(14px, 1.8vw, 18px);
+            color: var(--primary-color);
+            font-weight: bold;
+            font-family: 'Courier New', monospace;
+        }
+
+        .radar-stat-label {
+            font-size: clamp(9px, 1vw, 11px);
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            margin-top: 2px;
+        }
+
+        /* =========================================== */
+        /* WIDGET 2: SISTEMA BAT-HUD - COMPLETO */
+        /* =========================================== */
+        .system-metrics {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .system-metric {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 10px;
+            border-radius: 6px;
+            border: 1px solid rgba(0, 217, 255, 0.2);
+        }
+
+        .metric-bar {
+            height: 8px;
+            background: rgba(0, 0, 0, 0.5);
+            border-radius: 4px;
+            overflow: hidden;
+            border: 1px solid rgba(0, 217, 255, 0.2);
+            margin-top: 5px;
+        }
+
+        .metric-fill {
+            height: 100%;
+            border-radius: 4px;
+            transition: width 0.5s ease;
+            background: linear-gradient(90deg, var(--primary-color), var(--success-color));
+        }
+
+        .system-status {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 12px;
+            padding-top: 10px;
+            border-top: 1px solid rgba(0, 217, 255, 0.1);
+        }
+
+        /* =========================================== */
+        /* WIDGET 3: DETECTOR DE AMEAÇAS - COMPLETO */
+        /* =========================================== */
+        .threat-scanner {
+            background: rgba(0, 0, 0, 0.5);
+            border-radius: 6px;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex: 1;
+            min-height: 70px;
+            border: 1px solid rgba(0, 217, 255, 0.2);
+        }
+
+        .threat-rings {
+            position: relative;
+            width: 70px;
+            height: 70px;
+        }
+
+        .threat-ring {
+            position: absolute;
+            border: 2px solid var(--danger-color);
+            border-radius: 50%;
+            animation: threatRing 3s ease-in-out infinite;
+            filter: drop-shadow(0 0 5px var(--danger-color));
+        }
+
+        .threat-ring:nth-child(1) { 
+            top: 0; left: 0; right: 0; bottom: 0; 
+            animation-delay: 0s; 
+        }
+        .threat-ring:nth-child(2) { 
+            top: 10px; left: 10px; right: 10px; bottom: 10px; 
+            animation-delay: 0.5s; 
+        }
+        .threat-ring:nth-child(3) { 
+            top: 20px; left: 20px; right: 20px; bottom: 20px; 
+            animation-delay: 1s; 
+        }
+
+        .threat-level {
+            position: absolute;
+            font-size: clamp(16px, 2vw, 20px);
+            color: var(--danger-color);
+            font-weight: bold;
+            text-shadow: 0 0 10px var(--danger-color);
+        }
+
+        .threat-list {
+            margin-top: 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .threat-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 10px;
+            background: rgba(255, 50, 50, 0.1);
+            border-radius: 4px;
+            border: 1px solid rgba(255, 50, 50, 0.3);
+        }
+
+        .threat-name {
+            font-size: clamp(10px, 1.1vw, 12px);
+            color: #ff8888;
+        }
+
+        .threat-severity {
+            font-size: clamp(9px, 1vw, 11px);
+            color: var(--danger-color);
+            background: rgba(255, 0, 0, 0.2);
+            padding: 3px 8px;
+            border-radius: 3px;
+            font-weight: bold;
+        }
+
+        /* =========================================== */
+        /* WIDGET 4: ANÁLISE FORENSE - COMPLETO */
+        /* =========================================== */
+        .dna-strand {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 4px;
+            margin-bottom: 15px;
+            height: 60px;
+            padding: 10px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 6px;
+        }
+
+        .dna-bar {
+            width: 3px;
+            background: linear-gradient(180deg, var(--primary-color), var(--success-color));
+            border-radius: 2px;
+            animation: dnaFloat 2s ease-in-out infinite;
+        }
+
+        .dna-bar:nth-child(odd) {
+            animation-direction: alternate;
+        }
+
+        .dna-bar:nth-child(even) {
+            animation-direction: alternate-reverse;
+        }
+
+        .forensic-data {
+            font-size: 10px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 6px;
+            padding: 10px;
+        }
+
+        .forensic-field {
+            display: flex;
+            justify-content: space-between;
+            padding: 6px 0;
+            border-bottom: 1px solid rgba(0, 217, 255, 0.1);
+        }
+
+        .forensic-field:last-child {
+            border-bottom: none;
+        }
+
+        .forensic-label {
+            color: var(--text-secondary);
+        }
+
+        .forensic-value {
+            color: var(--primary-color);
+            font-weight: bold;
+        }
+
+        .scan-progress {
+            margin-top: 10px;
+        }
+
+        /* =========================================== */
+        /* WIDGET 5: VEÍCULOS TÁTICOS - COMPLETO */
+        /* =========================================== */
+        .vehicle-status {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 12px;
+        }
+
+        .vehicle-card {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 6px;
+            padding: 12px;
+            text-align: center;
+            border: 1px solid rgba(0, 217, 255, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .vehicle-card.active {
+            border-color: var(--success-color);
+            box-shadow: 0 0 15px rgba(0, 255, 136, 0.3);
+        }
+
+        .vehicle-card:hover {
+            border-color: var(--primary-color);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 217, 255, 0.2);
+        }
+
+        .vehicle-icon {
+            font-size: clamp(24px, 3vw, 32px);
+            margin-bottom: 8px;
+            filter: drop-shadow(0 0 8px rgba(0, 217, 255, 0.5));
+        }
+
+        .vehicle-name {
+            font-size: clamp(11px, 1.3vw, 14px);
+            color: var(--primary-color);
+            font-weight: bold;
+            margin-bottom: 6px;
+        }
+
+        .vehicle-stats {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 8px;
+        }
+
+        .vehicle-stat {
+            text-align: center;
+        }
+
+        .vehicle-stat-value {
+            font-size: clamp(10px, 1.2vw, 13px);
+            color: var(--success-color);
+            font-weight: bold;
+        }
+
+        .vehicle-stat-label {
+            font-size: clamp(8px, 1vw, 10px);
+            color: var(--text-secondary);
+        }
+
+        /* =========================================== */
+        /* WIDGET 6: CLIMA GOTHAM - COMPLETO */
+        /* =========================================== */
+        .weather-main {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            flex: 1;
+            min-height: 90px;
+            border: 1px solid rgba(0, 217, 255, 0.2);
+        }
+
+        .weather-icon-large {
+            font-size: clamp(32px, 4vw, 40px);
+            margin-bottom: 10px;
+            filter: drop-shadow(0 0 10px rgba(0, 217, 255, 0.5));
+        }
+
+        .weather-temp {
+            font-size: clamp(24px, 3vw, 32px);
+            color: var(--primary-color);
+            font-weight: bold;
+            font-family: 'Courier New', monospace;
+            margin-bottom: 6px;
+        }
+
+        .weather-condition {
+            font-size: clamp(11px, 1.3vw, 14px);
+            color: var(--text-secondary);
+            margin-bottom: 10px;
+        }
+
+        .weather-details {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+            gap: 10px;
+            width: 100%;
+            margin-top: 12px;
+        }
+
+        .weather-detail {
+            background: rgba(0, 0, 0, 0.5);
+            padding: 8px;
+            border-radius: 4px;
+            border: 1px solid rgba(0, 217, 255, 0.1);
+        }
+
+        .weather-detail-label {
+            font-size: clamp(8px, 1vw, 10px);
+            color: var(--text-secondary);
+            display: block;
+            text-transform: uppercase;
+        }
+
+        .weather-detail-value {
+            font-size: clamp(10px, 1.2vw, 13px);
+            color: var(--primary-color);
+            font-weight: bold;
+            display: block;
+            margin-top: 3px;
+        }
+
+        /* =========================================== */
+        /* WIDGET 7: DETECTOR DE MOVIMENTO - COMPLETO */
+        /* =========================================== */
+        .motion-grid {
+            display: grid;
+            grid-template-columns: repeat(8, 1fr);
+            gap: 3px;
+            height: 120px;
+            background: rgba(0, 0, 0, 0.5);
+            padding: 8px;
+            border-radius: 6px;
+            border: 1px solid rgba(0, 217, 255, 0.2);
+        }
+
+        .motion-cell {
+            background: rgba(0, 217, 255, 0.05);
+            border-radius: 2px;
+            transition: all 0.3s ease;
+            aspect-ratio: 1;
+        }
+
+        .motion-cell.active {
+            background: var(--danger-color);
+            box-shadow: 0 0 5px var(--danger-color);
+            animation: motionPulse 1s infinite;
+        }
+
+        .motion-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 10px;
+            font-size: clamp(10px, 1.1vw, 12px);
+            color: var(--text-secondary);
+            background: rgba(0, 0, 0, 0.3);
+            padding: 8px;
+            border-radius: 4px;
+        }
+
+        /* =========================================== */
+        /* WIDGET 8: ANÁLISE ESPECTRAL - COMPLETO */
+        /* =========================================== */
+        .spectrum-display {
+            background: rgba(0, 0, 0, 0.5);
+            padding: 15px;
+            border-radius: 6px;
+            margin-bottom: 10px;
+            border: 1px solid rgba(0, 217, 255, 0.2);
+        }
+
+        .spectrum-graph {
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+            gap: 2px;
+            height: 120px;
+            margin-bottom: 15px;
+            padding: 0 10px;
+        }
+
+        .spectrum-bar {
+            flex: 1;
+            max-width: 15px;
+            background: linear-gradient(180deg, var(--info-color), var(--primary-color));
+            border-radius: 2px 2px 0 0;
+            transition: height 0.2s;
+            animation: spectrumWave 3s ease-in-out infinite;
+        }
+
+        .spectrum-bar:nth-child(1) { animation-delay: 0s; }
+        .spectrum-bar:nth-child(2) { animation-delay: 0.1s; }
+        .spectrum-bar:nth-child(3) { animation-delay: 0.2s; }
+        .spectrum-bar:nth-child(4) { animation-delay: 0.3s; }
+        .spectrum-bar:nth-child(5) { animation-delay: 0.4s; }
+
+        .spectrum-info {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 8px;
+        }
+
+        .spectrum-item {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 8px;
+            border-radius: 4px;
+            font-size: 10px;
+            text-align: center;
+            border: 1px solid rgba(0, 217, 255, 0.1);
+        }
+
+        .spectrum-label {
+            color: var(--text-secondary);
+            margin-bottom: 4px;
+            font-size: clamp(8px, 1vw, 10px);
+        }
+
+        .spectrum-value {
+            color: var(--info-color);
+            font-weight: bold;
+            font-size: clamp(12px, 1.5vw, 14px);
+        }
+
+        /* =========================================== */
+        /* WIDGET 9: VIGILÂNCIA SATÉLITE - COMPLETO */
+        /* =========================================== */
+        .satellite-view {
+            position: relative;
+            width: 100%;
+            height: 220px;
+            background: radial-gradient(circle at center, rgba(0, 217, 255, 0.1), rgba(0, 0, 0, 0.8));
+            border-radius: 6px;
+            overflow: hidden;
+            margin-bottom: 10px;
+            border: 1px solid rgba(0, 217, 255, 0.2);
+        }
+
+        .orbit-path {
+            position: absolute;
+            border: 1px dashed rgba(0, 217, 255, 0.3);
+            border-radius: 50%;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .orbit-path:nth-child(1) { width: 80%; height: 80%; }
+        .orbit-path:nth-child(2) { width: 60%; height: 60%; }
+        .orbit-path:nth-child(3) { width: 40%; height: 40%; }
+
+        .satellite-icon {
+            position: absolute;
+            width: 24px;
+            height: 24px;
+            background: var(--primary-color);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            color: #000;
+            animation: satelliteOrbit 10s linear infinite;
+            box-shadow: 0 0 15px var(--primary-color);
+        }
+
+        .earth-center {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 60px;
+            height: 60px;
+            background: radial-gradient(circle, var(--success-color), var(--primary-dark));
+            border-radius: 50%;
+            box-shadow: 0 0 30px rgba(0, 217, 255, 0.5);
+        }
+
+        .satellite-data {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 8px;
+        }
+
+        .sat-stat {
+            background: rgba(0, 0, 0, 0.5);
+            padding: 8px;
+            border-radius: 4px;
+            text-align: center;
+            font-size: 10px;
+            border: 1px solid rgba(0, 217, 255, 0.1);
+        }
+
+        .sat-stat-value {
+            color: var(--primary-color);
+            font-weight: bold;
+            font-size: clamp(14px, 1.8vw, 16px);
+            margin-bottom: 3px;
+        }
+
+        .sat-stat-label {
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            font-size: clamp(8px, 1vw, 10px);
+        }
+
+        /* =========================================== */
+        /* WIDGET 10: PROTOCOLO EMERGÊNCIA - COMPLETO */
+        /* =========================================== */
+        .emergency-header {
+            background: linear-gradient(135deg, rgba(255, 0, 64, 0.2), rgba(255, 50, 50, 0.1));
+            padding: 15px;
+            border-radius: 6px;
+            text-align: center;
+            margin-bottom: 15px;
+            border: 2px solid var(--danger-color);
+        }
+
+        .emergency-icon {
+            font-size: 48px;
+            color: var(--danger-color);
+            margin-bottom: 10px;
+            animation: emergencyPulse 1.5s ease-in-out infinite;
+        }
+
+        .emergency-status {
+            font-size: clamp(14px, 1.8vw, 16px);
+            color: var(--text-primary);
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        .emergency-protocols {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .protocol-btn {
+            background: rgba(0, 0, 0, 0.5);
+            padding: 12px;
+            border-radius: 6px;
+            border: 1px solid var(--danger-color);
+            color: var(--text-primary);
+            cursor: pointer;
+            font-size: clamp(10px, 1.1vw, 11px);
+            text-transform: uppercase;
+            font-weight: bold;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .protocol-btn:hover {
+            background: rgba(255, 0, 64, 0.2);
+            transform: translateX(5px);
+            box-shadow: 0 0 15px rgba(255, 0, 64, 0.5);
+        }
+
+        .protocol-icon {
+            width: 30px;
+            height: 30px;
+            background: var(--danger-color);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            flex-shrink: 0;
+        }
+
+        /* =========================================== */
+        /* WIDGET 11: RASTREAMENTO DE ALVOS - COMPLETO */
+        /* =========================================== */
+        .tracking-radar {
+            position: relative;
+            width: 180px;
+            height: 180px;
+            margin: 0 auto 15px;
+            background: radial-gradient(circle, rgba(0, 217, 255, 0.1), transparent);
+            border: 2px solid var(--primary-color);
+            border-radius: 50%;
+        }
+
+        .tracking-sweep {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 50%;
+            height: 2px;
+            background: linear-gradient(90deg, var(--primary-color), transparent);
+            transform-origin: left center;
+            animation: trackingSweep 3s linear infinite;
+        }
+
+        .target-dot {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background: var(--warning-color);
+            border-radius: 50%;
+            box-shadow: 0 0 10px var(--warning-color);
+            animation: targetBlink 2s ease-in-out infinite;
+            transform: translate(-50%, -50%);
+        }
+
+        .tracking-info {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            font-size: 10px;
+        }
+
+        .tracking-stat {
+            text-align: center;
+            background: rgba(0, 0, 0, 0.3);
+            padding: 8px;
+            border-radius: 4px;
+            border: 1px solid rgba(0, 217, 255, 0.2);
+        }
+
+        .tracking-value {
+            font-size: clamp(16px, 2vw, 18px);
+            color: var(--warning-color);
+            font-weight: bold;
+            display: block;
+        }
+
+        .tracking-label {
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            font-size: clamp(8px, 1vw, 10px);
+            display: block;
+            margin-top: 2px;
+        }
+
+        /* =========================================== */
+        /* WIDGET 12: ESTATÍSTICAS COMBATE - COMPLETO */
+        /* =========================================== */
+        .combat-stats {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+        }
+
+        .combat-card {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 6px;
+            padding: 12px;
+            text-align: center;
+            border: 1px solid rgba(0, 217, 255, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .combat-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(0, 217, 255, 0.2);
+        }
+
+        .combat-number {
+            font-size: clamp(20px, 2.5vw, 28px);
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .combat-label {
+            font-size: clamp(9px, 1vw, 11px);
+            color: var(--text-secondary);
+            text-transform: uppercase;
+        }
+
+        .combat-efficiency {
+            margin-top: 15px;
+            background: rgba(0, 0, 0, 0.3);
+            padding: 12px;
+            border-radius: 6px;
+            border: 1px solid rgba(0, 217, 255, 0.2);
+        }
+
+        /* =========================================== */
+        /* WIDGET 13: COMUNICAÇÕES - COMPLETO */
+        /* =========================================== */
+        .comms-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+        }
+
+        .comms-channel {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 12px;
+            border-radius: 6px;
+            text-align: center;
+            border: 1px solid rgba(0, 217, 255, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .comms-channel:hover {
+            transform: translateY(-2px);
+            border-color: var(--primary-color);
+        }
+
+        .comms-icon {
+            font-size: 24px;
+            color: var(--primary-color);
+            margin-bottom: 8px;
+            filter: drop-shadow(0 0 5px rgba(0, 217, 255, 0.5));
+        }
+
+        .comms-name {
+            font-size: clamp(10px, 1.1vw, 11px);
+            color: var(--text-primary);
+            margin-bottom: 4px;
+            font-weight: bold;
+        }
+
+        .comms-status {
+            font-size: clamp(9px, 1vw, 10px);
+            color: var(--success-color);
+            background: rgba(0, 255, 136, 0.1);
+            padding: 3px 6px;
+            border-radius: 3px;
+            display: inline-block;
+        }
+
+        /* =========================================== */
+        /* WIDGET 14: SISTEMA DE ENERGIA - COMPLETO */
+        /* =========================================== */
+        .power-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+        }
+
+        .power-cell {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 6px;
+            padding: 15px;
+            text-align: center;
+            border: 1px solid rgba(0, 217, 255, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .power-cell:hover {
+            transform: translateY(-2px);
+            border-color: var(--primary-color);
+        }
+
+        .power-value {
+            font-size: clamp(20px, 2.5vw, 24px);
+            color: var(--primary-color);
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .power-label {
+            font-size: clamp(9px, 1vw, 10px);
+            color: var(--text-secondary);
+            text-transform: uppercase;
+        }
+
+        .power-total {
+            margin-top: 15px;
+            background: rgba(0, 0, 0, 0.3);
+            padding: 12px;
+            border-radius: 6px;
+            border: 1px solid rgba(0, 217, 255, 0.2);
+        }
+
+        /* =========================================== */
+        /* WIDGET 15: SCANNER BIOMÉTRICO - COMPLETO */
+        /* =========================================== */
+        .biometric-display {
+            background: rgba(0, 0, 0, 0.5);
+            border-radius: 6px;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex: 1;
+            min-height: 70px;
+            border: 1px solid rgba(0, 217, 255, 0.2);
+        }
+
+        .fingerprint {
+            position: relative;
+            width: 60px;
+            height: 60px;
+            background: 
+                radial-gradient(circle at 30px 30px, rgba(0, 217, 255, 0.1) 0%, transparent 60%),
+                repeating-conic-gradient(from 0deg, transparent 0deg 10deg, rgba(0, 217, 255, 0.05) 10deg 20deg);
+            border-radius: 50%;
+            border: 2px solid rgba(0, 217, 255, 0.3);
+        }
+
+        .scan-line {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: linear-gradient(90deg, 
+                transparent, 
+                var(--primary-color),
+                transparent);
+            animation: scanLine 2s linear infinite;
+            filter: drop-shadow(0 0 5px var(--primary-color));
+        }
+
+        .biometric-data {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin-top: 12px;
+        }
+
+        .bio-field {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 8px;
+            border-radius: 4px;
+            border: 1px solid rgba(0, 217, 255, 0.2);
+        }
+
+        .bio-label {
+            font-size: clamp(9px, 1vw, 11px);
+            color: var(--text-secondary);
+            display: block;
+            text-transform: uppercase;
+        }
+
+        .bio-value {
+            font-size: clamp(11px, 1.3vw, 14px);
+            color: var(--primary-color);
+            font-weight: bold;
+            font-family: 'Courier New', monospace;
+            display: block;
+            margin-top: 3px;
+        }
+
+        /* =========================================== */
+        /* WIDGET 16: ANÁLISE DE VOZ - COMPLETO */
+        /* =========================================== */
+        .voice-visualizer {
+            background: rgba(0, 0, 0, 0.5);
+            border-radius: 6px;
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-around;
+            padding: 12px;
+            gap: 3px;
+            flex: 1;
+            min-height: 70px;
+            border: 1px solid rgba(0, 217, 255, 0.2);
+        }
+
+        .voice-bar {
+            width: 5px;
+            background: linear-gradient(to top, 
+                var(--primary-color) 0%,
+                var(--success-color) 100%);
+            border-radius: 3px 3px 0 0;
+            animation: voicePulse 0.5s ease-in-out infinite alternate;
+            animation-delay: calc(var(--i, 0) * 0.1s);
+        }
+
+        .voice-controls {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-top: 12px;
+        }
+
+        .voice-btn {
+            padding: 8px 12px;
+            background: rgba(0, 217, 255, 0.1);
+            border: 1px solid var(--primary-color);
+            color: var(--primary-color);
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: clamp(10px, 1.1vw, 13px);
+            text-transform: uppercase;
+            transition: all 0.3s ease;
+            font-family: 'Courier New', monospace;
+            text-align: center;
+        }
+
+        .voice-btn:hover {
+            background: rgba(0, 217, 255, 0.2);
+            transform: translateY(-1px);
+            box-shadow: 0 0 10px rgba(0, 217, 255, 0.3);
+        }
+
+        /* =========================================== */
+        /* RESPONSIVIDADE GERAL */
+        /* =========================================== */
+        @media (max-width: 1200px) {
+            .widget-content {
+                padding: 10px;
+                gap: 8px;
+            }
+            
+            .grid-2-cols {
+                grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+            }
+            
+            .grid-3-cols {
+                grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+            }
+            
+            .grid-4-cols {
+                grid-template-columns: repeat(auto-fill, minmax(60px, 1fr));
+            }
+            
+            .metric-card {
+                padding: 10px;
+                min-height: 70px;
+            }
+            
+            .responsive-value {
+                font-size: clamp(12px, 1.8vw, 18px);
+            }
+            
+            .radar-display {
+                min-height: 100px;
+            }
+            
+            .motion-grid {
+                height: 100px;
+                grid-template-columns: repeat(6, 1fr);
+            }
+            
+            .satellite-view {
+                height: 180px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .widget-content {
+                padding: 8px;
+                gap: 6px;
+            }
+            
+            .grid-2-cols {
+                grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+            }
+            
+            .grid-3-cols {
+                grid-template-columns: repeat(auto-fill, minmax(70px, 1fr));
+            }
+            
+            .grid-4-cols {
+                grid-template-columns: repeat(auto-fill, minmax(50px, 1fr));
+            }
+            
+            .metric-card {
+                padding: 8px;
+                min-height: 60px;
+            }
+            
+            .responsive-value {
+                font-size: clamp(11px, 1.6vw, 16px);
+            }
+            
+            .responsive-title {
+                font-size: clamp(10px, 1.3vw, 14px);
+            }
+            
+            .radar-display {
+                min-height: 80px;
+            }
+            
+            .voice-visualizer {
+                min-height: 60px;
+            }
+            
+            .biometric-display {
+                min-height: 60px;
+            }
+            
+            .threat-scanner {
+                min-height: 60px;
+            }
+            
+            .motion-grid {
+                height: 80px;
+                grid-template-columns: repeat(4, 1fr);
+            }
+            
+            .satellite-view {
+                height: 150px;
+            }
+            
+            .tracking-radar {
+                width: 150px;
+                height: 150px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .widget-content {
+                padding: 6px;
+                gap: 5px;
+            }
+            
+            .grid-2-cols {
+                grid-template-columns: repeat(auto-fill, minmax(70px, 1fr));
+            }
+            
+            .grid-3-cols {
+                grid-template-columns: repeat(auto-fill, minmax(60px, 1fr));
+            }
+            
+            .grid-4-cols {
+                grid-template-columns: repeat(auto-fill, minmax(45px, 1fr));
+            }
+            
+            .responsive-value {
+                font-size: clamp(10px, 1.4vw, 14px);
+            }
+            
+            .responsive-text {
+                font-size: clamp(8px, 1vw, 11px);
+            }
+            
+            .radar-stats {
+                grid-template-columns: repeat(auto-fit, minmax(70px, 1fr));
+            }
+            
+            .vehicle-status {
+                grid-template-columns: 1fr;
+            }
+            
+            .combat-stats {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .weather-details {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .comms-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .power-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .motion-grid {
+                grid-template-columns: repeat(3, 1fr);
+                height: 60px;
+            }
+        }
+
+        /* ANIMAÇÕES ADICIONAIS */
+        @keyframes targetPulse {
+            0%, 100% { opacity: 0.5; transform: translate(-50%, -50%) scale(1); }
+            50% { opacity: 1; transform: translate(-50%, -50%) scale(1.2); }
+        }
+
+        @keyframes voicePulse {
+            from { height: 10%; }
+            to { height: 90%; }
+        }
+
+        @keyframes scanLine {
+            from { top: 0; }
+            to { top: 100%; }
+        }
+
+        @keyframes threatRing {
+            0%, 100% { 
+                transform: scale(1); 
+                opacity: 0.3; 
+                border-width: 2px;
+            }
+            50% { 
+                transform: scale(1.1); 
+                opacity: 1; 
+                border-width: 3px;
+            }
+        }
+
+        @keyframes motionPulse {
+            0%, 100% { opacity: 0.7; }
+            50% { opacity: 1; }
+        }
+
+        @keyframes radarSweep {
+            from { transform: translate(-50%, -50%) rotate(0deg); }
+            to { transform: translate(-50%, -50%) rotate(360deg); }
+        }
+
+        @keyframes dnaFloat {
+            0%, 100% { height: 30%; }
+            50% { height: 100%; }
+        }
+
+        @keyframes spectrumWave {
+            0%, 100% { height: 20%; }
+            50% { height: 90%; }
+        }
+
+        @keyframes satelliteOrbit {
+            0% { top: 10%; left: 50%; }
+            25% { top: 50%; left: 90%; }
+            50% { top: 90%; left: 50%; }
+            75% { top: 50%; left: 10%; }
+            100% { top: 10%; left: 50%; }
+        }
+
+        @keyframes emergencyPulse {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.2); opacity: 0.7; }
+        }
+
+        @keyframes trackingSweep {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @keyframes targetBlink {
+            0%, 100% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+            50% { opacity: 0.5; transform: translate(-50%, -50%) scale(1.3); }
+        }
+
+        /* =========================================== */
+        /* PEÇAS DA INTERFACE */
+        /* =========================================== */
+        .piece-container {
+            position: absolute;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 100;
+        }
+
+        .piece-svg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            filter: drop-shadow(0 0 10px rgba(0, 217, 255, 0.3));
+            transition: all 0.3s ease;
+        }
+
+        .piece-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--hud-pieces-bg);
+            clip-path: inherit;
+            transition: all 0.3s ease;
+        }
+
+        .piece-link {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            z-index: 110;
+            padding: 10px;
+            cursor: pointer;
+        }
+
+        .piece-link-icon {
+            font-size: 24px;
+            color: var(--primary-color);
+            margin-bottom: 8px;
+            filter: drop-shadow(0 0 10px rgba(0, 217, 255, 0.5));
+        }
+
+        .piece-link-text {
+            color: rgba(0, 217, 255, 0.9);
+            font-size: 11px;
+            font-weight: bold;
+            text-shadow: 0 0 8px rgba(0, 217, 255, 0.7);
+            text-transform: uppercase;
+            text-align: center;
+            line-height: 1.3;
+        }
+
+        /* POSICIONAMENTO DAS PEÇAS */
+        .top-left {
+            top: 0;
+            left: 0;
+            width: 30%;
+            height: 80px;
+            clip-path: polygon(0 0, 100% 0, 70% 100%, 0 100%);
+        }
+
+        .top-center {
+            top: 0;
+            left: 30%;
+            width: 40%;
+            height: 40px;
+            clip-path: polygon(0 0, 100% 0, 90% 100%, 10% 100%);
+        }
+
+        .top-right {
+            top: 0;
+            right: 0;
+            width: 30%;
+            height: 80px;
+            clip-path: polygon(0 0, 100% 0, 100% 100%, 30% 100%);
+        }
+
+        .mid-left {
+            top: 80px;
+            left: 0;
+            width: 35px;
+            height: calc(100% - 160px);
+            clip-path: polygon(0 0, 100% 10%, 100% 90%, 0 100%);
+        }
+
+        .mid-right {
+            top: 80px;
+            right: 0;
+            width: 35px;
+            height: calc(100% - 160px);
+            clip-path: polygon(0 10%, 100% 0, 100% 100%, 0 90%);
+        }
+
+        .bottom-left {
+            bottom: 0;
+            left: 0;
+            width: 30%;
+            height: 80px;
+            clip-path: polygon(0 0, 70% 0, 100% 100%, 0 100%);
+        }
+
+        .bottom-center {
+            bottom: 0;
+            left: 30%;
+            width: 40%;
+            height: 50px;
+            clip-path: polygon(10% 0, 90% 0, 100% 100%, 0 100%);
+        }
+
+        .bottom-right {
+            bottom: 0;
+            right: 0;
+            width: 30%;
+            height: 80px;
+            clip-path: polygon(30% 0, 100% 0, 100% 100%, 0 100%);
+        }
+
+        /* =========================================== */
+        /* MENSAGEM CENTRAL */
+        /* =========================================== */
+        .hint {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: #0af;
+            text-align: center;
+            z-index: 1;
+            pointer-events: none;
+            letter-spacing: 1px;
+            font-size: 16px;
+            width: 90%;
+            max-width: 400px;
+        }
+
+        .hint span {
+            font-size: 11px;
+            opacity: 0.7;
+            display: block;
+            margin-top: 5px;
+        }
+
+        .hint img {
+            width: 180px;
+            height: auto;
+            display: block;
+            margin: 0 auto 20px;
+            filter: drop-shadow(0 0 15px rgba(0, 217, 255, 0.6));
+        }
+
+        /* =========================================== */
+        /* ANIMAÇÕES GLOBAIS */
+        /* =========================================== */
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+            20%, 40%, 60%, 80% { transform: translateX(5px); }
+        }
+
+        /* =========================================== */
+        /* BUG FIXES */
+        /* =========================================== */
+        .widget.minimized .widget-body {
+            display: none;
+        }
+
+        .widget.minimized {
+            height: auto;
+            min-height: auto;
+            padding-bottom: 5px;
+        }
+
+        .widget.minimized .resize-handle {
+            display: none;
+        }
+
+        .widget-header {
+            cursor: grab;
+        }
+
+        .widget-header:active {
+            cursor: grabbing;
+        }
+
+        /* =========================================== */
+        /* RESPONSIVIDADE MOBILE */
+        /* =========================================== */
+        @media (max-width: 768px) {
+            .hud-frame {
+                overflow: visible;
+            }
+
+            .widgets-area {
+                top: 65px;
+                left: 25px;
+                right: 25px;
+                bottom: 65px;
+            }
+
+            .widget {
+                min-width: 160px;
+                min-height: 120px;
+                padding: 10px;
+                max-width: 90vw;
+                max-height: 70vh;
+            }
+
+            .widget.folder-stacked {
+                min-width: 140px;
+                min-height: 110px;
+            }
+
+            .top-left,
+            .top-right,
+            .bottom-left,
+            .bottom-right {
+                width: 35%;
+                height: 65px !important;
+            }
+
+            .top-center,
+            .bottom-center {
+                width: 30%;
+                left: 35%;
+                height: 35px !important;
+            }
+
+            .mid-left,
+            .mid-right {
+                top: 65px !important;
+                height: calc(100% - 130px) !important;
+                width: 25px !important;
+            }
+
+            .alert-timer {
+                bottom: 40px;
+                right: 10px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .widgets-area {
+                top: 55px;
+                left: 15px;
+                right: 15px;
+                bottom: 55px;
+            }
+
+            .widget {
+                min-width: 140px;
+                min-height: 100px;
+                padding: 8px;
+            }
+
+            .widget.folder-stacked {
+                min-width: 120px;
+                min-height: 90px;
+            }
+
+            .top-left,
+            .top-right,
+            .bottom-left,
+            .bottom-right {
+                width: 40%;
+                height: 55px !important;
+            }
+
+            .top-center,
+            .bottom-center {
+                width: 20%;
+                left: 40%;
+                height: 30px !important;
+            }
+
+            .mid-left,
+            .mid-right {
+                width: 20px;
+                height: calc(100% - 110px);
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Efeito de chuva Gotham -->
+    <div class="rain-overlay" id="rainOverlay"></div>
+
+    <!-- Alerta de Emergência Batman -->
+    <div class="emergency-alert" id="emergencyAlert" onclick="BatHUD.dismissEmergency()">
+        <div class="emergency-content">
+            <h1 class="emergency-title">ALERTA BATMAN</h1>
+            <div class="emergency-subtitle">NÍVEL DE AMEAÇA: MÁXIMO</div>
+            <div class="emergency-message">
+                ⚠️ ATENÇÃO: ATIVIDADE CRIMINOSA DETECTADA<br>
+                🔴 REQUER INTERVENÇÃO DO CAVALEIRO DAS TREVAS
+            </div>
+            <div class="emergency-countdown" id="emergencyCountdown">00:30</div>
+            <div style="color: #ff8888; font-size: 14px;">CLIQUE PARA CONFIRMAR</div>
+        </div>
+    </div>
+
+    <!-- Widget do Timer de Alerta -->
+    <div class="alert-timer" id="alertTimer">
+        <span class="alert-label">ALERT</span>
+        <div class="timer-value" id="nextAlertTime">01:00</div>
+        <button class="timer-skip" onclick="BatHUD.skipAlert()">X</button>
+    </div>
+
+    <!-- Tela de Login -->
+    <div class="auth-screen" id="authScreen">
+        <div class="auth-frame">
+            <div class="bat-logo">
+                <h1>WAYNE ENTERPRISES</h1>
+                <div class="bat-symbol"></div>
+            </div>
+
+            <div class="auth-error" id="authError">
+                Acesso negado. Verifique suas credenciais.
+            </div>
+
+            <!-- Formulário de Login -->
+            <form class="auth-form" id="loginForm">
+                <div class="form-group">
+                    <input type="text" class="form-input" id="loginUser" required maxlength="20">
+                    <label class="form-label">USUÁRIO</label>
+                </div>
+
+                <div class="form-group">
+                    <input type="password" class="form-input" id="loginPass" required maxlength="30">
+                    <label class="form-label">SENHA</label>
+                </div>
+
+                <button type="submit" class="auth-button">ACESSAR SISTEMA</button>
+            </form>
+
+            <!-- Formulário de Registro -->
+            <form class="auth-form" id="registerForm" style="display: none;">
+                <div class="form-group">
+                    <input type="text" class="form-input" id="regUser" required maxlength="20">
+                    <label class="form-label">NOVO USUÁRIO</label>
+                </div>
+
+                <div class="form-group">
+                    <input type="password" class="form-input" id="regPass" required maxlength="30">
+                    <label class="form-label">SENHA</label>
+                </div>
+
+                <div class="form-group">
+                    <input type="password" class="form-input" id="regConfirm" required maxlength="30">
+                    <label class="form-label">CONFIRMAR SENHA</label>
+                </div>
+
+                <button type="submit" class="auth-button">CRIAR CONTA</button>
+            </form>
+
+            <div class="auth-switch">
+                <span id="switchText">Não tem acesso?</span>
+                <a id="switchLink" onclick="BatHUD.toggleForms()">Solicitar credencial</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Indicador de Usuário -->
+    <div class="user-indicator" id="userIndicator" style="display: none;">
+        <span id="userName">Operador</span>
+        <button class="logout-btn" onclick="BatHUD.logout()">LOGOUT</button>
+    </div>
+
+    <!-- Interface HUD -->
+    <div class="hud-frame" id="hudFrame">
+        <!-- Área dos Widgets -->
+        <div class="widgets-area" id="widgetsArea">
+            <!-- Widgets serão criados dinamicamente -->
+            <div class="boundary-overlay"></div>
+        </div>
+
+        <!-- Peças da Interface -->
+        <div class="piece-container top-left">
+            <svg class="piece-svg" viewBox="0 0 100 100" preserveAspectRatio="none">
+                <path d="M0,0 L100,0 L70,100 L0,100 Z" fill="none" stroke="#00d9ff" stroke-width="2" />
+            </svg>
+            <div class="piece-bg"></div>
+            <a href="batcave.html" class="piece-link">
+                <div class="piece-link-icon">🏰</div>
+                <div class="piece-link-text">BATCAVE SYSTEMS<br>CONTROL PANEL</div>
+            </a>
+        </div>
+
+        <div class="piece-container top-center">
+            <svg class="piece-svg" viewBox="0 0 100 100" preserveAspectRatio="none">
+                <path d="M0,0 L100,0 L90,100 L10,100 Z" fill="none" stroke="#00d9ff" stroke-width="2" />
+            </svg>
+            <div class="piece-bg"></div>
+            <a href="command.html" class="piece-link">
+                <div class="piece-link-icon">🦇</div>
+                <div class="piece-link-text">CENTRAL DE COMANDO<br>WAYNE ENTERPRISES</div>
+            </a>
+        </div>
+
+        <div class="piece-container top-right">
+            <svg class="piece-svg" viewBox="0 0 100 100" preserveAspectRatio="none">
+                <path d="M0,0 L100,0 L100,100 L30,100 Z" fill="none" stroke="#00d9ff" stroke-width="2" />
+            </svg>
+            <div class="piece-bg"></div>
+            <a href="surveillance.html" class="piece-link">
+                <div class="piece-link-icon">📹</div>
+                <div class="piece-link-text">VIGILÂNCIA GOTHAM<br>SURVEILLANCE GRID</div>
+            </a>
+        </div>
+
+        <div class="piece-container mid-left">
+            <svg class="piece-svg" viewBox="0 0 100 100" preserveAspectRatio="none">
+                <path d="M0,0 L100,10 L100,90 L0,100 Z" fill="none" stroke="#00d9ff" stroke-width="2" />
+            </svg>
+            <div class="piece-bg"></div>
+            <a href="weapons.html" class="piece-link">
+                <div class="piece-link-icon">⚔️</div>
+                <div class="piece-link-text">ARMAMENTOS<br>E EQUIPAMENTOS</div>
+            </a>
+        </div>
+
+        <div class="piece-container mid-right">
+            <svg class="piece-svg" viewBox="0 0 100 100" preserveAspectRatio="none">
+                <path d="M0,10 L100,0 L100,100 L0,90 Z" fill="none" stroke="#00d9ff" stroke-width="2" />
+            </svg>
+            <div class="piece-bg"></div>
+            <a href="vehicle.html" class="piece-link">
+                <div class="piece-link-icon">🚗</div>
+                <div class="piece-link-text">CONTROLE DE<br>VEÍCULOS TÁTICOS</div>
+            </a>
+        </div>
+
+        <div class="piece-container bottom-left">
+            <svg class="piece-svg" viewBox="0 0 100 100" preserveAspectRatio="none">
+                <path d="M0,0 L70,0 L100,100 L0,100 Z" fill="none" stroke="#00d9ff" stroke-width="2" />
+            </svg>
+            <div class="piece-bg"></div>
+            <a href="database.html" class="piece-link">
+                <div class="piece-link-icon">💾</div>
+                <div class="piece-link-text">BANCO DE DADOS<br>CRIMINAL GOTHAM</div>
+            </a>
+        </div>
+
+        <div class="piece-container bottom-center">
+            <svg class="piece-svg" viewBox="0 0 100 100" preserveAspectRatio="none">
+                <path d="M10,0 L90,0 L100,100 L0,100 Z" fill="none" stroke="#00d9ff" stroke-width="2" />
+            </svg>
+            <div class="piece-bg"></div>
+            <a href="gotham.html" class="piece-link">
+                <div class="piece-link-icon">🗺️</div>
+                <div class="piece-link-text">MAPA GOTHAM<br>INTERATIVE CITY MAP</div>
+            </a>
+        </div>
+
+        <div class="piece-container bottom-right">
+            <svg class="piece-svg" viewBox="0 0 100 100" preserveAspectRatio="none">
+                <path d="M30,0 L100,0 L100,100 L0,100 Z" fill="none" stroke="#00d9ff" stroke-width="2" />
+            </svg>
+            <div class="piece-bg"></div>
+            <a href="mission.html" class="piece-link">
+                <div class="piece-link-icon">🎯</div>
+                <div class="piece-link-text">MISSÃO ATIVA<br>LIVE OPERATION DATA</div>
+            </a>
+        </div>
+
+        <div class="hint">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/7f/Batman_Logo.svg/2560px-Batman_Logo.svg.png"
+                alt="Bat Logo" width="180" height="180">
+            <div style="margin-top:20px; font-size:20px; color:#00d9ff;">BAT SISTEMA ONLINE</div>
+            <div style="margin-top:5px; color:#88ffff;">16 widgets chegando como morcegos!</div>
+        </div>
+    </div>
+
+    <script>
+        // ===========================================
+        // BAT-HUD SYSTEM v6.0 - 16 WIDGETS COMO MORCEGOS EM PILHA
+        // ===========================================
+        // Versão totalmente corrigida e melhorada com layouts detalhados para cada widget
+
+        const BatHUD = {
+            // ===========================================
+            // CONFIGURAÇÕES
+            // ===========================================
+            config: {
+                widgetMinWidth: 200,
+                widgetMinHeight: 140,
+                widgetMaxWidth: 500,
+                widgetMaxHeight: 500,
+                boundaryMargin: 5,
+                stackOffsetX: 15,
+                stackOffsetY: 15,
+                batAnimationDuration: 1500,
+                batDelayBetween: 150,
+                stackAnimationDuration: 600,
+                folderJumpHeight: 50
+            },
+
+            // ===========================================
+            // ESTADO DO SISTEMA
+            // ===========================================
+            state: {
+                isLoggedIn: false,
+                currentUser: null,
+                widgets: {},
+                isDragging: false,
+                isResizing: false,
+                dragWidget: null,
+                startX: 0,
+                startY: 0,
+                startLeft: 0,
+                startTop: 0,
+                startWidth: 0,
+                startHeight: 0,
+                stackPosition: { x: 20, y: 20 },
+                activeIntervals: [],
+                batAnimations: [],
+                selectedWidget: null,
+                threatCount: 3,
+                motionCells: [],
+                voiceRecording: false,
+                dnaBars: []
+            },
+
+            // ===========================================
+            // DADOS DOS WIDGETS - TOTALMENTE OTIMIZADOS
+            // ===========================================
+            data: {
+                users: JSON.parse(localStorage.getItem('wayne_users')) || [
+                    { username: 'batman', password: 'darkknight' },
+                    { username: 'robin', password: 'sidekick' },
+                    { username: 'alfred', password: 'pennyworth' },
+                    { username: 'gordon', password: 'commissioner' }
+                ],
+                
+                widgetTemplates: [
+                    // WIDGET 1: Radar Tático - Completamente redesenhado
+                    {
+                        id: 'radarWidget',
+                        title: 'Radar Tático',
+                        icon: 'fas fa-radar',
+                        content: `
+                            <div class="widget-content">
+                                <h4 class="responsive-title">RADAR TÁTICO BAT</h4>
+                                <div class="radar-display">
+                                    <div class="radar-grid"></div>
+                                    <div class="radar-sweep"></div>
+                                    <div class="radar-target" style="top: 30%; left: 40%;"></div>
+                                    <div class="radar-target" style="top: 60%; left: 70%;"></div>
+                                    <div class="radar-target" style="top: 20%; left: 80%;"></div>
+                                    <div class="radar-target" style="top: 45%; left: 20%;"></div>
+                                    <div class="radar-target" style="top: 75%; left: 60%;"></div>
+                                </div>
+                                <div class="radar-stats">
+                                    <div class="radar-stat">
+                                        <div class="radar-stat-value">5</div>
+                                        <div class="radar-stat-label">ALVOS</div>
+                                    </div>
+                                    <div class="radar-stat">
+                                        <div class="radar-stat-value">3.2KM</div>
+                                        <div class="radar-stat-label">ALCANCE</div>
+                                    </div>
+                                    <div class="radar-stat">
+                                        <div class="radar-stat-value">360°</div>
+                                        <div class="radar-stat-label">COBERTURA</div>
+                                    </div>
+                                    <div class="radar-stat">
+                                        <div class="radar-stat-value">100%</div>
+                                        <div class="radar-stat-label">ATIVO</div>
+                                    </div>
+                                </div>
+                                <div class="responsive-text" style="text-align: center; margin-top: 8px; color: var(--text-secondary);">
+                                    Última atualização: <span style="color: var(--primary-color);">00:12:45</span>
+                                </div>
+                            </div>
+                        `
+                    },
+
+                    // WIDGET 2: Sistema Bat-HUD - Completamente redesenhado
+                    {
+                        id: 'systemWidget',
+                        title: 'Sistema Bat-HUD',
+                        icon: 'fas fa-microchip',
+                        content: `
+                            <div class="widget-content">
+                                <h4 class="responsive-title">SISTEMA BAT-HUD v6.0</h4>
+                                <div class="system-metrics">
+                                    <div class="system-metric">
+                                        <div class="metric-header">
+                                            <span class="metric-label">CPU BAT-CORE</span>
+                                            <span class="responsive-value">78%</span>
+                                        </div>
+                                        <div class="metric-bar">
+                                            <div class="metric-fill" style="width: 78%;"></div>
+                                        </div>
+                                    </div>
+                                    <div class="system-metric">
+                                        <div class="metric-header">
+                                            <span class="metric-label">MEMÓRIA</span>
+                                            <span class="responsive-value">64%</span>
+                                        </div>
+                                        <div class="metric-bar">
+                                            <div class="metric-fill" style="width: 64%;"></div>
+                                        </div>
+                                    </div>
+                                    <div class="system-metric">
+                                        <div class="metric-header">
+                                            <span class="metric-label">REDE BAT-NET</span>
+                                            <span class="responsive-value">92%</span>
+                                        </div>
+                                        <div class="metric-bar">
+                                            <div class="metric-fill" style="width: 92%;"></div>
+                                        </div>
+                                    </div>
+                                    <div class="system-metric">
+                                        <div class="metric-header">
+                                            <span class="metric-label">ARMAZENAMENTO</span>
+                                            <span class="responsive-value">45%</span>
+                                        </div>
+                                        <div class="metric-bar">
+                                            <div class="metric-fill" style="width: 45%;"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="system-status">
+                                    <div class="status-indicator">
+                                        <div class="status-dot" style="background: var(--success-color);"></div>
+                                        <span class="responsive-text">SISTEMA ONLINE</span>
+                                    </div>
+                                    <button class="responsive-button secondary" style="padding: 6px 12px; font-size: 10px;" onclick="BatHUD.restartSystem()">
+                                        REINICIAR
+                                    </button>
+                                </div>
+                            </div>
+                        `
+                    },
+
+                    // WIDGET 3: Detector de Ameaças - Completamente redesenhado
+                    {
+                        id: 'threatWidget',
+                        title: 'Detector de Ameaças',
+                        icon: 'fas fa-exclamation-triangle',
+                        content: `
+                            <div class="widget-content">
+                                <h4 class="responsive-title">DETECTOR DE AMEAÇAS</h4>
+                                <div class="threat-scanner">
+                                    <div class="threat-rings">
+                                        <div class="threat-ring"></div>
+                                        <div class="threat-ring"></div>
+                                        <div class="threat-ring"></div>
+                                    </div>
+                                    <div class="threat-level">ALTO</div>
+                                </div>
+                                <div class="threat-list">
+                                    <div class="threat-item">
+                                        <span class="threat-name">Intruso - Setor B</span>
+                                        <span class="threat-severity">ALTA</span>
+                                    </div>
+                                    <div class="threat-item">
+                                        <span class="threat-name">Vigilância Offline</span>
+                                        <span class="threat-severity">MÉDIA</span>
+                                    </div>
+                                    <div class="threat-item">
+                                        <span class="threat-name">Acesso Não Autorizado</span>
+                                        <span class="threat-severity">CRÍTICA</span>
+                                    </div>
+                                    <div class="threat-item">
+                                        <span class="threat-name">Anomalia Térmica</span>
+                                        <span class="threat-severity">BAIXA</span>
+                                    </div>
+                                </div>
+                                <button class="responsive-button danger" style="width: 100%; margin-top: 8px;" onclick="BatHUD.scanThreats()">
+                                    ESCANEAR AMEAÇAS
+                                </button>
+                            </div>
+                        `
+                    },
+
+                    // WIDGET 4: Análise Forense - Completamente redesenhado
+                    {
+                        id: 'forensicWidget',
+                        title: 'Análise Forense',
+                        icon: 'fas fa-dna',
+                        content: `
+                            <div class="widget-content">
+                                <h4 class="responsive-title">ANÁLISE FORENSE BAT</h4>
+                                <div class="dna-strand" id="dnaStrand"></div>
+                                <div class="forensic-data">
+                                    <div class="forensic-field">
+                                        <span class="forensic-label">AMOSTRA:</span>
+                                        <span class="forensic-value">DNA-BAT-7829</span>
+                                    </div>
+                                    <div class="forensic-field">
+                                        <span class="forensic-label">MATCH:</span>
+                                        <span class="forensic-value" style="color: var(--success-color);">87.4%</span>
+                                    </div>
+                                    <div class="forensic-field">
+                                        <span class="forensic-label">BANCO:</span>
+                                        <span class="forensic-value">GCPD CRIMINAL DB</span>
+                                    </div>
+                                    <div class="forensic-field">
+                                        <span class="forensic-label">STATUS:</span>
+                                        <span class="forensic-value" style="color: var(--primary-color);">ANALISANDO</span>
+                                    </div>
+                                </div>
+                                <div class="scan-progress">
+                                    <div class="progress-bar">
+                                        <div class="progress-fill" style="width: 65%;"></div>
+                                    </div>
+                                    <div class="responsive-text" style="text-align: center; margin-top: 4px;">
+                                        Progresso: 65%
+                                    </div>
+                                </div>
+                            </div>
+                        `
+                    },
+
+                    // WIDGET 5: Veículos Táticos - Completamente redesenhado
+                    {
+                        id: 'vehicleWidget',
+                        title: 'Veículos Táticos',
+                        icon: 'fas fa-car',
+                        content: `
+                            <div class="widget-content">
+                                <h4 class="responsive-title">FROTA BATMAN</h4>
+                                <div class="vehicle-status">
+                                    <div class="vehicle-card active">
+                                        <div class="vehicle-icon">🚗</div>
+                                        <div class="vehicle-name">BATMÓVEL</div>
+                                        <div class="vehicle-stats">
+                                            <div class="vehicle-stat">
+                                                <div class="vehicle-stat-value">98%</div>
+                                                <div class="vehicle-stat-label">COMBUSTÍVEL</div>
+                                            </div>
+                                            <div class="vehicle-stat">
+                                                <div class="vehicle-stat-value">OK</div>
+                                                <div class="vehicle-stat-label">SISTEMA</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="vehicle-card active">
+                                        <div class="vehicle-icon">🚁</div>
+                                        <div class="vehicle-name">BATWING</div>
+                                        <div class="vehicle-stats">
+                                            <div class="vehicle-stat">
+                                                <div class="vehicle-stat-value">100%</div>
+                                                <div class="vehicle-stat-label">COMBUSTÍVEL</div>
+                                            </div>
+                                            <div class="vehicle-stat">
+                                                <div class="vehicle-stat-value">OK</div>
+                                                <div class="vehicle-stat-label">SISTEMA</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="vehicle-card">
+                                        <div class="vehicle-icon">🛥️</div>
+                                        <div class="vehicle-name">BATBOAT</div>
+                                        <div class="vehicle-stats">
+                                            <div class="vehicle-stat">
+                                                <div class="vehicle-stat-value">85%</div>
+                                                <div class="vehicle-stat-label">COMBUSTÍVEL</div>
+                                            </div>
+                                            <div class="vehicle-stat">
+                                                <div class="vehicle-stat-value">MANUT</div>
+                                                <div class="vehicle-stat-label">SISTEMA</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="vehicle-card">
+                                        <div class="vehicle-icon">🏍️</div>
+                                        <div class="vehicle-name">BATCYCLE</div>
+                                        <div class="vehicle-stats">
+                                            <div class="vehicle-stat">
+                                                <div class="vehicle-stat-value">100%</div>
+                                                <div class="vehicle-stat-label">COMBUSTÍVEL</div>
+                                            </div>
+                                            <div class="vehicle-stat">
+                                                <div class="vehicle-stat-value">OK</div>
+                                                <div class="vehicle-stat-label">SISTEMA</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="responsive-text" style="text-align: center; margin-top: 8px; color: var(--text-secondary);">
+                                    4 veículos monitorados
+                                </div>
+                            </div>
+                        `
+                    },
+
+                    // WIDGET 6: Clima Gotham - Completamente redesenhado
+                    {
+                        id: 'weatherWidget',
+                        title: 'Clima Gotham',
+                        icon: 'fas fa-cloud-rain',
+                        content: `
+                            <div class="widget-content">
+                                <h4 class="responsive-title">CLIMA GOTHAM CITY</h4>
+                                <div class="weather-main">
+                                    <div class="weather-icon-large">🌧️</div>
+                                    <div class="weather-temp">12°C</div>
+                                    <div class="weather-condition">Chuva com Névoa</div>
+                                    <div class="weather-details">
+                                        <div class="weather-detail">
+                                            <span class="weather-detail-label">VENTO</span>
+                                            <span class="weather-detail-value">24 KM/H</span>
+                                        </div>
+                                        <div class="weather-detail">
+                                            <span class="weather-detail-label">UMIDADE</span>
+                                            <span class="weather-detail-value">78%</span>
+                                        </div>
+                                        <div class="weather-detail">
+                                            <span class="weather-detail-label">PRESSÃO</span>
+                                            <span class="weather-detail-value">1013 HPA</span>
+                                        </div>
+                                        <div class="weather-detail">
+                                            <span class="weather-detail-label">VISIBILIDADE</span>
+                                            <span class="weather-detail-value">2.5 KM</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="responsive-text" style="text-align: center; margin-top: 8px; color: var(--text-secondary);">
+                                    Próximas 6h: Chuva intensa
+                                </div>
+                            </div>
+                        `
+                    },
+
+                    // WIDGET 7: Detector de Movimento - Completamente redesenhado
+                    {
+                        id: 'motionWidget',
+                        title: 'Detector de Movimento',
+                        icon: 'fas fa-running',
+                        content: `
+                            <div class="widget-content">
+                                <h4 class="responsive-title">DETECÇÃO DE MOVIMENTO</h4>
+                                <div class="motion-grid" id="motionGrid"></div>
+                                <div class="motion-info">
+                                    <span class="responsive-text">MOVIMENTO: <span style="color: var(--danger-color);">DETECTADO</span></span>
+                                    <span class="responsive-text">ZONAS ATIVAS: <span style="color: var(--warning-color);">7/48</span></span>
+                                </div>
+                                <div class="responsive-control" style="margin-top: 8px; text-align: center;">
+                                    <label>
+                                        <input type="range" min="1" max="100" value="50" style="width: 100%;" onchange="BatHUD.updateSensitivity(this.value)">
+                                        SENSIBILIDADE: <span id="sensitivityValue">50%</span>
+                                    </label>
+                                </div>
+                            </div>
+                        `
+                    },
+
+                    // WIDGET 8: Análise Espectral - Completamente redesenhado
+                    {
+                        id: 'spectralWidget',
+                        title: 'Análise Espectral',
+                        icon: 'fas fa-wave-square',
+                        content: `
+                            <div class="widget-content">
+                                <h4 class="responsive-title">ANÁLISE ESPECTRAL</h4>
+                                <div class="spectrum-display">
+                                    <div class="spectrum-graph">
+                                        <div class="spectrum-bar" style="height: 40%;"></div>
+                                        <div class="spectrum-bar" style="height: 60%;"></div>
+                                        <div class="spectrum-bar" style="height: 80%;"></div>
+                                        <div class="spectrum-bar" style="height: 50%;"></div>
+                                        <div class="spectrum-bar" style="height: 70%;"></div>
+                                        <div class="spectrum-bar" style="height: 30%;"></div>
+                                        <div class="spectrum-bar" style="height: 90%;"></div>
+                                    </div>
+                                    <div class="spectrum-info">
+                                        <div class="spectrum-item">
+                                            <span class="spectrum-label">FREQUÊNCIA</span>
+                                            <span class="spectrum-value">2.4 GHz</span>
+                                        </div>
+                                        <div class="spectrum-item">
+                                            <span class="spectrum-label">AMPLITUDE</span>
+                                            <span class="spectrum-value">-45 dBm</span>
+                                        </div>
+                                        <div class="spectrum-item">
+                                            <span class="spectrum-label">LARGURA</span>
+                                            <span class="spectrum-value">20 MHz</span>
+                                        </div>
+                                        <div class="spectrum-item">
+                                            <span class="spectrum-label">SNR</span>
+                                            <span class="spectrum-value">42 dB</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <button class="responsive-button" style="width: 100%;" onclick="BatHUD.analyzeSpectrum()">
+                                    ANALISAR ESPECTRO
+                                </button>
+                            </div>
+                        `
+                    },
+
+                    // WIDGET 9: Vigilância Satélite - Completamente redesenhado
+                    {
+                        id: 'satelliteWidget',
+                        title: 'Vigilância Satélite',
+                        icon: 'fas fa-satellite',
+                        content: `
+                            <div class="widget-content">
+                                <h4 class="responsive-title">VIGILÂNCIA SATÉLITE</h4>
+                                <div class="satellite-view">
+                                    <div class="orbit-path"></div>
+                                    <div class="orbit-path"></div>
+                                    <div class="orbit-path"></div>
+                                    <div class="earth-center"></div>
+                                    <div class="satellite-icon">
+                                        <i class="fas fa-satellite-dish"></i>
+                                    </div>
+                                </div>
+                                <div class="satellite-data">
+                                    <div class="sat-stat">
+                                        <div class="sat-stat-value">408KM</div>
+                                        <div class="sat-stat-label">ALTITUDE</div>
+                                    </div>
+                                    <div class="sat-stat">
+                                        <div class="sat-stat-value">7.66 KM/S</div>
+                                        <div class="sat-stat-label">VELOCIDADE</div>
+                                    </div>
+                                    <div class="sat-stat">
+                                        <div class="sat-stat-value">92.7 MIN</div>
+                                        <div class="sat-stat-label">ÓRBITA</div>
+                                    </div>
+                                    <div class="sat-stat">
+                                        <div class="sat-stat-value">100%</div>
+                                        <div class="sat-stat-label">CONEXÃO</div>
+                                    </div>
+                                </div>
+                            </div>
+                        `
+                    },
+
+                    // WIDGET 10: Protocolo Emergência - Completamente redesenhado
+                    {
+                        id: 'emergencyWidget',
+                        title: 'Protocolo Emergência',
+                        icon: 'fas fa-exclamation-circle',
+                        content: `
+                            <div class="widget-content">
+                                <h4 class="responsive-title">PROTOCOLOS DE EMERGÊNCIA</h4>
+                                <div class="emergency-header">
+                                    <div class="emergency-icon">
+                                        <i class="fas fa-shield-alt"></i>
+                                    </div>
+                                    <div class="emergency-status">SISTEMA STANDBY</div>
+                                </div>
+                                <div class="emergency-protocols">
+                                    <button class="protocol-btn" onclick="BatHUD.activateProtocol('lockdown')">
+                                        <div class="protocol-icon">
+                                            <i class="fas fa-lock"></i>
+                                        </div>
+                                        <span>LOCKDOWN TOTAL</span>
+                                    </button>
+                                    <button class="protocol-btn" onclick="BatHUD.activateProtocol('evacuation')">
+                                        <div class="protocol-icon">
+                                            <i class="fas fa-running"></i>
+                                        </div>
+                                        <span>PROTOCOLO EVACUAÇÃO</span>
+                                    </button>
+                                    <button class="protocol-btn" onclick="BatHUD.activateProtocol('signal')">
+                                        <div class="protocol-icon">
+                                            <i class="fas fa-broadcast-tower"></i>
+                                        </div>
+                                        <span>ATIVAR BAT-SINAL</span>
+                                    </button>
+                                    <button class="protocol-btn" onclick="BatHUD.activateProtocol('backup')">
+                                        <div class="protocol-icon">
+                                            <i class="fas fa-user-shield"></i>
+                                        </div>
+                                        <span>CHAMAR REFORÇOS</span>
+                                    </button>
+                                </div>
+                                <div class="responsive-text" style="text-align: center; margin-top: 8px; color: var(--text-secondary);">
+                                    Sistema de emergência ativo
+                                </div>
+                            </div>
+                        `
+                    },
+
+                    // WIDGET 11: Rastreamento de Alvos - Completamente redesenhado
+                    {
+                        id: 'trackingWidget',
+                        title: 'Rastreamento de Alvos',
+                        icon: 'fas fa-crosshairs',
+                        content: `
+                            <div class="widget-content">
+                                <h4 class="responsive-title">RASTREAMENTO DE ALVOS</h4>
+                                <div class="tracking-radar">
+                                    <div class="tracking-sweep"></div>
+                                    <div class="target-dot" style="top: 30%; left: 40%;"></div>
+                                    <div class="target-dot" style="top: 60%; left: 70%;"></div>
+                                    <div class="target-dot" style="top: 45%; left: 25%;"></div>
+                                    <div class="target-dot" style="top: 75%; left: 55%;"></div>
+                                    <div class="target-dot" style="top: 20%; left: 65%;"></div>
+                                    <div class="target-dot" style="top: 50%; left: 85%;"></div>
+                                </div>
+                                <div class="tracking-info">
+                                    <div class="tracking-stat">
+                                        <div class="tracking-value">6</div>
+                                        <div class="tracking-label">ALVOS</div>
+                                    </div>
+                                    <div class="tracking-stat">
+                                        <div class="tracking-value">1.8KM</div>
+                                        <div class="tracking-label">DISTÂNCIA</div>
+                                    </div>
+                                    <div class="tracking-stat">
+                                        <div class="tracking-value">100%</div>
+                                        <div class="tracking-label">PRECISÃO</div>
+                                    </div>
+                                </div>
+                                <button class="responsive-button warning" style="width: 100%; margin-top: 8px;" onclick="BatHUD.initiateTracking()">
+                                    INICIAR RASTREAMENTO
+                                </button>
+                            </div>
+                        `
+                    },
+
+                    // WIDGET 12: Estatísticas Combate - Completamente redesenhado
+                    {
+                        id: 'combatWidget',
+                        title: 'Estatísticas Combate',
+                        icon: 'fas fa-fist-raised',
+                        content: `
+                            <div class="widget-content">
+                                <h4 class="responsive-title">ESTATÍSTICAS DE COMBATE</h4>
+                                <div class="combat-stats">
+                                    <div class="combat-card">
+                                        <div class="combat-number" style="color: var(--primary-color);">147</div>
+                                        <div class="combat-label">CONFRONTOS</div>
+                                    </div>
+                                    <div class="combat-card">
+                                        <div class="combat-number" style="color: var(--success-color);">98%</div>
+                                        <div class="combat-label">TAXA SUCESSO</div>
+                                    </div>
+                                    <div class="combat-card">
+                                        <div class="combat-number" style="color: var(--warning-color);">2.4</div>
+                                        <div class="combat-label">TEMPO MÉDIO</div>
+                                    </div>
+                                    <div class="combat-card">
+                                        <div class="combat-number" style="color: var(--danger-color);">512</div>
+                                        <div class="combat-label">NEUTRALIZADOS</div>
+                                    </div>
+                                </div>
+                                <div class="combat-efficiency">
+                                    <div class="progress-bar">
+                                        <div class="progress-fill" style="width: 95%;"></div>
+                                    </div>
+                                    <div class="responsive-text" style="text-align: center; margin-top: 5px; color: var(--text-secondary);">
+                                        EFICIÊNCIA DE COMBATE: <span style="color: var(--success-color);">95%</span>
+                                    </div>
+                                </div>
+                                <button class="responsive-button" style="width: 100%; margin-top: 8px;" onclick="BatHUD.generateCombatReport()">
+                                    GERAR RELATÓRIO
+                                </button>
+                            </div>
+                        `
+                    },
+
+                    // WIDGET 13: Comunicações - Completamente redesenhado
+                    {
+                        id: 'commsWidget',
+                        title: 'Comunicações',
+                        icon: 'fas fa-broadcast-tower',
+                        content: `
+                            <div class="widget-content">
+                                <h4 class="responsive-title">REDE DE COMUNICAÇÃO</h4>
+                                <div class="comms-grid">
+                                    <div class="comms-channel">
+                                        <div class="comms-icon">📡</div>
+                                        <div class="comms-name">BAT-CHANNEL 1</div>
+                                        <div class="comms-status">ATIVO</div>
+                                    </div>
+                                    <div class="comms-channel">
+                                        <div class="comms-icon">📻</div>
+                                        <div class="comms-name">GCPD LINK</div>
+                                        <div class="comms-status">ATIVO</div>
+                                    </div>
+                                    <div class="comms-channel">
+                                        <div class="comms-icon">🛰️</div>
+                                        <div class="comms-name">SAT-COM</div>
+                                        <div class="comms-status">ATIVO</div>
+                                    </div>
+                                    <div class="comms-channel">
+                                        <div class="comms-icon">🔊</div>
+                                        <div class="comms-name">EMERGENCY</div>
+                                        <div class="comms-status">STANDBY</div>
+                                    </div>
+                                </div>
+                                <div class="responsive-control" style="margin-top: 12px;">
+                                    <input type="text" class="responsive-control" placeholder="Digite mensagem..." id="commsMessage">
+                                </div>
+                                <button class="responsive-button" style="width: 100%; margin-top: 8px;" onclick="BatHUD.sendCommsMessage()">
+                                    ENVIAR MENSAGEM
+                                </button>
+                            </div>
+                        `
+                    },
+
+                    // WIDGET 14: Sistema de Energia - Completamente redesenhado
+                    {
+                        id: 'powerWidget',
+                        title: 'Sistema de Energia',
+                        icon: 'fas fa-bolt',
+                        content: `
+                            <div class="widget-content">
+                                <h4 class="responsive-title">ENERGIA BATCAVE</h4>
+                                <div class="power-grid">
+                                    <div class="power-cell">
+                                        <div class="power-value">98%</div>
+                                        <div class="power-label">NÚCLEO</div>
+                                    </div>
+                                    <div class="power-cell">
+                                        <div class="power-value">87%</div>
+                                        <div class="power-label">BACKUP</div>
+                                    </div>
+                                    <div class="power-cell">
+                                        <div class="power-value">42%</div>
+                                        <div class="power-label">VEÍCULOS</div>
+                                    </div>
+                                    <div class="power-cell">
+                                        <div class="power-value">65%</div>
+                                        <div class="power-label">SISTEMAS</div>
+                                    </div>
+                                </div>
+                                <div class="power-total">
+                                    <div class="progress-bar">
+                                        <div class="progress-fill" style="width: 73%;"></div>
+                                    </div>
+                                    <div class="responsive-text" style="text-align: center; margin-top: 8px; color: var(--text-secondary);">
+                                        CONSUMO TOTAL: <span style="color: var(--primary-color);">73%</span>
+                                    </div>
+                                </div>
+                                <button class="responsive-button secondary" style="width: 100%; margin-top: 8px;" onclick="BatHUD.powerManagement()">
+                                    GERENCIAR ENERGIA
+                                </button>
+                            </div>
+                        `
+                    },
+
+                    // WIDGET 15: Scanner Biométrico - Completamente redesenhado
+                    {
+                        id: 'biometricWidget',
+                        title: 'Scanner Biométrico',
+                        icon: 'fas fa-fingerprint',
+                        content: `
+                            <div class="widget-content">
+                                <h4 class="responsive-title">SCANNER BIOMÉTRICO</h4>
+                                <div class="biometric-display">
+                                    <div class="fingerprint"></div>
+                                    <div class="scan-line"></div>
+                                </div>
+                                <div class="biometric-data">
+                                    <div class="bio-field">
+                                        <span class="bio-label">ID:</span>
+                                        <span class="bio-value">BAT-001</span>
+                                    </div>
+                                    <div class="bio-field">
+                                        <span class="bio-label">STATUS:</span>
+                                        <span class="bio-value" style="color: var(--success-color);">ATIVO</span>
+                                    </div>
+                                    <div class="bio-field">
+                                        <span class="bio-label">VITAL:</span>
+                                        <span class="bio-value">98%</span>
+                                    </div>
+                                    <div class="bio-field">
+                                        <span class="bio-label">TENSÃO:</span>
+                                        <span class="bio-value">NORMAL</span>
+                                    </div>
+                                </div>
+                                <div class="responsive-control" style="margin-top: 8px;">
+                                    <select class="responsive-control" onchange="BatHUD.scanBiometric(this.value)">
+                                        <option value="">Selecionar alvo...</option>
+                                        <option value="batman">BATMAN</option>
+                                        <option value="robin">ROBIN</option>
+                                        <option value="gcpd">GCPD</option>
+                                        <option value="civilians">CIVILIANOS</option>
+                                    </select>
+                                </div>
+                                <button class="responsive-button" style="width: 100%; margin-top: 8px;" onclick="BatHUD.initiateBiometricScan()">
+                                    INICIAR SCAN
+                                </button>
+                            </div>
+                        `
+                    },
+
+                    // WIDGET 16: Análise de Voz - Completamente redesenhado
+                    {
+                        id: 'voiceWidget',
+                        title: 'Análise de Voz',
+                        icon: 'fas fa-microphone',
+                        content: `
+                            <div class="widget-content">
+                                <h4 class="responsive-title">ANÁLISE VOCAL BAT</h4>
+                                <div class="voice-visualizer" id="voiceVisualizer">
+                                    <div class="voice-bar" style="--i: 0;"></div>
+                                    <div class="voice-bar" style="--i: 1;"></div>
+                                    <div class="voice-bar" style="--i: 2;"></div>
+                                    <div class="voice-bar" style="--i: 3;"></div>
+                                    <div class="voice-bar" style="--i: 4;"></div>
+                                    <div class="voice-bar" style="--i: 5;"></div>
+                                    <div class="voice-bar" style="--i: 6;"></div>
+                                    <div class="voice-bar" style="--i: 7;"></div>
+                                    <div class="voice-bar" style="--i: 8;"></div>
+                                    <div class="voice-bar" style="--i: 9;"></div>
+                                </div>
+                                <div class="voice-controls">
+                                    <button class="voice-btn" id="recordBtn" onclick="BatHUD.toggleVoiceRecording()">
+                                        <i class="fas fa-microphone"></i> GRAVAR
+                                    </button>
+                                    <button class="voice-btn" onclick="BatHUD.analyzeVoice()">
+                                        <i class="fas fa-chart-bar"></i> ANALISAR
+                                    </button>
+                                </div>
+                                <div class="responsive-text" style="text-align: center; margin-top: 8px; color: var(--text-secondary);" id="voiceStatus">
+                                    Sistema de voz pronto
+                                </div>
+                                <div class="responsive-control" style="margin-top: 8px;">
+                                    <input type="range" min="1" max="100" value="50" style="width: 100%;" onchange="BatHUD.updateVoiceSensitivity(this.value)">
+                                    SENSIBILIDADE VOZ: <span id="voiceSensitivity">50%</span>
+                                </div>
+                            </div>
+                        `
+                    }
+                ]
+            },
+
+            // ===========================================
+            // INICIALIZAÇÃO
+            // ===========================================
+            init() {
+                this.initializeSystem();
+                this.setupEventListeners();
+                this.setupRainEffect();
+            },
+
+            initializeSystem() {
+                const savedUser = localStorage.getItem('wayne_current_user');
+                if (savedUser) {
+                    this.state.currentUser = savedUser;
+                    this.state.isLoggedIn = true;
+                    this.showHUD();
+                }
+                this.startAlertSystem();
+                this.startThreatMonitoring();
+            },
+
+            setupEventListeners() {
+                document.getElementById('loginForm').addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    this.handleLogin();
+                });
+
+                document.getElementById('registerForm').addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    this.handleRegister();
+                });
+
+                this.setupGlobalEventListeners();
+            },
+
+            setupGlobalEventListeners() {
+                document.addEventListener('mousemove', (e) => this.handleMouseMove(e));
+                document.addEventListener('mouseup', () => this.handleMouseUp());
+
+                document.addEventListener('touchmove', (e) => {
+                    e.preventDefault();
+                    this.handleTouchMove(e);
+                }, { passive: false });
+
+                document.addEventListener('touchend', () => this.handleMouseUp());
+
+                window.addEventListener('resize', () => {
+                    this.constrainAllWidgets();
+                    this.adjustWidgetsContent();
+                });
+            },
+
+            setupRainEffect() {
+                const rainOverlay = document.getElementById('rainOverlay');
+                document.addEventListener('mousemove', (e) => {
+                    const x = e.clientX / window.innerWidth * 100;
+                    const y = e.clientY / window.innerHeight * 100;
+                    rainOverlay.style.setProperty('--x', `${x}%`);
+                    rainOverlay.style.setProperty('--y', `${y}%`);
+                });
+            },
+
+            // ===========================================
+            // SISTEMA DE AUTENTICAÇÃO
+            // ===========================================
+            handleLogin() {
+                const username = document.getElementById('loginUser').value.trim();
+                const password = document.getElementById('loginPass').value.trim();
+
+                const user = this.data.users.find(u =>
+                    u.username === username && u.password === password
+                );
+
+                if (user) {
+                    this.state.currentUser = username;
+                    localStorage.setItem('wayne_current_user', username);
+                    this.state.isLoggedIn = true;
+                    this.showHUD();
+                } else {
+                    this.showError('Credenciais inválidas');
+                }
+            },
+
+            handleRegister() {
+                const username = document.getElementById('regUser').value.trim();
+                const password = document.getElementById('regPass').value.trim();
+                const confirm = document.getElementById('regConfirm').value.trim();
+
+                if (password !== confirm) {
+                    this.showError('Senhas não coincidem');
+                    return;
+                }
+
+                if (this.data.users.find(u => u.username === username)) {
+                    this.showError('Usuário já existe');
+                    return;
+                }
+
+                this.data.users.push({ username, password });
+                localStorage.setItem('wayne_users', JSON.stringify(this.data.users));
+
+                this.state.currentUser = username;
+                localStorage.setItem('wayne_current_user', username);
+                this.state.isLoggedIn = true;
+
+                this.showHUD();
+            },
+
+            toggleForms() {
+                const loginForm = document.getElementById('loginForm');
+                const registerForm = document.getElementById('registerForm');
+                const switchText = document.getElementById('switchText');
+                const switchLink = document.getElementById('switchLink');
+
+                if (loginForm.style.display !== 'none') {
+                    loginForm.style.display = 'none';
+                    registerForm.style.display = 'flex';
+                    switchText.textContent = 'Já tem acesso?';
+                    switchLink.textContent = 'Fazer login';
+                } else {
+                    registerForm.style.display = 'none';
+                    loginForm.style.display = 'flex';
+                    switchText.textContent = 'Não tem acesso?';
+                    switchLink.textContent = 'Solicitar credencial';
+                }
+            },
+
+            showHUD() {
+                document.getElementById('authScreen').style.display = 'none';
+                document.getElementById('hudFrame').style.display = 'block';
+                document.getElementById('userIndicator').style.display = 'block';
+                document.getElementById('userName').textContent = this.state.currentUser.toUpperCase();
+
+                // Carregar widgets com animação de morcegos
+                this.loadWidgetsAsBats();
+                
+                // Inicializar widgets especiais
+                setTimeout(() => {
+                    this.initForensicDNA();
+                    this.initMotionGrid();
+                    this.initVoiceVisualizer();
+                }, 2000);
+            },
+
+            logout() {
+                this.state.currentUser = null;
+                this.state.isLoggedIn = false;
+                localStorage.removeItem('wayne_current_user');
+
+                document.getElementById('hudFrame').style.display = 'none';
+                document.getElementById('userIndicator').style.display = 'none';
+                document.getElementById('authScreen').style.display = 'flex';
+
+                this.clearForms();
+            },
+
+            clearForms() {
+                document.getElementById('loginUser').value = '';
+                document.getElementById('loginPass').value = '';
+                document.getElementById('regUser').value = '';
+                document.getElementById('regPass').value = '';
+                document.getElementById('regConfirm').value = '';
+            },
+
+            showError(message) {
+                const authError = document.getElementById('authError');
+                authError.textContent = message;
+                authError.style.display = 'block';
+            },
+
+            // ===========================================
+            // FUNÇÃO DE AJUSTE DE CONTEÚDO RESPONSIVO
+            // ===========================================
+            adjustWidgetsContent() {
+                const widgets = document.querySelectorAll('.widget');
+                
+                widgets.forEach(widget => {
+                    const content = widget.querySelector('.widget-content');
+                    if (content) {
+                        const widgetHeight = widget.clientHeight;
+                        const headerHeight = widget.querySelector('.widget-header')?.clientHeight || 0;
+                        
+                        // Ajusta altura máxima do conteúdo
+                        content.style.maxHeight = `${widgetHeight - headerHeight - 30}px`;
+                        
+                        // Ajusta grids baseado no tamanho disponível
+                        const grids = content.querySelectorAll('.responsive-grid');
+                        grids.forEach(grid => {
+                            const availableWidth = grid.clientWidth;
+                            
+                            // Ajusta minmax para grids baseado na largura disponível
+                            if (grid.classList.contains('grid-2-cols') && availableWidth < 300) {
+                                grid.style.gridTemplateColumns = 'repeat(auto-fill, minmax(100px, 1fr))';
+                            }
+                            
+                            if (grid.classList.contains('grid-3-cols') && availableWidth < 400) {
+                                grid.style.gridTemplateColumns = 'repeat(auto-fill, minmax(80px, 1fr))';
+                            }
+                        });
+                    }
+                });
+            },
+
+            // ===========================================
+            // ANIMAÇÃO DE MORCEGOS E PILHA
+            // ===========================================
+            loadWidgetsAsBats() {
+                const widgetsArea = document.getElementById('widgetsArea');
+                widgetsArea.innerHTML = '<div class="boundary-overlay"></div>';
+
+                // Criar widgets inicialmente ocultos
+                this.data.widgetTemplates.forEach((template, index) => {
+                    const widget = this.createWidget(template, index);
+                    widgetsArea.appendChild(widget);
+                    this.state.widgets[template.id] = widget;
+
+                    // Esconder widget inicialmente
+                    widget.style.opacity = '0';
+                    widget.style.transform = 'scale(0)';
+                });
+
+                // Iniciar animação sequencial de morcegos
+                this.animateBatsSequentially();
+            },
+
+            animateBatsSequentially() {
+                const widgets = Object.values(this.state.widgets);
+                
+                widgets.forEach((widget, index) => {
+                    setTimeout(() => {
+                        this.createBatAndFlyToWidget(widget, index);
+                    }, index * this.config.batDelayBetween);
+                });
+            },
+
+            createBatAndFlyToWidget(widget, index) {
+                const widgetsArea = document.getElementById('widgetsArea');
+                const areaRect = widgetsArea.getBoundingClientRect();
+                
+                // Posição final do widget (dentro da área limitada)
+                const maxX = areaRect.width - 200; // widget min width
+                const maxY = areaRect.height - 140; // widget min height
+                
+                const stackX = 20 + (index * this.config.stackOffsetX);
+                const stackY = 20 + (index * this.config.stackOffsetY);
+                
+                // Garantir que está dentro dos limites
+                const finalX = Math.min(stackX, maxX);
+                const finalY = Math.min(stackY, maxY);
+                
+                // Criar morcego
+                const bat = this.createBatElement();
+                document.body.appendChild(bat);
+                
+                // Posição inicial aleatória (fora da tela)
+                const startX = Math.random() * window.innerWidth;
+                const startY = -100;
+                
+                // Posição final (dentro da área dos widgets)
+                const endX = areaRect.left + finalX;
+                const endY = areaRect.top + finalY;
+                
+                // Configurar animação CSS
+                bat.style.setProperty('--start-x', `${startX}px`);
+                bat.style.setProperty('--start-y', `${startY}px`);
+                bat.style.setProperty('--end-x', `${endX}px`);
+                bat.style.setProperty('--end-y', `${endY}px`);
+                
+                bat.style.left = `${startX}px`;
+                bat.style.top = `${startY}px`;
+                bat.style.animation = `batFly ${this.config.batAnimationDuration}ms cubic-bezier(0.4, 0, 0.2, 1) forwards`;
+                
+                // Quando o morcego chegar, mostrar o widget
+                setTimeout(() => {
+                    this.showWidgetAtStackPosition(widget, finalX, finalY, index);
+                    bat.remove();
+                }, this.config.batAnimationDuration - 100);
+                
+                this.state.batAnimations.push(bat);
+            },
+
+            createBatElement() {
+                const bat = document.createElement('div');
+                bat.className = 'bat-effect';
+                bat.innerHTML = `
+                    <div class="bat-wing left"></div>
+                    <div class="bat-wing right"></div>
+                    <div class="bat-body"></div>
+                `;
+                return bat;
+            },
+
+            showWidgetAtStackPosition(widget, x, y, index) {
+                // Garantir que está dentro dos limites
+                const widgetsArea = document.getElementById('widgetsArea');
+                const areaRect = widgetsArea.getBoundingClientRect();
+                
+                const maxX = areaRect.width - 200;
+                const maxY = areaRect.height - 140;
+                
+                const finalX = Math.min(x, maxX);
+                const finalY = Math.min(y, maxY);
+                
+                // Aplicar classe de pasta
+                widget.classList.add('folder-stacked');
+                widget.classList.remove('stacked');
+                
+                // Definir índice CSS para animação
+                widget.style.setProperty('--widget-index', index);
+                
+                // Calcular posição da pilha com rotação aleatória
+                const rotation = (Math.random() * 1) - 0.5; // -0.5° a 0.5°
+                widget.style.setProperty('--widget-rotation', `${rotation}deg`);
+                
+                const stackX = finalX + (index * this.config.stackOffsetX * 0.5);
+                const stackY = finalY + (index * this.config.stackOffsetY * 0.7);
+                
+                // Garantir limites novamente
+                const finalStackX = Math.min(stackX, maxX);
+                const finalStackY = Math.min(stackY, maxY);
+                
+                // Posicionar widget na pilha
+                widget.style.left = `${finalStackX}px`;
+                widget.style.top = `${finalStackY}px`;
+                widget.style.transform = `rotate(${rotation}deg)`;
+                widget.style.zIndex = index + 10;
+                
+                // Adicionar aba da pasta
+                const folderTab = document.createElement('div');
+                folderTab.className = 'folder-tab';
+                
+                const folderNumber = document.createElement('div');
+                folderNumber.className = 'folder-number';
+                folderNumber.textContent = (index + 1).toString().padStart(2, '0');
+                
+                widget.appendChild(folderTab);
+                widget.appendChild(folderNumber);
+                
+                // Animação de aterrissagem
+                widget.classList.add('landing');
+                widget.style.opacity = '1';
+                
+                // Configurar eventos de hover
+                this.setupFolderHover(widget);
+                
+                // Inicializar interações após animação
+                setTimeout(() => {
+                    widget.classList.remove('landing');
+                    this.initWidgetInteractions(widget);
+                }, 600);
+                
+                // Salvar posição da pilha
+                this.saveWidgetPosition(widget.id, { 
+                    left: finalStackX, 
+                    top: finalStackY, 
+                    zIndex: index + 10,
+                    rotation: rotation 
+                });
+            },
+
+            setupFolderHover(widget) {
+                let hoverTimeout;
+                
+                widget.addEventListener('mouseenter', () => {
+                    clearTimeout(hoverTimeout);
+                    
+                    if (this.state.selectedWidget && this.state.selectedWidget !== widget) {
+                        this.state.selectedWidget.classList.remove('selected');
+                    }
+                    
+                    // Destacar esta widget
+                    this.state.selectedWidget = widget;
+                    widget.classList.add('selected');
+                    widget.style.zIndex = '1000';
+                    
+                    // Levantar ligeiramente os outros widgets
+                    this.raiseOtherWidgets(widget.id);
+                });
+                
+                widget.addEventListener('mouseleave', () => {
+                    hoverTimeout = setTimeout(() => {
+                        if (!this.state.isDragging && !this.state.isResizing) {
+                            widget.classList.remove('selected');
+                            
+                            // Restaurar z-index original
+                            const index = parseInt(widget.dataset.index);
+                            widget.style.zIndex = (index + 10).toString();
+                            
+                            // Rebaixar os outros widgets
+                            this.lowerOtherWidgets();
+                            
+                            this.state.selectedWidget = null;
+                        }
+                    }, 100);
+                });
+            },
+
+            raiseOtherWidgets(excludeId) {
+                Object.values(this.state.widgets).forEach(otherWidget => {
+                    if (otherWidget.id !== excludeId && otherWidget.style.display !== 'none') {
+                        // Levantar um pouco os outros widgets
+                        const currentTransform = otherWidget.style.transform || '';
+                        const rotationMatch = currentTransform.match(/rotate\(([^)]+)\)/);
+                        const rotation = rotationMatch ? rotationMatch[1] : '0deg';
+                        otherWidget.style.transform = `translateY(-8px) ${rotation}`;
+                    }
+                });
+            },
+
+            lowerOtherWidgets() {
+                Object.values(this.state.widgets).forEach(widget => {
+                    if (widget.style.display !== 'none') {
+                        // Restaurar rotação original
+                        const currentTransform = widget.style.transform || '';
+                        const rotationMatch = currentTransform.match(/rotate\(([^)]+)\)/);
+                        const rotation = rotationMatch ? rotationMatch[1] : '0deg';
+                        widget.style.transform = `translateY(0px) ${rotation}`;
+                    }
+                });
+            },
+
+            createWidget(template, index) {
+                const widget = document.createElement('div');
+                widget.className = 'widget';
+                widget.id = template.id;
+                widget.dataset.index = index;
+
+                widget.innerHTML = `
+                    <div class="widget-header">
+                        <div class="widget-title">
+                            <i class="${template.icon}"></i> ${template.title}
+                        </div>
+                        <div class="widget-controls">
+                            <button class="widget-btn minimize-btn" title="Minimizar" onclick="BatHUD.minimizeWidget('${template.id}')">
+                                <i class="fas fa-minus"></i>
+                            </button>
+                            <button class="widget-btn close-btn" title="Fechar" onclick="BatHUD.hideWidget('${template.id}')">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="widget-body">
+                        ${template.content}
+                    </div>
+                    <div class="resize-handle"></div>
+                `;
+
+                return widget;
+            },
+
+            // ===========================================
+            // WIDGETS ESPECIAIS - INICIALIZAÇÃO
+            // ===========================================
+            initForensicDNA() {
+                const dnaStrand = document.getElementById('dnaStrand');
+                if (dnaStrand) {
+                    for (let i = 0; i < 20; i++) {
+                        const bar = document.createElement('div');
+                        bar.className = 'dna-bar';
+                        const delay = i * 0.1;
+                        bar.style.animationDelay = `${delay}s`;
+                        bar.style.height = `${30 + Math.random() * 70}%`;
+                        dnaStrand.appendChild(bar);
+                        this.state.dnaBars.push(bar);
+                    }
+                    
+                    // Animar DNA continuamente
+                    setInterval(() => {
+                        this.state.dnaBars.forEach((bar, i) => {
+                            const newHeight = 30 + Math.random() * 70;
+                            bar.style.height = `${newHeight}%`;
+                        });
+                    }, 2000);
+                }
+            },
+
+            initMotionGrid() {
+                const grid = document.getElementById('motionGrid');
+                if (grid) {
+                    for (let i = 0; i < 48; i++) {
+                        const cell = document.createElement('div');
+                        cell.className = 'motion-cell';
+                        grid.appendChild(cell);
+                        this.state.motionCells.push(cell);
+                    }
+
+                    // Simular detecções de movimento aleatórias
+                    setInterval(() => {
+                        this.state.motionCells.forEach(cell => cell.classList.remove('active'));
+                        
+                        const numActive = Math.floor(Math.random() * 8) + 3;
+                        for (let i = 0; i < numActive; i++) {
+                            const randomIndex = Math.floor(Math.random() * this.state.motionCells.length);
+                            this.state.motionCells[randomIndex].classList.add('active');
+                        }
+                    }, 2000);
+                }
+            },
+
+            initVoiceVisualizer() {
+                const visualizer = document.getElementById('voiceVisualizer');
+                if (visualizer) {
+                    // Simular animação de voz
+                    setInterval(() => {
+                        const bars = visualizer.querySelectorAll('.voice-bar');
+                        bars.forEach((bar, i) => {
+                            const height = 10 + Math.random() * 80;
+                            bar.style.height = `${height}%`;
+                        });
+                    }, 300);
+                }
+            },
+
+            // ===========================================
+            // FUNÇÕES DOS WIDGETS
+            // ===========================================
+            restartSystem() {
+                alert('Sistema Bat-HUD reiniciando...');
+                console.log('[SISTEMA] Reiniciando sistema Bat-HUD');
+            },
+
+            scanThreats() {
+                alert('Escaneamento de ameaças iniciado...');
+                console.log('[AMEAÇAS] Iniciando escaneamento completo');
+            },
+
+            analyzeSpectrum() {
+                alert('Análise espectral em progresso...');
+                console.log('[ESPECTRAL] Análise espectral iniciada');
+            },
+
+            activateProtocol(type) {
+                const messages = {
+                    lockdown: 'PROTOCOLO DE LOCKDOWN ATIVADO! Batcave totalmente selado.',
+                    evacuation: 'PROTOCOLO DE EVACUAÇÃO INICIADO! Todos os civis devem evacuar.',
+                    signal: 'BAT-SINAL ATIVADO! Chamando o Cavaleiro das Trevas.',
+                    backup: 'REFORÇOS SOLICITADOS! GCPD e aliados alertados.'
+                };
+                
+                alert(messages[type] || 'Protocolo Ativado');
+                console.log(`[EMERGÊNCIA] ${messages[type]}`);
+            },
+
+            initiateTracking() {
+                alert('Rastreamento de alvos iniciado...');
+                console.log('[RASTREAMENTO] Iniciando rastreamento de alvos');
+            },
+
+            generateCombatReport() {
+                alert('Relatório de combate gerado com sucesso!');
+                console.log('[COMBATE] Relatório de combate gerado');
+            },
+
+            sendCommsMessage() {
+                const message = document.getElementById('commsMessage')?.value;
+                if (message) {
+                    alert(`Mensagem enviada: "${message}"`);
+                    console.log('[COMUNICAÇÕES] Mensagem enviada:', message);
+                    document.getElementById('commsMessage').value = '';
+                } else {
+                    alert('Digite uma mensagem primeiro!');
+                }
+            },
+
+            powerManagement() {
+                alert('Gerenciamento de energia aberto...');
+                console.log('[ENERGIA] Gerenciamento de energia iniciado');
+            },
+
+            scanBiometric(target) {
+                if (target) {
+                    alert(`Scanner biométrico iniciado para: ${target.toUpperCase()}`);
+                    console.log('[BIOMÉTRICO] Scan iniciado para:', target);
+                }
+            },
+
+            initiateBiometricScan() {
+                alert('Scanner biométrico iniciado...');
+                console.log('[BIOMÉTRICO] Scan biométrico iniciado');
+            },
+
+            toggleVoiceRecording() {
+                const recordBtn = document.getElementById('recordBtn');
+                const voiceStatus = document.getElementById('voiceStatus');
+                
+                this.state.voiceRecording = !this.state.voiceRecording;
+                
+                if (this.state.voiceRecording) {
+                    recordBtn.innerHTML = '<i class="fas fa-stop"></i> PARAR';
+                    recordBtn.style.background = 'rgba(255, 0, 64, 0.2)';
+                    recordBtn.style.borderColor = 'var(--danger-color)';
+                    voiceStatus.textContent = 'GRAVAÇÃO EM ANDAMENTO...';
+                    voiceStatus.style.color = 'var(--danger-color)';
+                    console.log('[VOZ] Gravação iniciada');
+                } else {
+                    recordBtn.innerHTML = '<i class="fas fa-microphone"></i> GRAVAR';
+                    recordBtn.style.background = 'rgba(0, 217, 255, 0.1)';
+                    recordBtn.style.borderColor = 'var(--primary-color)';
+                    voiceStatus.textContent = 'GRAVAÇÃO CONCLUÍDA - PRONTO PARA ANÁLISE';
+                    voiceStatus.style.color = 'var(--success-color)';
+                    console.log('[VOZ] Gravação parada');
+                }
+            },
+
+            analyzeVoice() {
+                alert('Análise de voz em processamento...');
+                console.log('[VOZ] Análise de voz iniciada');
+            },
+
+            updateSensitivity(value) {
+                document.getElementById('sensitivityValue').textContent = `${value}%`;
+                console.log('[MOVIMENTO] Sensibilidade ajustada para:', value);
+            },
+
+            updateVoiceSensitivity(value) {
+                document.getElementById('voiceSensitivity').textContent = `${value}%`;
+                console.log('[VOZ] Sensibilidade ajustada para:', value);
+            },
+
+            // ===========================================
+            // INTERAÇÕES DOS WIDGETS COM LIMITES
+            // ===========================================
+            initWidgetInteractions(widget) {
+                const header = widget.querySelector('.widget-header');
+                const resizeHandle = widget.querySelector('.resize-handle');
+
+                header.addEventListener('mousedown', (e) => this.startDrag(e, widget));
+                resizeHandle.addEventListener('mousedown', (e) => this.startResize(e, widget));
+
+                header.addEventListener('touchstart', (e) => {
+                    e.preventDefault();
+                    this.startDrag(e, widget);
+                });
+
+                resizeHandle.addEventListener('touchstart', (e) => {
+                    e.preventDefault();
+                    this.startResize(e, widget);
+                });
+            },
+
+            startDrag(e, widget) {
+                e.preventDefault();
+                e.stopPropagation();
+                
+                // Remover classe de seleção de pasta ao começar a arrastar
+                if (widget.classList.contains('selected')) {
+                    widget.classList.remove('selected');
+                }
+                
+                this.state.isDragging = true;
+                this.state.dragWidget = widget;
+                this.state.isResizing = false;
+                
+                widget.style.zIndex = 1000;
+                widget.classList.remove('folder-stacked');
+                
+                if (e.type === 'mousedown') {
+                    this.state.startX = e.clientX;
+                    this.state.startY = e.clientY;
+                } else if (e.type === 'touchstart') {
+                    this.state.startX = e.touches[0].clientX;
+                    this.state.startY = e.touches[0].clientY;
+                }
+                
+                this.state.startLeft = parseFloat(widget.style.left) || 0;
+                this.state.startTop = parseFloat(widget.style.top) || 0;
+                
+                widget.classList.add('dragging');
+            },
+
+            startResize(e, widget) {
+                e.preventDefault();
+                e.stopPropagation();
+                
+                // Remover classe de seleção de pasta ao começar a redimensionar
+                if (widget.classList.contains('selected')) {
+                    widget.classList.remove('selected');
+                }
+                
+                this.state.isResizing = true;
+                this.state.dragWidget = widget;
+                this.state.isDragging = false;
+                
+                widget.style.zIndex = 1000;
+                widget.classList.remove('folder-stacked');
+                
+                if (e.type === 'mousedown') {
+                    this.state.startX = e.clientX;
+                    this.state.startY = e.clientY;
+                } else if (e.type === 'touchstart') {
+                    this.state.startX = e.touches[0].clientX;
+                    this.state.startY = e.touches[0].clientY;
+                }
+                
+                this.state.startLeft = parseFloat(widget.style.left) || 0;
+                this.state.startTop = parseFloat(widget.style.top) || 0;
+                this.state.startWidth = widget.offsetWidth;
+                this.state.startHeight = widget.offsetHeight;
+                
+                widget.classList.add('resizing');
+            },
+
+            handleMouseMove(e) {
+                if (!this.state.isDragging && !this.state.isResizing) return;
+                if (!this.state.dragWidget) return;
+
+                let clientX, clientY;
+                if (e.type === 'mousemove') {
+                    clientX = e.clientX;
+                    clientY = e.clientY;
+                } else if (e.type === 'touchmove') {
+                    clientX = e.touches[0].clientX;
+                    clientY = e.touches[0].clientY;
+                }
+
+                const dx = clientX - this.state.startX;
+                const dy = clientY - this.state.startY;
+
+                if (this.state.isDragging) {
+                    const newLeft = this.state.startLeft + dx;
+                    const newTop = this.state.startTop + dy;
+                    
+                    // Aplicar limites da área dos widgets
+                    const constrainedPosition = this.constrainWidgetPosition(
+                        newLeft, 
+                        newTop, 
+                        this.state.dragWidget.offsetWidth, 
+                        this.state.dragWidget.offsetHeight
+                    );
+                    
+                    this.state.dragWidget.style.left = constrainedPosition.left + 'px';
+                    this.state.dragWidget.style.top = constrainedPosition.top + 'px';
+                } else if (this.state.isResizing) {
+                    let newWidth = this.state.startWidth + dx;
+                    let newHeight = this.state.startHeight + dy;
+
+                    newWidth = Math.max(this.config.widgetMinWidth,
+                        Math.min(newWidth, this.config.widgetMaxWidth));
+                    newHeight = Math.max(this.config.widgetMinHeight,
+                        Math.min(newHeight, this.config.widgetMaxHeight));
+
+                    this.state.dragWidget.style.width = newWidth + 'px';
+                    this.state.dragWidget.style.height = newHeight + 'px';
+                    
+                    // Após redimensionar, garantir que o widget ainda está dentro dos limites
+                    const currentLeft = parseFloat(this.state.dragWidget.style.left) || 0;
+                    const currentTop = parseFloat(this.state.dragWidget.style.top) || 0;
+                    const constrainedPosition = this.constrainWidgetPosition(
+                        currentLeft, 
+                        currentTop, 
+                        newWidth, 
+                        newHeight
+                    );
+                    
+                    if (currentLeft !== constrainedPosition.left || currentTop !== constrainedPosition.top) {
+                        this.state.dragWidget.style.left = constrainedPosition.left + 'px';
+                        this.state.dragWidget.style.top = constrainedPosition.top + 'px';
+                    }
+                }
+                
+                // Atualizar conteúdo responsivo durante o redimensionamento
+                if (this.state.isResizing) {
+                    setTimeout(() => {
+                        this.adjustWidgetsContent();
+                    }, 50);
+                }
+            },
+
+            constrainWidgetPosition(left, top, width, height) {
+                const widgetsArea = document.getElementById('widgetsArea');
+                const areaRect = widgetsArea.getBoundingClientRect();
+                
+                // Calcular limites
+                const maxLeft = areaRect.width - width - this.config.boundaryMargin;
+                const maxTop = areaRect.height - height - this.config.boundaryMargin;
+                
+                // Aplicar limites
+                const constrainedLeft = Math.max(this.config.boundaryMargin, Math.min(left, maxLeft));
+                const constrainedTop = Math.max(this.config.boundaryMargin, Math.min(top, maxTop));
+                
+                return {
+                    left: constrainedLeft,
+                    top: constrainedTop
+                };
+            },
+
+            handleTouchMove(e) {
+                this.handleMouseMove(e);
+            },
+
+            handleMouseUp() {
+                if (this.state.isDragging || this.state.isResizing) {
+                    if (this.state.dragWidget && !this.state.dragWidget.classList.contains('minimized')) {
+                        this.state.dragWidget.classList.remove('dragging');
+                        this.state.dragWidget.classList.remove('resizing');
+                        
+                        // Reaplicar classe de pasta se não estiver sendo redimensionada
+                        if (!this.state.isResizing) {
+                            setTimeout(() => {
+                                this.state.dragWidget.classList.add('folder-stacked');
+                            }, 100);
+                        }
+                        
+                        // Garantir posição final dentro dos limites
+                        const constrainedPosition = this.constrainWidgetPosition(
+                            parseFloat(this.state.dragWidget.style.left) || 0,
+                            parseFloat(this.state.dragWidget.style.top) || 0,
+                            this.state.dragWidget.offsetWidth,
+                            this.state.dragWidget.offsetHeight
+                        );
+                        
+                        this.state.dragWidget.style.left = constrainedPosition.left + 'px';
+                        this.state.dragWidget.style.top = constrainedPosition.top + 'px';
+                        
+                        // Salvar nova posição
+                        this.saveWidgetPosition(this.state.dragWidget.id, {
+                            left: constrainedPosition.left,
+                            top: constrainedPosition.top,
+                            width: this.state.dragWidget.offsetWidth,
+                            height: this.state.dragWidget.offsetHeight,
+                            zIndex: parseInt(this.state.dragWidget.style.zIndex) || 10
+                        });
+                        
+                        // Ajustar conteúdo após interação
+                        setTimeout(() => {
+                            this.adjustWidgetsContent();
+                        }, 100);
+                    }
+                }
+                
+                this.state.isDragging = false;
+                this.state.isResizing = false;
+                this.state.dragWidget = null;
+                
+                // Rebaixar todos os widgets
+                this.lowerOtherWidgets();
+            },
+
+            // ===========================================
+            // FUNÇÕES UTILITÁRIAS
+            // ===========================================
+            saveWidgetPosition(widgetId, position) {
+                const layout = JSON.parse(localStorage.getItem('bat-hud-widgets-layout')) || {};
+                layout[widgetId] = position;
+                localStorage.setItem('bat-hud-widgets-layout', JSON.stringify(layout));
+            },
+
+            hideWidget(widgetId) {
+                const widget = document.getElementById(widgetId);
+                if (widget) {
+                    widget.style.display = 'none';
+                    const layout = JSON.parse(localStorage.getItem('bat-hud-widgets-layout')) || {};
+                    delete layout[widgetId];
+                    localStorage.setItem('bat-hud-widgets-layout', JSON.stringify(layout));
+                }
+            },
+
+            minimizeWidget(widgetId) {
+                const widget = document.getElementById(widgetId);
+                if (widget) {
+                    widget.classList.toggle('minimized');
+                    if (!widget.classList.contains('minimized')) {
+                        // Quando expandir, ajustar conteúdo
+                        setTimeout(() => {
+                            this.adjustWidgetsContent();
+                        }, 300);
+                    }
+                }
+            },
+
+            constrainAllWidgets() {
+                // Mantém widgets dentro da área visível
+                Object.values(this.state.widgets).forEach(widget => {
+                    if (widget.style.display !== 'none') {
+                        const left = parseFloat(widget.style.left) || 0;
+                        const top = parseFloat(widget.style.top) || 0;
+                        const width = widget.offsetWidth;
+                        const height = widget.offsetHeight;
+                        
+                        const constrainedPosition = this.constrainWidgetPosition(left, top, width, height);
+                        
+                        if (left !== constrainedPosition.left || top !== constrainedPosition.top) {
+                            widget.style.left = constrainedPosition.left + 'px';
+                            widget.style.top = constrainedPosition.top + 'px';
+                        }
+                    }
+                });
+                
+                // Ajustar conteúdo
+                this.adjustWidgetsContent();
+            },
+
+            // ===========================================
+            // MONITORAMENTO DE AMEAÇAS
+            // ===========================================
+            startThreatMonitoring() {
+                setInterval(() => {
+                    this.state.threatCount = Math.floor(Math.random() * 5) + 1;
+                    const threatValue = document.querySelector('#threatWidget .threat-level');
+                    if (threatValue) {
+                        const levels = ['BAIXO', 'MÉDIO', 'ALTO', 'CRÍTICO'];
+                        threatValue.textContent = levels[this.state.threatCount - 1];
+                        
+                        // Atualizar cor baseado no nível
+                        const colors = [this.state.threatCount === 1 ? 'var(--success-color)' : 
+                                       this.state.threatCount === 2 ? 'var(--warning-color)' : 
+                                       this.state.threatCount === 3 ? 'var(--danger-color)' : 
+                                       'var(--purple-color)'];
+                        threatValue.style.color = colors[0];
+                    }
+                }, 5000);
+            },
+
+            // ===========================================
+            // SISTEMA DE ALERTA
+            // ===========================================
+            startAlertSystem() {
+                this.state.alertInterval = setInterval(() => {
+                    const timer = document.getElementById('nextAlertTime');
+                    if (timer) {
+                        const current = timer.textContent.split(':');
+                        let minutes = parseInt(current[0]);
+                        let seconds = parseInt(current[1]);
+
+                        seconds--;
+                        if (seconds < 0) {
+                            seconds = 59;
+                            minutes--;
+                        }
+
+                        if (minutes < 0) {
+                            this.triggerEmergency();
+                            minutes = 1;
+                            seconds = 0;
+                        }
+
+                        timer.textContent = 
+                            `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+                    }
+                }, 1000);
+
+                this.state.activeIntervals.push(this.state.alertInterval);
+            },
+
+            triggerEmergency() {
+                const alertDiv = document.getElementById('emergencyAlert');
+                if (alertDiv) {
+                    alertDiv.style.display = 'flex';
+                    document.body.style.overflow = 'hidden';
+                }
+            },
+
+            dismissEmergency() {
+                const alertDiv = document.getElementById('emergencyAlert');
+                if (alertDiv) {
+                    alertDiv.style.display = 'none';
+                    document.body.style.overflow = 'auto';
+                    const timer = document.getElementById('nextAlertTime');
+                    if (timer) {
+                        timer.textContent = '01:00';
+                    }
+                }
+            },
+
+            skipAlert() {
+                const timer = document.getElementById('nextAlertTime');
+                if (timer) {
+                    timer.textContent = '01:00';
+                }
+            },
+
+            // ===========================================
+            // INICIALIZAÇÃO AUTOMÁTICA
+            // ===========================================
+            autoInit() {
+                document.addEventListener('DOMContentLoaded', () => {
+                    this.init();
+                });
+            }
+        };
+
+        // Inicializar o sistema
+        BatHUD.autoInit();
+
+        // Expor funções globais
+        window.BatHUD = BatHUD;
+        window.toggleForms = () => BatHUD.toggleForms();
+        window.logout = () => BatHUD.logout();
+        window.dismissEmergency = () => BatHUD.dismissEmergency();
+        window.skipAlert = () => BatHUD.skipAlert();
+        window.minimizeWidget = (widgetId) => BatHUD.minimizeWidget(widgetId);
+        window.hideWidget = (widgetId) => BatHUD.hideWidget(widgetId);
+        window.activateProtocol = (type) => BatHUD.activateProtocol(type);
+        window.restartSystem = () => BatHUD.restartSystem();
+        window.scanThreats = () => BatHUD.scanThreats();
+        window.analyzeSpectrum = () => BatHUD.analyzeSpectrum();
+        window.initiateTracking = () => BatHUD.initiateTracking();
+        window.generateCombatReport = () => BatHUD.generateCombatReport();
+        window.sendCommsMessage = () => BatHUD.sendCommsMessage();
+        window.powerManagement = () => BatHUD.powerManagement();
+        window.scanBiometric = (target) => BatHUD.scanBiometric(target);
+        window.initiateBiometricScan = () => BatHUD.initiateBiometricScan();
+        window.toggleVoiceRecording = () => BatHUD.toggleVoiceRecording();
+        window.analyzeVoice = () => BatHUD.analyzeVoice();
+        window.updateSensitivity = (value) => BatHUD.updateSensitivity(value);
+        window.updateVoiceSensitivity = (value) => BatHUD.updateVoiceSensitivity(value);
+    </script>
+</body>
+</html>
