@@ -12,6 +12,12 @@
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+            touch-action: manipulation;
         }
 
         :root {
@@ -37,6 +43,8 @@
             overflow: hidden;
             height: 100vh;
             font-family: 'Segoe UI', system-ui, sans-serif;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
         }
 
         .container {
@@ -98,14 +106,14 @@
             animation: cloud-drift 45s linear infinite;
         }
 
-        /* FEIXE ATUALIZADO PARA RESPONSIVIDADE */
+        /* FEIXE OTIMIZADO PARA MOBILE */
         .signal-beam {
             position: absolute;
             bottom: 80px;
             left: 50%;
             transform: translateX(-50%);
-            width: min(600px, 92vw); /* Reduzido de 95vw para 92vw */
-            height: calc(100vh - 205px);
+            width: min(500px, 85vw);
+            height: calc(100vh - 180px);
             background: linear-gradient(to top,
                     transparent 0%,
                     rgba(30, 50, 150, 0.1) 10%,
@@ -113,31 +121,31 @@
                     rgba(120, 160, 255, 0.7) 60%,
                     rgba(255, 255, 255, 0.9) 80%,
                     rgba(255, 255, 255, 0) 95%);
-            clip-path: polygon(18% 0%, 82% 0%, 60% 100%, 40% 100%);
-            filter: blur(22px);
+            clip-path: polygon(20% 0%, 80% 0%, 60% 100%, 40% 100%);
+            filter: blur(18px);
             z-index: 4;
             pointer-events: none;
             opacity: 0;
             animation:
-                beam-expand 5s ease-out forwards,
-                beam-pulse 4s 5s infinite alternate,
-                beam-follow 15s 5s ease-in-out infinite;
+                beam-expand 3s ease-out forwards,
+                beam-pulse 3s 3s infinite alternate,
+                beam-follow 12s 3s ease-in-out infinite;
         }
 
         /* Container para o logo ajustado para mobile */
         .logo-container {
             position: absolute;
-            top: 50px;
+            top: 40px;
             left: 50%;
             transform: translateX(-50%);
-            width: min(300px, 70vw); /* Reduzido de 350px/80vw para 300px/70vw */
-            height: 150px; /* Reduzido de 180px */
+            width: min(220px, 50vw);
+            height: 110px;
             z-index: 5;
             pointer-events: none;
             opacity: 0;
             animation:
-                logo-reveal 5s ease-out forwards,
-                logo-swing 15s 5s ease-in-out infinite;
+                logo-reveal 3s ease-out forwards,
+                logo-swing 12s 3s ease-in-out infinite;
         }
 
         .bat-logo {
@@ -150,7 +158,7 @@
             border-radius: 50%;
             filter: brightness(0) invert(1) drop-shadow(0 0 15px rgba(255, 255, 255, 0.558));
             transform: scale(0.3);
-            animation: logo-grow 5s ease-out forwards;
+            animation: logo-grow 3s ease-out forwards;
         }
 
         /* Fallback visual se a imagem não carregar */
@@ -160,7 +168,7 @@
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            font-size: 60px; /* Reduzido de 80px */
+            font-size: 40px;
             opacity: 0;
             transition: opacity 0.5s;
             filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.8));
@@ -181,31 +189,31 @@
             bottom: 0;
             left: 50%;
             transform: translateX(-50%);
-            width: 100px;
-            height: 80px;
+            width: 80px;
+            height: 60px;
             background-color: #111;
-            border-radius: 10px 10px 0 0;
+            border-radius: 8px 8px 0 0;
             z-index: 6;
-            box-shadow: 0 0 20px rgba(0, 0, 0, 0.8);
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.8);
         }
 
         .signal-source::before {
             content: "";
             position: absolute;
-            top: 30px;
+            top: 20px;
             left: 50%;
             transform: translateX(-50%);
-            width: 60px;
-            height: 20px;
+            width: 50px;
+            height: 15px;
             background-color: #222;
-            border-radius: 5px;
+            border-radius: 4px;
         }
 
         .buildings {
             position: absolute;
             bottom: 0;
             width: 100%;
-            height: 200px;
+            height: 150px;
             display: flex;
             justify-content: center;
             align-items: flex-end;
@@ -214,90 +222,154 @@
         }
 
         .building {
-            width: clamp(35px, 4vw, 70px); /* Reduzido para mobile */
+            width: clamp(30px, 4vw, 60px);
             background-color: var(--building-color);
-            margin: 0 5px; /* Reduzido de 8px */
-            border-radius: 5px 5px 0 0;
-            box-shadow: inset 0 0 10px rgba(0, 10, 30, 0.8);
+            margin: 0 3px;
+            border-radius: 4px 4px 0 0;
+            box-shadow: inset 0 0 8px rgba(0, 10, 30, 0.8);
         }
 
         .building:nth-child(1) {
-            height: 150px; /* Reduzido de 180px */
+            height: 120px;
         }
 
         .building:nth-child(2) {
-            height: 130px; /* Reduzido de 150px */
+            height: 100px;
         }
 
         .building:nth-child(3) {
-            height: 170px; /* Reduzido de 200px */
+            height: 140px;
         }
 
         .building:nth-child(4) {
-            height: 110px; /* Reduzido de 130px */
+            height: 90px;
         }
 
         .building:nth-child(5) {
-            height: 140px; /* Reduzido de 170px */
+            height: 110px;
         }
 
         .building:nth-child(6) {
-            height: 100px; /* Reduzido de 120px */
+            height: 80px;
         }
 
         .building:nth-child(7) {
-            height: 160px; /* Reduzido de 190px */
+            height: 120px;
         }
 
         .window {
             width: 60%;
-            height: 12px; /* Reduzido de 15px */
+            height: 10px;
             background-color: var(--window-color);
-            margin: 8px auto; /* Reduzido de 10px */
+            margin: 6px auto;
             border-radius: 2px;
         }
 
         .window.glow {
             background-color: var(--window-glow);
-            box-shadow: 0 0 6px rgba(74, 111, 165, 0.8); /* Reduzido de 8px */
-            animation: window-glow 4s infinite alternate;
+            box-shadow: 0 0 5px rgba(74, 111, 165, 0.8);
+            animation: window-glow 3s infinite alternate;
         }
 
-        /* ===== CHAT ATUALIZADO ===== */
+        /* ===== CHAT ARRASTÁVEL E OTIMIZADO ===== */
         .chat-container {
-            position: absolute;
-            right: 20px;
-            top: 50%;
-            transform: translateY(-50%);
-            width: 320px;
+            position: fixed;
+            width: 280px;
             height: auto;
-            max-height: 520px;
+            max-height: 400px;
             background-color: var(--whatsapp-darker);
-            border-radius: 16px;
+            border-radius: 14px;
             box-shadow:
                 0 8px 32px rgba(0, 0, 0, 0.4),
                 0 0 0 1px rgba(120, 160, 255, 0.15),
                 inset 0 1px 0 rgba(255, 255, 255, 0.05);
             overflow: hidden;
-            z-index: 10;
+            z-index: 1000;
             opacity: 0;
-            animation: chat-appear 0.8s ease-out forwards;
-            animation-delay: 6s;
+            animation: chat-appear 0.6s ease-out forwards;
+            animation-delay: 2s;
             backdrop-filter: blur(10px);
             border: 1px solid rgba(120, 160, 255, 0.1);
-            transition: all 0.3s ease;
+            transition: transform 0.2s ease, box-shadow 0.3s ease;
+            cursor: move;
+            touch-action: none;
+            -webkit-user-drag: none;
+            user-select: none;
+            visibility: hidden;
         }
 
-        .chat-container:hover {
+        .chat-container.dragging {
+            cursor: grabbing !important;
+            cursor: -webkit-grabbing !important;
+            opacity: 0.95;
             box-shadow:
-                0 12px 40px rgba(0, 0, 0, 0.5),
+                0 12px 40px rgba(0, 0, 0, 0.6),
+                0 0 0 2px rgba(120, 160, 255, 0.3),
+                inset 0 1px 0 rgba(255, 255, 255, 0.08);
+            transition: none;
+        }
+
+        .chat-container:active {
+            cursor: grabbing;
+            cursor: -webkit-grabbing;
+        }
+
+        .chat-container:hover:not(.dragging) {
+            box-shadow:
+                0 10px 36px rgba(0, 0, 0, 0.5),
                 0 0 0 1px rgba(120, 160, 255, 0.25),
                 inset 0 1px 0 rgba(255, 255, 255, 0.08);
         }
 
+        /* Indicador de arrastar - mais visível no mobile */
+        .drag-indicator {
+            position: absolute;
+            top: 8px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 5px;
+            background-color: rgba(120, 160, 255, 0.3);
+            border-radius: 3px;
+            z-index: 1001;
+            cursor: move;
+            transition: all 0.3s;
+        }
+
+        .chat-container.dragging .drag-indicator {
+            background-color: rgba(120, 160, 255, 0.7);
+            width: 80px;
+            height: 6px;
+        }
+
+        .drag-indicator:hover {
+            background-color: rgba(120, 160, 255, 0.5);
+        }
+
+        /* Áreas adicionais de arraste para mobile */
+        .drag-side-left {
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 40px;
+            height: 100%;
+            cursor: move;
+            z-index: 999;
+        }
+
+        .drag-side-right {
+            position: absolute;
+            right: 0;
+            top: 0;
+            width: 40px;
+            height: 100%;
+            cursor: move;
+            z-index: 999;
+        }
+
         .chat-header {
             background-color: var(--whatsapp-dark);
-            padding: 16px 20px;
+            padding: 14px 16px;
             display: flex;
             align-items: center;
             border-bottom: 1px solid rgba(255, 255, 255, 0.08);
@@ -305,6 +377,7 @@
             transition: background-color 0.3s;
             position: relative;
             user-select: none;
+            margin-top: 10px;
         }
 
         .chat-header:hover {
@@ -316,16 +389,16 @@
         }
 
         .chat-avatar {
-            width: 40px;
-            height: 40px;
+            width: 36px;
+            height: 36px;
             border-radius: 50%;
             overflow: hidden;
-            margin-right: 14px;
+            margin-right: 12px;
             background-color: #333;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 20px;
+            font-size: 18px;
             font-weight: bold;
             flex-shrink: 0;
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
@@ -351,8 +424,8 @@
 
         .chat-info h3 {
             color: var(--text-light);
-            font-size: 15px;
-            margin-bottom: 6px;
+            font-size: 14px;
+            margin-bottom: 4px;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
@@ -362,7 +435,7 @@
 
         .chat-info p {
             color: var(--text-muted);
-            font-size: 12px;
+            font-size: 11px;
             display: flex;
             align-items: center;
             gap: 6px;
@@ -379,35 +452,36 @@
 
         .unread-indicator {
             position: absolute;
-            right: 20px;
+            right: 16px;
             top: 50%;
             transform: translateY(-50%);
             background-color: var(--unread-indicator);
             color: white;
-            font-size: 11px;
+            font-size: 10px;
             font-weight: bold;
-            width: 20px;
-            height: 20px;
+            width: 18px;
+            height: 18px;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
             animation: indicator-pulse 1.5s infinite;
-            box-shadow: 0 0 10px rgba(255, 71, 87, 0.5);
+            box-shadow: 0 0 8px rgba(255, 71, 87, 0.5);
         }
 
         .chat-messages {
-            padding: 20px;
-            max-height: 360px;
+            padding: 16px;
+            max-height: 280px;
             overflow-y: auto;
             background-color: var(--whatsapp-darker);
-            transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: max-height 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             scroll-behavior: smooth;
+            -webkit-overflow-scrolling: touch;
         }
 
         /* Estilização da scrollbar */
         .chat-messages::-webkit-scrollbar {
-            width: 6px;
+            width: 5px;
         }
 
         .chat-messages::-webkit-scrollbar-track {
@@ -426,15 +500,15 @@
 
         .chat-messages.collapsed {
             max-height: 0;
-            padding: 0 20px;
+            padding: 0 16px;
         }
 
         .message {
-            margin-bottom: 16px;
+            margin-bottom: 12px;
             display: flex;
             opacity: 0;
-            transform: translateY(10px);
-            animation: message-appear 0.5s forwards;
+            transform: translateY(8px);
+            animation: message-appear 0.4s forwards;
         }
 
         .message.received {
@@ -447,13 +521,13 @@
 
         .message-content {
             max-width: 85%;
-            padding: 10px 14px;
-            border-radius: 18px;
+            padding: 8px 12px;
+            border-radius: 16px;
             position: relative;
             word-wrap: break-word;
-            font-size: 13.5px;
-            line-height: 1.5;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+            font-size: 13px;
+            line-height: 1.4;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
         }
 
         .received .message-content {
@@ -471,16 +545,16 @@
         }
 
         .message-time {
-            font-size: 11px;
+            font-size: 10px;
             color: rgba(255, 255, 255, 0.35);
-            margin-top: 4px;
+            margin-top: 3px;
             text-align: right;
             font-feature-settings: "tnum";
             font-variant-numeric: tabular-nums;
         }
 
         .chat-footer {
-            padding: 16px 20px;
+            padding: 14px 16px;
             background-color: var(--whatsapp-dark);
             border-top: 1px solid rgba(255, 255, 255, 0.08);
             display: flex;
@@ -500,10 +574,10 @@
             background: linear-gradient(135deg, var(--batman-yellow), #d4a017);
             color: #000;
             border: none;
-            padding: 12px 28px;
-            border-radius: 24px;
+            padding: 10px 24px;
+            border-radius: 20px;
             font-weight: 700;
-            font-size: 14px;
+            font-size: 13px;
             cursor: pointer;
             transition: all 0.3s;
             box-shadow:
@@ -528,9 +602,9 @@
         }
 
         .go-button:hover {
-            transform: translateY(-2px);
+            transform: translateY(-1px);
             box-shadow:
-                0 6px 20px rgba(245, 197, 24, 0.4),
+                0 5px 18px rgba(245, 197, 24, 0.4),
                 inset 0 1px 0 rgba(255, 255, 255, 0.3);
         }
 
@@ -541,7 +615,7 @@
         .go-button:active {
             transform: translateY(0);
             box-shadow:
-                0 2px 10px rgba(245, 197, 24, 0.3),
+                0 2px 8px rgba(245, 197, 24, 0.3),
                 inset 0 1px 0 rgba(255, 255, 255, 0.1);
         }
 
@@ -558,11 +632,11 @@
 
         .chat-controls {
             position: absolute;
-            right: 12px;
-            top: 12px;
+            right: 10px;
+            top: 10px;
             display: flex;
             gap: 6px;
-            z-index: 11;
+            z-index: 1001;
         }
 
         .chat-btn {
@@ -570,15 +644,16 @@
             border: none;
             color: rgba(255, 255, 255, 0.6);
             cursor: pointer;
-            font-size: 16px;
-            width: 28px;
-            height: 28px;
+            font-size: 14px;
+            width: 26px;
+            height: 26px;
             display: flex;
             align-items: center;
             justify-content: center;
             border-radius: 50%;
             transition: all 0.3s;
             backdrop-filter: blur(5px);
+            touch-action: manipulation;
         }
 
         .chat-btn:hover {
@@ -593,169 +668,64 @@
 
         .notification-badge {
             position: absolute;
-            top: -5px;
-            right: -5px;
+            top: -4px;
+            right: -4px;
             background-color: var(--unread-indicator);
             color: white;
-            font-size: 10px;
+            font-size: 9px;
             font-weight: bold;
-            width: 18px;
-            height: 18px;
+            width: 16px;
+            height: 16px;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
             animation: badge-pulse 2s infinite;
-            box-shadow: 0 0 8px rgba(255, 71, 87, 0.6);
+            box-shadow: 0 0 6px rgba(255, 71, 87, 0.6);
         }
 
-        /* ========== AJUSTES PARA MOBILE ========== */
-        
-        /* Mobile Geral (até 768px) */
+        /* ========== RESPONSIVIDADE OTIMIZADA ========== */
+
+        /* Mobile Geral (até 768px) - DEFAULT já é mobile */
         @media (max-width: 768px) {
-            /* Ajuste do feixe de luz */
-            .signal-beam {
-                width: min(500px, 85vw); /* Mais estreito no mobile */
-                height: calc(100vh - 220px);
-                filter: blur(18px); /* Blur reduzido */
-                clip-path: polygon(20% 0%, 80% 0%, 62% 100%, 38% 100%); /* Proporção ajustada */
-            }
-
-            /* Ajuste do logo para ficar proporcional ao feixe */
-            .logo-container {
-                top: 60px; /* Mais próximo do topo */
-                width: min(250px, 60vw); /* Reduzido significativamente */
-                height: 120px; /* Altura proporcional */
-            }
-
-            /* Ajuste do fallback do logo */
-            .bat-logo::after {
-                font-size: 40px; /* Bem menor no mobile */
-            }
-
-            /* Ajuste das nuvens */
-            .cloud1,
-            .cloud2,
-            .cloud3 {
-                width: 200px;
-                filter: blur(20px);
-            }
-
-            .cloud1 {
-                top: 30px;
-            }
-
-            .cloud2 {
-                top: 80px;
-                width: 250px;
-            }
-
-            .cloud3 {
-                top: 150px;
-            }
-
-            /* Ajuste dos prédios */
-            .buildings {
-                height: 150px; /* Reduzido de 200px */
-            }
-
-            .building {
-                width: clamp(30px, 3.5vw, 60px);
-                margin: 0 3px;
-            }
-
-            .building:nth-child(1) { height: 120px; }
-            .building:nth-child(2) { height: 100px; }
-            .building:nth-child(3) { height: 140px; }
-            .building:nth-child(4) { height: 90px; }
-            .building:nth-child(5) { height: 110px; }
-            .building:nth-child(6) { height: 80px; }
-            .building:nth-child(7) { height: 130px; }
-
-            .window {
-                height: 10px;
-                margin: 6px auto;
-            }
-
-            /* Ajuste da fonte do sinal */
-            .signal-source {
-                width: 80px;
-                height: 65px;
-            }
-
-            .signal-source::before {
-                width: 50px;
-                height: 15px;
-                top: 25px;
-            }
-
-            /* Chat no mobile */
             .chat-container {
-                width: 280px;
+                width: 260px;
+                max-height: 380px;
                 right: 10px;
-                top: 20px;
-                transform: none;
-                max-height: 450px;
-                border-radius: 14px;
+                top: 10px;
+                left: auto !important;
+                animation: chat-appear-mobile 0.5s ease-out forwards;
+                animation-delay: 2s;
             }
 
-            .chat-header {
-                padding: 14px 16px;
+            .drag-indicator {
+                width: 50px;
+                height: 4px;
             }
 
-            .chat-avatar {
-                width: 36px;
-                height: 36px;
-                font-size: 18px;
+            .chat-container.dragging .drag-indicator {
+                width: 70px;
+                height: 5px;
             }
 
-            .chat-info h3 {
-                font-size: 14px;
+            .drag-side-left, .drag-side-right {
+                width: 30px;
             }
 
-            .chat-info p {
-                font-size: 11px;
-            }
-
-            .chat-messages {
-                max-height: 320px;
-                padding: 16px;
-            }
-
-            .message-content {
-                font-size: 13px;
-                padding: 8px 12px;
-                max-width: 90%;
-            }
-
-            .go-button {
-                padding: 10px 24px;
-                font-size: 13px;
-            }
-
-            .chat-btn {
-                width: 26px;
-                height: 26px;
-                font-size: 15px;
-            }
-        }
-
-        /* Mobile Pequeno (até 480px) */
-        @media (max-width: 480px) {
             .signal-beam {
                 width: min(400px, 82vw);
-                height: calc(100vh - 180px);
-                bottom: 60px; /* Subir um pouco */
+                height: calc(100vh - 160px);
+                bottom: 60px;
             }
 
             .logo-container {
-                top: 40px;
-                width: min(200px, 55vw);
+                top: 30px;
+                width: min(200px, 45vw);
                 height: 100px;
             }
 
             .bat-logo::after {
-                font-size: 30px;
+                font-size: 32px;
             }
 
             .buildings {
@@ -777,56 +747,64 @@
 
             .signal-source {
                 width: 70px;
-                height: 55px;
+                height: 50px;
             }
 
             .signal-source::before {
                 width: 45px;
                 height: 12px;
-                top: 20px;
-            }
-
-            /* Chat no mobile pequeno */
-            .chat-container {
-                width: 260px;
-                max-height: 400px;
-                right: 5px;
                 top: 15px;
             }
 
             .chat-messages {
-                max-height: 280px;
+                max-height: 250px;
                 padding: 14px;
-            }
-
-            /* Ajuste dos botões de navegação */
-            .nav-buttons {
-                right: 5px;
-                bottom: 5px;
-                gap: 4px;
-            }
-
-            .nav-button {
-                padding: 4px 8px;
-                font-size: 9px;
             }
         }
 
-        /* Mobile Muito Pequeno (até 360px) */
-        @media (max-width: 360px) {
+        /* Mobile Pequeno (até 480px) */
+        @media (max-width: 480px) {
+            .chat-container {
+                width: 240px;
+                max-height: 360px;
+                right: 5px;
+                top: 5px;
+            }
+
+            .drag-side-left, .drag-side-right {
+                width: 25px;
+            }
+
             .signal-beam {
-                width: 90vw;
+                width: 88vw;
+                height: calc(100vh - 150px);
             }
 
             .logo-container {
-                width: 55vw;
+                width: min(180px, 40vw);
                 height: 90px;
             }
 
-            .chat-container {
-                width: 240px;
-                max-height: 380px;
+            .bat-logo::after {
+                font-size: 28px;
             }
+
+            .buildings {
+                height: 100px;
+            }
+
+            .building {
+                width: 22px;
+                margin: 0 1px;
+            }
+
+            .building:nth-child(1) { height: 85px; }
+            .building:nth-child(2) { height: 70px; }
+            .building:nth-child(3) { height: 95px; }
+            .building:nth-child(4) { height: 65px; }
+            .building:nth-child(5) { height: 80px; }
+            .building:nth-child(6) { height: 60px; }
+            .building:nth-child(7) { height: 90px; }
 
             .chat-header {
                 padding: 12px 14px;
@@ -838,71 +816,145 @@
                 font-size: 16px;
                 margin-right: 10px;
             }
+
+            .chat-messages {
+                max-height: 220px;
+                padding: 12px;
+            }
+        }
+
+        /* Mobile Muito Pequeno (até 360px) */
+        @media (max-width: 360px) {
+            .chat-container {
+                width: 220px;
+                max-height: 340px;
+            }
+
+            .drag-side-left, .drag-side-right {
+                width: 20px;
+            }
+
+            .signal-beam {
+                width: 92vw;
+            }
+
+            .logo-container {
+                width: min(160px, 35vw);
+                height: 80px;
+            }
+
+            .bat-logo::after {
+                font-size: 24px;
+            }
+
+            .message-content {
+                font-size: 12px;
+                padding: 7px 10px;
+            }
+
+            .go-button {
+                padding: 9px 20px;
+                font-size: 12px;
+            }
         }
 
         /* Tablet (769px a 1024px) */
         @media (min-width: 769px) and (max-width: 1024px) {
+            .chat-container {
+                width: 300px;
+                max-height: 450px;
+                right: 15px;
+                top: 15px;
+            }
+
+            .drag-side-left, .drag-side-right {
+                width: 35px;
+            }
+
             .signal-beam {
                 width: min(550px, 90vw);
+                height: calc(100vh - 200px);
             }
 
             .logo-container {
-                width: min(300px, 75vw);
-                height: 160px;
+                width: min(280px, 70vw);
+                height: 140px;
             }
 
+            .bat-logo::after {
+                font-size: 60px;
+            }
+
+            .buildings {
+                height: 180px;
+            }
+
+            .building {
+                width: clamp(35px, 4vw, 80px);
+                margin: 0 6px;
+            }
+
+            .building:nth-child(1) { height: 150px; }
+            .building:nth-child(2) { height: 130px; }
+            .building:nth-child(3) { height: 170px; }
+            .building:nth-child(4) { height: 110px; }
+            .building:nth-child(5) { height: 140px; }
+            .building:nth-child(6) { height: 100px; }
+            .building:nth-child(7) { height: 160px; }
+        }
+
+        /* Desktop (1025px+) */
+        @media (min-width: 1025px) {
             .chat-container {
-                width: 300px;
-                right: 15px;
+                width: 320px;
+                max-height: 500px;
+                right: 20px;
+                top: 20px;
+            }
+
+            .drag-side-left, .drag-side-right {
+                width: 45px;
             }
         }
 
-        /* Animações atualizadas */
+        /* Animações otimizadas */
         @keyframes chat-appear {
             0% {
                 opacity: 0;
-                transform: translateY(-50%) translateX(30px) scale(0.95);
+                transform: translateX(20px) scale(0.95);
             }
-
             70% {
-                transform: translateY(-50%) translateX(-5px) scale(1.02);
+                transform: translateX(-5px) scale(1.02);
             }
-
             100% {
                 opacity: 1;
-                transform: translateY(-50%) translateX(0) scale(1);
+                transform: translateX(0) scale(1);
             }
         }
 
-        @media (max-width: 768px) {
-            @keyframes chat-appear {
-                0% {
-                    opacity: 0;
-                    transform: translateY(-15px) scale(0.95);
-                }
-
-                70% {
-                    transform: translateY(5px) scale(1.02);
-                }
-
-                100% {
-                    opacity: 1;
-                    transform: translateY(0) scale(1);
-                }
+        @keyframes chat-appear-mobile {
+            0% {
+                opacity: 0;
+                transform: translateY(-10px) scale(0.95);
+            }
+            70% {
+                transform: translateY(5px) scale(1.02);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0) scale(1);
             }
         }
 
         @keyframes message-appear {
             0% {
                 opacity: 0;
-                transform: translateY(10px) scale(0.95);
+                transform: translateY(8px) scale(0.95);
             }
-
             60% {
                 opacity: 1;
                 transform: translateY(-2px) scale(1.02);
             }
-
             100% {
                 opacity: 1;
                 transform: translateY(0) scale(1);
@@ -910,13 +962,10 @@
         }
 
         @keyframes pulse {
-
-            0%,
-            100% {
+            0%, 100% {
                 opacity: 1;
                 transform: scale(1);
             }
-
             50% {
                 opacity: 0.8;
                 transform: scale(1.1);
@@ -924,176 +973,140 @@
         }
 
         @keyframes indicator-pulse {
-
-            0%,
-            100% {
+            0%, 100% {
                 transform: translateY(-50%) scale(1);
-                box-shadow: 0 0 10px rgba(255, 71, 87, 0.5);
+                box-shadow: 0 0 8px rgba(255, 71, 87, 0.5);
             }
-
             50% {
                 transform: translateY(-50%) scale(1.1);
-                box-shadow: 0 0 15px rgba(255, 71, 87, 0.8);
+                box-shadow: 0 0 12px rgba(255, 71, 87, 0.8);
             }
         }
 
         @keyframes badge-pulse {
-
-            0%,
-            100% {
+            0%, 100% {
                 transform: scale(1);
             }
-
             50% {
                 transform: scale(1.15);
             }
         }
 
-        /* ANIMAÇÃO DO FEIXE APENAS EXPANDINDO HORIZONTALMENTE */
+        /* ANIMAÇÃO DO FEIXE MAIS RÁPIDA */
         @keyframes beam-expand {
             0% {
                 clip-path: polygon(50% 0%, 50% 0%, 50% 100%, 50% 100%);
                 opacity: 0;
             }
-
             20% {
                 clip-path: polygon(49% 0%, 51% 0%, 50.5% 100%, 49.5% 100%);
                 opacity: 0.4;
             }
-
             40% {
                 clip-path: polygon(47% 0%, 53% 0%, 51.5% 100%, 48.5% 100%);
                 opacity: 0.6;
             }
-
             60% {
                 clip-path: polygon(43% 0%, 57% 0%, 53% 100%, 47% 100%);
                 opacity: 0.8;
             }
-
             80% {
                 clip-path: polygon(38% 0%, 62% 0%, 56% 100%, 44% 100%);
                 opacity: 0.9;
             }
-
             100% {
                 clip-path: polygon(35% 0%, 65% 0%, 60% 100%, 40% 100%);
                 opacity: 0.9;
             }
         }
 
-        /* PULSO SUAVE DO FEIXE */
+        /* PULSO MAIS RÁPIDO */
         @keyframes beam-pulse {
-
-            0%,
-            100% {
+            0%, 100% {
                 opacity: 0.8;
             }
-
             50% {
                 opacity: 0.95;
             }
         }
 
-        /* ANIMAÇÃO DO LOGO SENDO REVELADO */
+        /* ANIMAÇÃO DO LOGO MAIS RÁPIDA */
         @keyframes logo-reveal {
-
-            0%,
-            40% {
+            0%, 30% {
                 opacity: 0;
             }
-
-            60% {
-                opacity: 0.3;
+            50% {
+                opacity: 0.4;
             }
-
-            80% {
-                opacity: 0.6;
+            70% {
+                opacity: 0.7;
             }
-
             100% {
                 opacity: 1;
             }
         }
 
-        /* ANIMAÇÃO DO LOGO CRESCENDO - AJUSTADA PARA MOBILE */
         @keyframes logo-grow {
-
-            0%,
-            40% {
+            0%, 30% {
                 transform: scale(0.3);
                 filter:
-                    drop-shadow(0 0 5px rgba(255, 255, 255, 0.3)) drop-shadow(0 0 10px rgba(120, 160, 255, 0.3));
+                    drop-shadow(0 0 5px rgba(255, 255, 255, 0.3))
+                    drop-shadow(0 0 10px rgba(120, 160, 255, 0.3));
             }
-
-            60% {
-                transform: scale(0.5);
+            50% {
+                transform: scale(0.6);
                 filter:
-                    drop-shadow(0 0 10px rgba(255, 255, 255, 0.5)) drop-shadow(0 0 20px rgba(120, 160, 255, 0.5));
+                    drop-shadow(0 0 10px rgba(255, 255, 255, 0.5))
+                    drop-shadow(0 0 20px rgba(120, 160, 255, 0.5));
             }
-
-            80% {
-                transform: scale(0.8);
+            70% {
+                transform: scale(0.9);
                 filter:
-                    drop-shadow(0 0 15px rgba(255, 255, 255, 0.6)) drop-shadow(0 0 40px rgba(120, 160, 255, 0.7));
+                    drop-shadow(0 0 15px rgba(255, 255, 255, 0.6))
+                    drop-shadow(0 0 40px rgba(120, 160, 255, 0.7));
             }
-
             100% {
                 transform: scale(1);
                 filter:
-                    drop-shadow(0 0 20px rgba(255, 255, 255, 0.8)) drop-shadow(0 0 60px rgba(120, 160, 255, 0.9));
+                    drop-shadow(0 0 20px rgba(255, 255, 255, 0.8))
+                    drop-shadow(0 0 60px rgba(120, 160, 255, 0.9));
             }
         }
 
-        /* ANIMAÇÃO DO LOGO BALANÇANDO LATERALMENTE - REDUZIDA PARA MOBILE */
         @keyframes logo-swing {
-
-            0%,
-            100% {
+            0%, 100% {
                 left: 50%;
             }
-
             25% {
-                left: 49%; /* Reduzido de 48% */
+                left: 49%;
             }
-
             50% {
                 left: 50%;
             }
-
             75% {
-                left: 51%; /* Reduzido de 52% */
+                left: 51%;
             }
         }
 
-        /* ANIMAÇÃO DO FEIXE ACOMPANHANDO O LOGO - REDUZIDA PARA MOBILE */
         @keyframes beam-follow {
-
-            0%,
-            100% {
+            0%, 100% {
                 left: 50%;
             }
-
             25% {
-                left: 49%; /* Reduzido de 48% */
+                left: 49%;
             }
-
             50% {
                 left: 50%;
             }
-
             75% {
-                left: 51%; /* Reduzido de 52% */
+                left: 51%;
             }
         }
 
         @keyframes twinkle {
-
-            0%,
-            100% {
+            0%, 100% {
                 opacity: 0.3;
             }
-
             50% {
                 opacity: 1;
             }
@@ -1103,58 +1116,55 @@
             0% {
                 transform: translateX(-100px);
             }
-
             100% {
                 transform: translateX(calc(100vw + 100px));
             }
         }
 
         @keyframes window-glow {
-
-            0%,
-            70% {
+            0%, 70% {
                 opacity: 0.3;
             }
-
             100% {
                 opacity: 1;
             }
         }
 
-        /* ===== BOTÕES DE NAVEGAÇÃO DISCRETOS ===== */
+        /* ===== BOTÕES DE NAVEGAÇÃO ===== */
         .nav-buttons {
             position: absolute;
-            right: 20px;
+            right: 10px;
             bottom: 10px;
             display: flex;
-            gap: 8px;
-            z-index: 10;
+            gap: 6px;
+            z-index: 100;
             opacity: 0;
             animation: nav-buttons-appear 0.5s ease-out forwards;
-            animation-delay: 6.5s;
+            animation-delay: 3s;
         }
 
         .nav-button {
             background: rgba(30, 30, 40, 0.7);
             border: 1px solid rgba(120, 160, 255, 0.2);
             color: rgba(200, 200, 220, 0.8);
-            padding: 6px 12px;
+            padding: 5px 10px;
             border-radius: 4px;
-            font-size: 11px;
+            font-size: 10px;
             cursor: pointer;
             transition: all 0.3s ease;
             backdrop-filter: blur(5px);
             font-family: 'Segoe UI', system-ui, sans-serif;
             text-decoration: none;
             white-space: nowrap;
+            touch-action: manipulation;
         }
 
         .nav-button:hover {
             background: rgba(50, 50, 70, 0.9);
             border-color: rgba(120, 160, 255, 0.4);
             color: white;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            transform: translateY(-1px);
+            box-shadow: 0 3px 6px rgba(0, 0, 0, 0.3);
         }
 
         .nav-button:active {
@@ -1162,17 +1172,47 @@
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
         }
 
-        /* Animação para aparecer */
         @keyframes nav-buttons-appear {
             0% {
                 opacity: 0;
                 transform: translateY(10px);
             }
-
             100% {
                 opacity: 1;
                 transform: translateY(0);
             }
+        }
+
+        /* Snapping zones para facilitar o posicionamento no mobile */
+        .snap-zone {
+            position: fixed;
+            z-index: 999;
+            pointer-events: none;
+            border: 1px dashed rgba(120, 160, 255, 0.2);
+        }
+
+        .snap-zone.left {
+            left: 5px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 50px;
+            height: 100px;
+        }
+
+        .snap-zone.right {
+            right: 5px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 50px;
+            height: 100px;
+        }
+
+        .snap-zone.top {
+            top: 5px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 50px;
         }
     </style>
 </head>
@@ -1193,8 +1233,13 @@
             <div class="bat-logo" id="batLogo"></div>
         </div>
 
-        <!-- Sistema de Chat Atualizado -->
+        <!-- Sistema de Chat Arrastável -->
         <div class="chat-container" id="chatContainer">
+            <div class="drag-indicator"></div>
+            <!-- Áreas de arraste laterais -->
+            <div class="drag-side-left" id="dragSideLeft"></div>
+            <div class="drag-side-right" id="dragSideRight"></div>
+            
             <div class="chat-controls">
                 <button class="chat-btn" id="collapseBtn" title="Recolher">
                     <span id="collapseIcon">−</span>
@@ -1230,6 +1275,11 @@
             <a href="batman.html" class="nav-button">Batman</a>
             <a href="batmovel.html" class="nav-button">Batmóvel</a>
         </div>
+
+        <!-- Zonas de snap para arrastar -->
+        <div class="snap-zone left"></div>
+        <div class="snap-zone right"></div>
+        <div class="snap-zone top"></div>
 
         <div class="signal-source"></div>
 
@@ -1277,8 +1327,18 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            // Elementos principais
+            // ========== CONFIGURAÇÕES PRINCIPAIS ==========
+            const isMobile = window.innerWidth <= 768;
+            const initialPosition = {
+                x: window.innerWidth - (isMobile ? 270 : 320),
+                y: isMobile ? 10 : 20
+            };
+
+            // ========== ELEMENTOS DO CHAT ARRASTÁVEL ==========
             const chatContainer = document.getElementById('chatContainer');
+            const dragIndicator = chatContainer.querySelector('.drag-indicator');
+            const dragSideLeft = document.getElementById('dragSideLeft');
+            const dragSideRight = document.getElementById('dragSideRight');
             const messagesContainer = document.getElementById('messagesContainer');
             const goButton = document.getElementById('goButton');
             const buttonText = document.getElementById('buttonText');
@@ -1290,87 +1350,334 @@
             const notificationBadge = document.getElementById('notificationBadge');
             const unreadIndicator = document.getElementById('unreadIndicator');
 
-            // Estado do chat
+            // ========== VARIÁVEIS DE ESTADO ==========
             let isChatCollapsed = false;
             let unreadCount = 3;
-            let messageIndex = 0;
-            let isTyping = false;
+            let isDragging = false;
+            let dragOffset = { x: 0, y: 0 };
+            let currentPosition = { ...initialPosition };
+            let lastTouchTime = 0;
+            let lastTapTime = 0;
+            const tapThreshold = 300; // ms
 
-            // Criar estrelas com menos quantidade no mobile
-            const stars = document.getElementById('stars');
-            const isMobile = window.innerWidth <= 768;
-            const starsCount = isMobile ? 80 : 150; // Menos estrelas no mobile
+            // ========== INICIALIZAÇÃO ==========
+            initChatPosition();
+            createStars();
+            checkLogoImage();
+            setupDragAndDrop();
 
-            for (let i = 0; i < starsCount; i++) {
-                const star = document.createElement('div');
-                star.className = 'star';
-
-                const size = isMobile ? Math.random() * 1.5 + 0.5 : Math.random() * 2 + 1;
-                star.style.width = star.style.height = size + 'px';
-                star.style.left = Math.random() * 100 + '%';
-                star.style.top = Math.random() * (isMobile ? 70 : 80) + '%';
-                star.style.animationDelay = Math.random() * 3 + 's';
-
-                stars.appendChild(star);
-            }
-
-            // Verificar se a imagem do logo carrega
-            const batLogo = document.getElementById('batLogo');
-            const logoImage = new Image();
-
-            // Extrair URL da imagem do CSS
-            const computedStyle = window.getComputedStyle(batLogo);
-            const bgImage = computedStyle.backgroundImage;
-            const imageUrl = bgImage.replace(/url\(['"]?(.*?)['"]?\)/i, '$1');
-
-            logoImage.onload = function () {
-                console.log('Imagem do logo carregada com sucesso:', imageUrl);
-            };
-
-            logoImage.onerror = function () {
-                console.log('Imagem do logo não encontrada, usando fallback');
-                batLogo.classList.add('image-error');
-            };
-
-            // Tentar carregar a imagem
-            if (imageUrl && imageUrl !== 'none') {
-                logoImage.src = imageUrl;
-            } else {
-                batLogo.classList.add('image-error');
-            }
-
-            // Sistema de mensagens
+            // ========== SISTEMA DE MENSAGENS OTIMIZADO ==========
             const conversation = [
                 {
                     sender: 'Alfred',
                     message: 'Patrão Bruce, o Coringa escapou de Arkham novamente.',
                     time: '22:45',
-                    delay: 7000
+                    delay: 1500
                 },
                 {
                     sender: 'Alfred',
                     message: 'Ele está a caminho do Asilo de Arkham com um esquadrão de capangas fortemente armados.',
                     time: '22:46',
-                    delay: 10000
+                    delay: 3000
                 },
                 {
                     sender: 'Alfred',
                     message: 'Recomendo cautela. Há relatos de gás do riso na área.',
                     time: '22:46',
-                    delay: 13000
+                    delay: 4500
                 },
                 {
                     sender: 'Batman',
                     message: 'Estou indo atrás dele. Mantenha o Batmóvel pronto.',
                     time: '22:47',
-                    delay: 16000
+                    delay: 6000
                 }
             ];
 
-            // Função para atualizar status de "digitando..."
-            function updateTypingStatus(isTyping) {
+            // ========== INICIAR CONVERSA MAIS RÁPIDO ==========
+            setTimeout(startConversation, 2000);
+
+            // ========== FUNÇÕES PRINCIPAIS ==========
+
+            function initChatPosition() {
+                // Garantir que o chat inicie dentro da viewport
+                const containerWidth = chatContainer.offsetWidth;
+                const containerHeight = chatContainer.offsetHeight;
+                
+                let safeX = initialPosition.x;
+                let safeY = initialPosition.y;
+                
+                // Corrigir posição se necessário
+                safeX = Math.max(5, Math.min(safeX, window.innerWidth - containerWidth - 5));
+                safeY = Math.max(5, Math.min(safeY, window.innerHeight - containerHeight - 5));
+                
+                chatContainer.style.left = `${safeX}px`;
+                chatContainer.style.top = `${safeY}px`;
+                currentPosition = { x: safeX, y: safeY };
+            }
+
+            function createStars() {
+                const stars = document.getElementById('stars');
+                const starsCount = isMobile ? 60 : 120;
+                
+                for (let i = 0; i < starsCount; i++) {
+                    const star = document.createElement('div');
+                    star.className = 'star';
+                    
+                    const size = isMobile ? Math.random() * 1.2 + 0.5 : Math.random() * 1.8 + 1;
+                    star.style.width = star.style.height = size + 'px';
+                    star.style.left = Math.random() * 100 + '%';
+                    star.style.top = Math.random() * (isMobile ? 80 : 85) + '%';
+                    star.style.animationDelay = Math.random() * 2 + 's';
+                    
+                    stars.appendChild(star);
+                }
+            }
+
+            function checkLogoImage() {
+                const batLogo = document.getElementById('batLogo');
+                const logoImage = new Image();
+                
+                const computedStyle = window.getComputedStyle(batLogo);
+                const bgImage = computedStyle.backgroundImage;
+                const imageUrl = bgImage.replace(/url\(['"]?(.*?)['"]?\)/i, '$1');
+                
+                if (imageUrl && imageUrl !== 'none') {
+                    logoImage.src = imageUrl;
+                    logoImage.onerror = () => batLogo.classList.add('image-error');
+                } else {
+                    batLogo.classList.add('image-error');
+                }
+            }
+
+            function setupDragAndDrop() {
+                // Elementos que podem iniciar o arraste
+                const draggableElements = [
+                    dragIndicator,
+                    dragSideLeft,
+                    dragSideRight,
+                    chatHeader
+                ];
+                
+                // Adicionar eventos para todos os elementos arrastáveis
+                draggableElements.forEach(element => {
+                    if (element) {
+                        // Eventos para mouse
+                        element.addEventListener('mousedown', startDrag);
+                        
+                        // Eventos para touch
+                        element.addEventListener('touchstart', handleTouchStart, { passive: false });
+                    }
+                });
+                
+                // Prevenir arrasto padrão de imagens
+                document.addEventListener('dragstart', (e) => e.preventDefault());
+                
+                // Sair do modo de arrasto
+                document.addEventListener('mouseup', stopDrag);
+                document.addEventListener('touchend', stopDrag);
+                document.addEventListener('touchcancel', stopDrag);
+                
+                // Mover durante o arrasto
+                document.addEventListener('mousemove', handleDrag);
+                document.addEventListener('touchmove', handleTouchMove, { passive: false });
+                
+                // Prevenir menu de contexto no mobile
+                chatContainer.addEventListener('contextmenu', (e) => e.preventDefault());
+                
+                // Feedback visual para áreas de arraste laterais
+                if (dragSideLeft && dragSideRight) {
+                    [dragSideLeft, dragSideRight].forEach(side => {
+                        side.addEventListener('mouseenter', () => {
+                            if (!isDragging) {
+                                side.style.backgroundColor = 'rgba(120, 160, 255, 0.1)';
+                            }
+                        });
+                        
+                        side.addEventListener('mouseleave', () => {
+                            if (!isDragging) {
+                                side.style.backgroundColor = 'transparent';
+                            }
+                        });
+                    });
+                }
+            }
+
+            function startDrag(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                
+                // Prevenir toque rápido duplo
+                const now = Date.now();
+                if (now - lastTapTime < tapThreshold) return;
+                lastTapTime = now;
+                
+                isDragging = true;
+                chatContainer.classList.add('dragging');
+                
+                const rect = chatContainer.getBoundingClientRect();
+                if (e.type === 'mousedown') {
+                    dragOffset.x = e.clientX - rect.left;
+                    dragOffset.y = e.clientY - rect.top;
+                }
+                
+                document.body.style.userSelect = 'none';
+                document.body.style.cursor = 'grabbing';
+                
+                // Feedback visual para áreas laterais durante arraste
+                if (dragSideLeft && dragSideRight) {
+                    dragSideLeft.style.backgroundColor = 'rgba(120, 160, 255, 0.15)';
+                    dragSideRight.style.backgroundColor = 'rgba(120, 160, 255, 0.15)';
+                }
+            }
+
+            function handleTouchStart(e) {
+                const now = Date.now();
+                if (now - lastTouchTime < 300) return; // Prevenir toque rápido
+                lastTouchTime = now;
+                
+                const touch = e.touches[0];
+                const rect = chatContainer.getBoundingClientRect();
+                dragOffset.x = touch.clientX - rect.left;
+                dragOffset.y = touch.clientY - rect.top;
+                
+                startDrag(e);
+            }
+
+            function handleDrag(e) {
+                if (!isDragging) return;
+                e.preventDefault();
+                
+                let x = e.clientX - dragOffset.x;
+                let y = e.clientY - dragOffset.y;
+                
+                updatePosition(x, y);
+            }
+
+            function handleTouchMove(e) {
+                if (!isDragging) return;
+                e.preventDefault();
+                
+                const touch = e.touches[0];
+                let x = touch.clientX - dragOffset.x;
+                let y = touch.clientY - dragOffset.y;
+                
+                updatePosition(x, y);
+            }
+
+            function updatePosition(x, y) {
+                // Limites da tela
+                const containerWidth = chatContainer.offsetWidth;
+                const containerHeight = chatContainer.offsetHeight;
+                const maxX = window.innerWidth - containerWidth;
+                const maxY = window.innerHeight - containerHeight;
+                
+                // Garantir que não saia da tela
+                x = Math.max(5, Math.min(x, maxX - 5));
+                y = Math.max(5, Math.min(y, maxY - 5));
+                
+                // Aplicar posição imediatamente
+                chatContainer.style.left = `${x}px`;
+                chatContainer.style.top = `${y}px`;
+                currentPosition = { x, y };
+                
+                // Transição suave apenas para posição final
+                chatContainer.style.transition = 'none';
+            }
+
+            function stopDrag() {
+                if (!isDragging) return;
+                
+                isDragging = false;
+                chatContainer.classList.remove('dragging');
+                document.body.style.userSelect = '';
+                document.body.style.cursor = '';
+                
+                // Limpar feedback visual das áreas laterais
+                if (dragSideLeft && dragSideRight) {
+                    dragSideLeft.style.backgroundColor = 'transparent';
+                    dragSideRight.style.backgroundColor = 'transparent';
+                }
+                
+                // Aplicar snap APENAS APÓS soltar
+                applySnapAfterRelease();
+                
+                // Pequeno efeito de "drop"
+                chatContainer.style.transform = 'scale(0.98)';
+                setTimeout(() => {
+                    chatContainer.style.transform = '';
+                }, 100);
+            }
+
+            function applySnapAfterRelease() {
+                const containerWidth = chatContainer.offsetWidth;
+                const containerHeight = chatContainer.offsetHeight;
+                const snapThreshold = 50; // pixels de distância para ativar snap
+                
+                let snappedX = currentPosition.x;
+                let snappedY = currentPosition.y;
+                
+                // Snap para borda esquerda
+                if (currentPosition.x <= snapThreshold) {
+                    snappedX = 5;
+                }
+                
+                // Snap para borda direita
+                if (currentPosition.x >= window.innerWidth - containerWidth - snapThreshold) {
+                    snappedX = window.innerWidth - containerWidth - 5;
+                }
+                
+                // Snap para topo
+                if (currentPosition.y <= snapThreshold) {
+                    snappedY = 5;
+                }
+                
+                // Snap para fundo
+                if (currentPosition.y >= window.innerHeight - containerHeight - snapThreshold) {
+                    snappedY = window.innerHeight - containerHeight - 5;
+                }
+                
+                // Aplicar snap apenas se necessário
+                if (snappedX !== currentPosition.x || snappedY !== currentPosition.y) {
+                    chatContainer.style.transition = 'left 0.2s ease, top 0.2s ease';
+                    chatContainer.style.left = `${snappedX}px`;
+                    chatContainer.style.top = `${snappedY}px`;
+                    currentPosition = { x: snappedX, y: snappedY };
+                    
+                    setTimeout(() => {
+                        chatContainer.style.transition = '';
+                    }, 200);
+                    
+                    // Feedback de snap
+                    chatContainer.style.boxShadow = '0 0 0 2px rgba(120, 160, 255, 0.4)';
+                    setTimeout(() => {
+                        chatContainer.style.boxShadow = '';
+                    }, 300);
+                }
+            }
+
+            function startConversation() {
+                setTimeout(() => updateTypingStatus(true), 500);
+                
+                conversation.forEach((msg, index) => {
+                    setTimeout(() => {
+                        if (index > 0) {
+                            updateTypingStatus(true);
+                            setTimeout(() => {
+                                updateTypingStatus(false);
+                                addMessage(msg);
+                            }, 800);
+                        } else {
+                            updateTypingStatus(false);
+                            addMessage(msg);
+                        }
+                    }, msg.delay);
+                });
+            }
+
+            function updateTypingStatus(typing) {
                 const statusElement = chatHeader.querySelector('.chat-info p');
-                if (isTyping) {
+                if (typing) {
                     statusElement.innerHTML = '<span class="online-dot"></span> Digitando...';
                     chatHeader.classList.add('active');
                 } else {
@@ -1379,53 +1686,46 @@
                 }
             }
 
-            // Função para adicionar uma mensagem
             function addMessage(messageData, showNotification = true) {
                 const messageElement = document.createElement('div');
                 messageElement.className = `message ${messageData.sender === 'Alfred' ? 'received' : 'sent'}`;
 
-                // Ajustar delay da animação
-                messageElement.style.animationDelay = `${messageData.delay / 1000 || 0}s`;
-
-                const messageContent = `
+                messageElement.innerHTML = `
                     <div class="message-content">
                         ${messageData.message}
                         <div class="message-time">${messageData.time}</div>
                     </div>
                 `;
 
-                messageElement.innerHTML = messageContent;
                 messagesContainer.appendChild(messageElement);
 
-                // Scroll para a última mensagem
+                // Scroll suave para a nova mensagem
                 setTimeout(() => {
                     messagesContainer.scrollTop = messagesContainer.scrollHeight;
-                }, 100);
+                    messageElement.style.opacity = 1;
+                    messageElement.style.transform = 'translateY(0)';
+                }, 50);
 
-                // Se for a última mensagem, ativar o botão GO
-                if (messageIndex === conversation.length - 1) {
+                // Verificar se é a última mensagem
+                const totalMessages = document.querySelectorAll('.message').length;
+                if (totalMessages === conversation.length) {
                     setTimeout(() => {
                         goButton.disabled = false;
                         buttonText.textContent = "VAMOS LÁ 🦇";
                         updateUnreadCount(0);
                         updateTypingStatus(false);
-                    }, 2000);
+                    }, 1000);
                 }
 
-                messageIndex++;
-
-                // Atualizar notificações se necessário
+                // Notificações
                 if (showNotification && messageData.sender === 'Alfred') {
                     updateUnreadCount(unreadCount + 1);
-
-                    // Vibração se suportado
                     if (navigator.vibrate) {
-                        navigator.vibrate([100, 50, 100]);
+                        navigator.vibrate([50]);
                     }
                 }
             }
 
-            // Função para atualizar contador de não lidas
             function updateUnreadCount(count) {
                 unreadCount = count;
                 unreadIndicator.textContent = count > 0 ? count : '';
@@ -1440,71 +1740,37 @@
                 }
             }
 
-            // --- VERSÃO OTIMIZADA DO CHAT ---
+            // ========== EVENT LISTENERS ==========
 
-            // 1. Reduzi de 6000ms para 3000ms (O chat aparece 3s após o Bat-Sinal)
-            setTimeout(() => {
-
-                // 2. Status "digitando" aparece quase imediatamente após o chat surgir
-                setTimeout(() => {
-                    updateTypingStatus(true);
-                }, 1000);
-
-                // 3. Processamento das mensagens com delays ajustados
-                conversation.forEach((msg, index) => {
-                    // Reduzimos o delay fixo em 4 segundos para cada mensagem para compensar a lentidão original
-                    const adjustedDelay = Math.max(msg.delay - 4000, 500);
-
-                    setTimeout(() => {
-                        if (index > 0) {
-                            updateTypingStatus(true);
-                            // Tempo de "digitando" entre mensagens mais natural
-                            setTimeout(() => {
-                                updateTypingStatus(false);
-                                addMessage(msg);
-                            }, 1200);
-                        } else {
-                            updateTypingStatus(false);
-                            addMessage(msg);
-                        }
-                    }, adjustedDelay);
-                });
-            }, 3000);
-
-            // Ação do botão GO - versão simplificada
-            goButton.addEventListener('click', function () {
+            goButton.addEventListener('click', function() {
                 if (goButton.disabled) return;
-
-                // Desabilitar o botão
+                
                 goButton.disabled = true;
                 buttonText.textContent = "REDIRECIONANDO...";
-
-                // Mensagem final rápida
+                
                 const finalMessage = {
                     sender: 'Batman',
                     message: 'Coringa, estou chegando.',
                     time: '22:48',
                     delay: 0
                 };
-
+                
                 addMessage(finalMessage, false);
-
-                // Efeito visual e redirecionamento
+                
                 setTimeout(() => {
                     document.body.style.opacity = '0';
-                    document.body.style.transition = 'opacity 0.5s ease';
-
+                    document.body.style.transition = 'opacity 0.3s ease';
+                    
                     setTimeout(() => {
                         window.location.href = 'hub.html';
-                    }, 500);
-                }, 1000);
+                    }, 300);
+                }, 800);
             });
 
-            // Colapsar/Expandir chat
-            collapseBtn.addEventListener('click', function (e) {
+            collapseBtn.addEventListener('click', function(e) {
                 e.stopPropagation();
                 isChatCollapsed = !isChatCollapsed;
-
+                
                 if (isChatCollapsed) {
                     messagesContainer.classList.add('collapsed');
                     chatFooter.classList.add('hidden');
@@ -1514,28 +1780,32 @@
                     messagesContainer.classList.remove('collapsed');
                     chatFooter.classList.remove('hidden');
                     collapseIcon.textContent = '−';
-                    // Restaurar scroll para última mensagem
                     setTimeout(() => {
                         messagesContainer.scrollTop = messagesContainer.scrollHeight;
-                        updateUnreadCount(0); // Marcar como lido ao expandir
-                    }, 300);
+                        updateUnreadCount(0);
+                    }, 200);
                 }
             });
 
-            // Botão de notificações
-            notificationBtn.addEventListener('click', function (e) {
+            notificationBtn.addEventListener('click', function(e) {
                 e.stopPropagation();
                 updateUnreadCount(0);
-
+                
                 // Feedback visual
                 notificationBtn.style.transform = 'scale(0.9)';
                 setTimeout(() => {
                     notificationBtn.style.transform = '';
-                }, 200);
+                }, 150);
+                
+                // Vibrar se disponível
+                if (navigator.vibrate) {
+                    navigator.vibrate([30, 50, 30]);
+                }
             });
 
-            // Clicar no header para expandir/colapsar e marcar como lido
-            chatHeader.addEventListener('click', function () {
+            chatHeader.addEventListener('click', function(e) {
+                if (e.target.closest('.chat-btn')) return;
+                
                 if (isChatCollapsed) {
                     isChatCollapsed = false;
                     messagesContainer.classList.remove('collapsed');
@@ -1548,44 +1818,49 @@
                 updateUnreadCount(0);
             });
 
-            // Prevenir seleção de texto
-            document.addEventListener('selectstart', function (e) {
-                e.preventDefault();
+            // Suavizar navegação
+            document.querySelectorAll('.nav-button').forEach(button => {
+                button.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const href = this.getAttribute('href');
+                    
+                    document.body.style.opacity = '0';
+                    document.body.style.transition = 'opacity 0.3s ease';
+                    
+                    setTimeout(() => {
+                        window.location.href = href;
+                    }, 300);
+                });
             });
 
-            // Efeito de hover no container do chat
-            chatContainer.addEventListener('mouseenter', function () {
-                chatContainer.style.transform = window.innerWidth <= 768
-                    ? 'translateY(0) scale(1.02)'
-                    : 'translateY(-50%) scale(1.02)';
-            });
-
-            chatContainer.addEventListener('mouseleave', function () {
-                chatContainer.style.transform = window.innerWidth <= 768
-                    ? 'translateY(0) scale(1)'
-                    : 'translateY(-50%) scale(1)';
-            });
-
-            // Log para debug
-            console.log('Bat-Sinal com chat aprimorado inicializado!');
-        });
-
-        // Suavizar transição para as páginas dos botões
-        document.querySelectorAll('.nav-button').forEach(button => {
-            button.addEventListener('click', function(e) {
-                e.preventDefault();
-                const href = this.getAttribute('href');
+            // Ajustar posição ao redimensionar
+            window.addEventListener('resize', function() {
+                const containerWidth = chatContainer.offsetWidth;
+                const containerHeight = chatContainer.offsetHeight;
+                const maxX = window.innerWidth - containerWidth;
+                const maxY = window.innerHeight - containerHeight;
                 
-                // Efeito de fade out
-                document.body.style.opacity = '0';
-                document.body.style.transition = 'opacity 0.3s ease';
+                let x = Math.min(currentPosition.x, maxX - 5);
+                let y = Math.min(currentPosition.y, maxY - 5);
                 
-                setTimeout(() => {
-                    window.location.href = href;
-                }, 300);
+                x = Math.max(5, x);
+                y = Math.max(5, y);
+                
+                chatContainer.style.left = `${x}px`;
+                chatContainer.style.top = `${y}px`;
+                currentPosition = { x, y };
             });
+
+            // Garantir que o chat está visível após carregamento
+            setTimeout(() => {
+                chatContainer.style.visibility = 'visible';
+            }, 2100);
+
+            console.log('✅ Bat-Sinal com chat arrastável inicializado!');
+            console.log('🎯 Drag livre para qualquer direção habilitado');
+            console.log('📱 Áreas de arraste laterais ativas no mobile');
+            console.log('🧲 Snap apenas após soltar');
         });
     </script>
 </body>
-
 </html>
