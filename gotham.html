@@ -1,0 +1,1970 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WAYNE ENTERPRISES - BAT-HUD SYSTEM v5.0</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* =========================================== */
+        /* VARIÁVEIS CSS GLOBAIS */
+        /* =========================================== */
+        :root {
+            --primary-color: #00d9ff;
+            --primary-dark: #0066cc;
+            --success-color: #00ff88;
+            --warning-color: #ffaa00;
+            --danger-color: #ff0040;
+            --info-color: #bb86fc;
+            --purple-color: #9d4edd;
+            --background-dark: #000;
+            --background-light: rgba(10, 20, 40, 0.95);
+            --text-primary: #ffffff;
+            --text-secondary: #cccccc;
+            --border-color: rgba(0, 217, 255, 0.3);
+            --widget-bg: rgba(10, 20, 40, 0.92);
+            --widget-border: rgba(0, 217, 255, 0.4);
+        }
+
+        /* =========================================== */
+        /* CONFIGURAÇÕES GERAIS */
+        /* =========================================== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: linear-gradient(135deg, #000 0%, #0a1428 50%, #000 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            overflow: hidden;
+            font-family: 'Courier New', monospace;
+            color: var(--text-primary);
+            touch-action: manipulation;
+        }
+
+        /* =========================================== */
+        /* EFEITO DE NEBLINA GOTHAM - REATIVO */
+        /* =========================================== */
+        .rain-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image:
+                radial-gradient(circle at 20% 30%, rgba(0, 217, 255, 0.03) 0%, transparent 40%),
+                radial-gradient(circle at 80% 70%, rgba(187, 134, 252, 0.02) 0%, transparent 50%);
+            filter: blur(25px);
+            z-index: 0;
+            pointer-events: none;
+            transition: opacity 0.5s ease;
+        }
+
+        .rain-overlay::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(circle at center, rgba(0, 217, 255, 0.05), transparent);
+            animation: fogPulse 8s infinite alternate;
+        }
+
+        @keyframes fogPulse {
+            0% {
+                transform: scale(1);
+                opacity: 0.3;
+            }
+            100% {
+                transform: scale(1.2);
+                opacity: 0.6;
+            }
+        }
+
+        /* =========================================== */
+        /* SISTEMA DE WIDGETS BASE */
+        /* =========================================== */
+        .widget {
+            position: fixed;
+            background: var(--widget-bg);
+            border: 1px solid var(--widget-border);
+            border-radius: 8px;
+            padding: 15px;
+            min-width: 200px;
+            min-height: 150px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4),
+                0 0 20px rgba(0, 217, 255, 0.1);
+            transition: all 0.3s ease;
+            z-index: 10;
+            cursor: move;
+            overflow: hidden;
+        }
+
+        .widget:hover {
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.6),
+                0 0 30px rgba(0, 217, 255, 0.2);
+            border-color: var(--primary-color);
+        }
+
+        .widget.dragging {
+            opacity: 0.8;
+            cursor: grabbing;
+            z-index: 1000;
+        }
+
+        .widget-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid rgba(0, 217, 255, 0.2);
+        }
+
+        .widget-title {
+            font-size: 12px;
+            color: var(--primary-color);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: bold;
+        }
+
+        .widget-controls {
+            display: flex;
+            gap: 8px;
+        }
+
+        .widget-btn {
+            background: transparent;
+            border: none;
+            color: var(--text-secondary);
+            cursor: pointer;
+            font-size: 12px;
+            padding: 2px 6px;
+            transition: all 0.2s;
+        }
+
+        .widget-btn:hover {
+            color: var(--primary-color);
+            transform: scale(1.1);
+        }
+
+        .resize-handle {
+            position: absolute;
+            right: 0;
+            bottom: 0;
+            width: 20px;
+            height: 20px;
+            cursor: nwse-resize;
+            z-index: 1001;
+            background: linear-gradient(135deg, transparent 50%, var(--primary-color) 50%);
+            opacity: 0.5;
+            border-radius: 0 0 8px 0;
+        }
+
+        .resize-handle:hover {
+            opacity: 1;
+        }
+
+        /* =========================================== */
+        /* WIDGET 1: DETECTOR DE AMEAÇAS */
+        /* =========================================== */
+        #threatWidget {
+            top: 20px;
+            left: 20px;
+            width: 300px;
+            height: 320px;
+        }
+
+        .threat-scanner {
+            position: relative;
+            width: 100%;
+            height: 180px;
+            background: rgba(0, 0, 0, 0.5);
+            border-radius: 6px;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .threat-rings {
+            position: relative;
+            width: 150px;
+            height: 150px;
+        }
+
+        .threat-ring {
+            position: absolute;
+            border: 2px solid var(--danger-color);
+            border-radius: 50%;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            animation: threatPulse 2s ease-in-out infinite;
+        }
+
+        .threat-ring:nth-child(1) {
+            width: 100%;
+            height: 100%;
+            animation-delay: 0s;
+        }
+
+        .threat-ring:nth-child(2) {
+            width: 70%;
+            height: 70%;
+            animation-delay: 0.3s;
+        }
+
+        .threat-ring:nth-child(3) {
+            width: 40%;
+            height: 40%;
+            animation-delay: 0.6s;
+        }
+
+        @keyframes threatPulse {
+            0%, 100% {
+                opacity: 0.3;
+                transform: translate(-50%, -50%) scale(1);
+            }
+            50% {
+                opacity: 1;
+                transform: translate(-50%, -50%) scale(1.1);
+            }
+        }
+
+        .threat-level {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            z-index: 1;
+        }
+
+        .threat-value {
+            font-size: 32px;
+            color: var(--danger-color);
+            font-weight: bold;
+            text-shadow: 0 0 20px var(--danger-color);
+        }
+
+        .threat-label {
+            font-size: 10px;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+        }
+
+        .threat-list {
+            margin-top: 15px;
+            max-height: 100px;
+            overflow-y: auto;
+        }
+
+        .threat-item {
+            background: rgba(255, 0, 64, 0.1);
+            padding: 8px;
+            margin-bottom: 6px;
+            border-radius: 4px;
+            border-left: 3px solid var(--danger-color);
+            font-size: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .threat-name {
+            color: var(--text-primary);
+        }
+
+        .threat-severity {
+            color: var(--danger-color);
+            font-weight: bold;
+        }
+
+        /* =========================================== */
+        /* WIDGET 2: ANALISADOR FORENSE */
+        /* =========================================== */
+        #forensicWidget {
+            top: 20px;
+            right: 20px;
+            width: 280px;
+            height: 300px;
+        }
+
+        .forensic-display {
+            background: rgba(0, 0, 0, 0.5);
+            padding: 15px;
+            border-radius: 6px;
+            margin-bottom: 10px;
+        }
+
+        .dna-strand {
+            display: flex;
+            gap: 4px;
+            margin-bottom: 15px;
+            height: 60px;
+            align-items: center;
+        }
+
+        .dna-bar {
+            flex: 1;
+            background: linear-gradient(180deg, var(--primary-color), var(--success-color));
+            border-radius: 2px;
+            animation: dnaFloat 2s ease-in-out infinite;
+        }
+
+        .dna-bar:nth-child(odd) {
+            animation-direction: alternate;
+        }
+
+        .dna-bar:nth-child(even) {
+            animation-direction: alternate-reverse;
+        }
+
+        @keyframes dnaFloat {
+            0%, 100% {
+                height: 30%;
+            }
+            50% {
+                height: 100%;
+            }
+        }
+
+        .forensic-data {
+            font-size: 10px;
+        }
+
+        .forensic-field {
+            display: flex;
+            justify-content: space-between;
+            padding: 6px 0;
+            border-bottom: 1px solid rgba(0, 217, 255, 0.1);
+        }
+
+        .forensic-field:last-child {
+            border-bottom: none;
+        }
+
+        .forensic-label {
+            color: var(--text-secondary);
+        }
+
+        .forensic-value {
+            color: var(--primary-color);
+            font-weight: bold;
+        }
+
+        .scan-progress {
+            margin-top: 10px;
+        }
+
+        .progress-bar {
+            height: 8px;
+            background: rgba(0, 0, 0, 0.5);
+            border-radius: 4px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary-color), var(--success-color));
+            border-radius: 4px;
+            animation: progressMove 3s ease-in-out infinite;
+        }
+
+        @keyframes progressMove {
+            0% {
+                width: 20%;
+            }
+            50% {
+                width: 80%;
+            }
+            100% {
+                width: 20%;
+            }
+        }
+
+        /* =========================================== */
+        /* WIDGET 3: MONITORAMENTO DE VEÍCULOS */
+        /* =========================================== */
+        #vehicleWidget {
+            bottom: 20px;
+            left: 20px;
+            width: 320px;
+            height: 280px;
+        }
+
+        .vehicle-status {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .vehicle-card {
+            background: rgba(0, 0, 0, 0.5);
+            padding: 12px;
+            border-radius: 6px;
+            border: 1px solid rgba(0, 217, 255, 0.2);
+            text-align: center;
+            transition: all 0.3s;
+        }
+
+        .vehicle-card:hover {
+            border-color: var(--primary-color);
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 217, 255, 0.3);
+        }
+
+        .vehicle-card.active {
+            border-color: var(--success-color);
+            background: rgba(0, 255, 136, 0.1);
+        }
+
+        .vehicle-icon {
+            font-size: 32px;
+            color: var(--primary-color);
+            margin-bottom: 8px;
+        }
+
+        .vehicle-card.active .vehicle-icon {
+            color: var(--success-color);
+            animation: vehiclePulse 2s ease-in-out infinite;
+        }
+
+        @keyframes vehiclePulse {
+            0%, 100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.1);
+            }
+        }
+
+        .vehicle-name {
+            font-size: 11px;
+            color: var(--text-primary);
+            font-weight: bold;
+            margin-bottom: 4px;
+        }
+
+        .vehicle-stat {
+            font-size: 9px;
+            color: var(--text-secondary);
+        }
+
+        .vehicle-metrics {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+        }
+
+        .metric-box {
+            background: rgba(0, 0, 0, 0.5);
+            padding: 8px;
+            border-radius: 4px;
+            text-align: center;
+        }
+
+        .metric-number {
+            font-size: 16px;
+            color: var(--primary-color);
+            font-weight: bold;
+        }
+
+        .metric-text {
+            font-size: 8px;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+        }
+
+        /* =========================================== */
+        /* WIDGET 4: ANÁLISE CLIMÁTICA */
+        /* =========================================== */
+        #weatherWidget {
+            bottom: 20px;
+            right: 20px;
+            width: 280px;
+            height: 320px;
+        }
+
+        .weather-main {
+            background: rgba(0, 0, 0, 0.5);
+            padding: 20px;
+            border-radius: 6px;
+            text-align: center;
+            margin-bottom: 15px;
+        }
+
+        .weather-icon-large {
+            font-size: 64px;
+            color: var(--primary-color);
+            margin-bottom: 10px;
+            animation: weatherFloat 3s ease-in-out infinite;
+        }
+
+        @keyframes weatherFloat {
+            0%, 100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-10px);
+            }
+        }
+
+        .weather-temp {
+            font-size: 36px;
+            color: var(--text-primary);
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .weather-condition {
+            font-size: 12px;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+        }
+
+        .weather-details {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+        }
+
+        .weather-detail {
+            background: rgba(0, 0, 0, 0.5);
+            padding: 10px;
+            border-radius: 4px;
+            text-align: center;
+        }
+
+        .detail-icon {
+            font-size: 20px;
+            color: var(--primary-color);
+            margin-bottom: 5px;
+        }
+
+        .detail-value {
+            font-size: 14px;
+            color: var(--text-primary);
+            font-weight: bold;
+        }
+
+        .detail-label {
+            font-size: 9px;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+        }
+
+        /* =========================================== */
+        /* WIDGET 5: DETECTOR DE MOVIMENTO */
+        /* =========================================== */
+        #motionWidget {
+            top: 360px;
+            left: 20px;
+            width: 300px;
+            height: 260px;
+        }
+
+        .motion-grid {
+            display: grid;
+            grid-template-columns: repeat(8, 1fr);
+            grid-template-rows: repeat(6, 1fr);
+            gap: 4px;
+            height: 180px;
+            background: rgba(0, 0, 0, 0.5);
+            padding: 10px;
+            border-radius: 6px;
+            margin-bottom: 10px;
+        }
+
+        .motion-cell {
+            background: rgba(0, 217, 255, 0.1);
+            border-radius: 2px;
+            transition: all 0.3s;
+        }
+
+        .motion-cell.active {
+            background: var(--danger-color);
+            box-shadow: 0 0 10px var(--danger-color);
+            animation: motionBlink 1s ease-in-out infinite;
+        }
+
+        @keyframes motionBlink {
+            0%, 100% {
+                opacity: 1;
+            }
+            50% {
+                opacity: 0.3;
+            }
+        }
+
+        .motion-stats {
+            display: flex;
+            justify-content: space-around;
+            font-size: 10px;
+        }
+
+        .motion-stat-item {
+            text-align: center;
+        }
+
+        .motion-stat-value {
+            font-size: 18px;
+            color: var(--danger-color);
+            font-weight: bold;
+        }
+
+        .motion-stat-label {
+            color: var(--text-secondary);
+            text-transform: uppercase;
+        }
+
+        /* =========================================== */
+        /* WIDGET 6: ANÁLISE ESPECTRAL */
+        /* =========================================== */
+        #spectralWidget {
+            top: 360px;
+            right: 320px;
+            width: 280px;
+            height: 280px;
+        }
+
+        .spectrum-display {
+            background: rgba(0, 0, 0, 0.5);
+            padding: 15px;
+            border-radius: 6px;
+            margin-bottom: 10px;
+        }
+
+        .spectrum-graph {
+            display: flex;
+            align-items: flex-end;
+            gap: 2px;
+            height: 120px;
+            margin-bottom: 15px;
+        }
+
+        .spectrum-bar {
+            flex: 1;
+            background: linear-gradient(180deg, var(--info-color), var(--primary-color));
+            border-radius: 2px 2px 0 0;
+            transition: height 0.2s;
+            animation: spectrumWave 3s ease-in-out infinite;
+        }
+
+        .spectrum-bar:nth-child(1) {
+            animation-delay: 0s;
+        }
+
+        .spectrum-bar:nth-child(2) {
+            animation-delay: 0.1s;
+        }
+
+        .spectrum-bar:nth-child(3) {
+            animation-delay: 0.2s;
+        }
+
+        .spectrum-bar:nth-child(4) {
+            animation-delay: 0.3s;
+        }
+
+        .spectrum-bar:nth-child(5) {
+            animation-delay: 0.4s;
+        }
+
+        @keyframes spectrumWave {
+            0%, 100% {
+                height: 20%;
+            }
+            50% {
+                height: 90%;
+            }
+        }
+
+        .spectrum-info {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+        }
+
+        .spectrum-item {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 8px;
+            border-radius: 4px;
+            font-size: 10px;
+            text-align: center;
+        }
+
+        .spectrum-label {
+            color: var(--text-secondary);
+            margin-bottom: 4px;
+        }
+
+        .spectrum-value {
+            color: var(--info-color);
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        /* =========================================== */
+        /* WIDGET 7: VIGILÂNCIA POR SATÉLITE */
+        /* =========================================== */
+        #satelliteWidget {
+            top: 20px;
+            left: 360px;
+            width: 340px;
+            height: 320px;
+        }
+
+        .satellite-view {
+            position: relative;
+            width: 100%;
+            height: 220px;
+            background: radial-gradient(circle at center, rgba(0, 217, 255, 0.1), rgba(0, 0, 0, 0.8));
+            border-radius: 6px;
+            overflow: hidden;
+            margin-bottom: 10px;
+        }
+
+        .orbit-path {
+            position: absolute;
+            border: 1px dashed rgba(0, 217, 255, 0.3);
+            border-radius: 50%;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .orbit-path:nth-child(1) {
+            width: 80%;
+            height: 80%;
+        }
+
+        .orbit-path:nth-child(2) {
+            width: 60%;
+            height: 60%;
+        }
+
+        .orbit-path:nth-child(3) {
+            width: 40%;
+            height: 40%;
+        }
+
+        .satellite-icon {
+            position: absolute;
+            width: 24px;
+            height: 24px;
+            background: var(--primary-color);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            color: #000;
+            animation: satelliteOrbit 10s linear infinite;
+            box-shadow: 0 0 15px var(--primary-color);
+        }
+
+        @keyframes satelliteOrbit {
+            0% {
+                top: 10%;
+                left: 50%;
+            }
+            25% {
+                top: 50%;
+                left: 90%;
+            }
+            50% {
+                top: 90%;
+                left: 50%;
+            }
+            75% {
+                top: 50%;
+                left: 10%;
+            }
+            100% {
+                top: 10%;
+                left: 50%;
+            }
+        }
+
+        .earth-center {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 60px;
+            height: 60px;
+            background: radial-gradient(circle, var(--success-color), var(--primary-dark));
+            border-radius: 50%;
+            box-shadow: 0 0 30px rgba(0, 217, 255, 0.5);
+        }
+
+        .satellite-data {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+        }
+
+        .sat-stat {
+            background: rgba(0, 0, 0, 0.5);
+            padding: 8px;
+            border-radius: 4px;
+            text-align: center;
+            font-size: 10px;
+        }
+
+        .sat-stat-value {
+            color: var(--primary-color);
+            font-weight: bold;
+            font-size: 14px;
+            margin-bottom: 3px;
+        }
+
+        .sat-stat-label {
+            color: var(--text-secondary);
+            text-transform: uppercase;
+        }
+
+        /* =========================================== */
+        /* WIDGET 8: PROTOCOLO DE EMERGÊNCIA */
+        /* =========================================== */
+        #emergencyWidget {
+            bottom: 320px;
+            right: 20px;
+            width: 300px;
+            height: 280px;
+        }
+
+        .emergency-header {
+            background: rgba(255, 0, 64, 0.2);
+            padding: 15px;
+            border-radius: 6px;
+            text-align: center;
+            margin-bottom: 15px;
+            border: 2px solid var(--danger-color);
+        }
+
+        .emergency-icon {
+            font-size: 48px;
+            color: var(--danger-color);
+            margin-bottom: 10px;
+            animation: emergencyPulse 1.5s ease-in-out infinite;
+        }
+
+        @keyframes emergencyPulse {
+            0%, 100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+            50% {
+                transform: scale(1.2);
+                opacity: 0.7;
+            }
+        }
+
+        .emergency-status {
+            font-size: 16px;
+            color: var(--text-primary);
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        .emergency-protocols {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .protocol-btn {
+            background: rgba(0, 0, 0, 0.5);
+            padding: 12px;
+            border-radius: 6px;
+            border: 1px solid var(--danger-color);
+            color: var(--text-primary);
+            cursor: pointer;
+            font-size: 11px;
+            text-transform: uppercase;
+            font-weight: bold;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .protocol-btn:hover {
+            background: rgba(255, 0, 64, 0.2);
+            transform: translateX(5px);
+            box-shadow: 0 0 15px rgba(255, 0, 64, 0.5);
+        }
+
+        .protocol-icon {
+            width: 30px;
+            height: 30px;
+            background: var(--danger-color);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+        }
+
+        /* =========================================== */
+        /* WIDGET 9: RASTREAMENTO DE ALVOS */
+        /* =========================================== */
+        #trackingWidget {
+            top: 360px;
+            left: 360px;
+            width: 320px;
+            height: 280px;
+        }
+
+        .tracking-radar {
+            position: relative;
+            width: 180px;
+            height: 180px;
+            margin: 0 auto 15px;
+            background: radial-gradient(circle, rgba(0, 217, 255, 0.1), transparent);
+            border: 2px solid var(--primary-color);
+            border-radius: 50%;
+        }
+
+        .tracking-sweep {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 50%;
+            height: 2px;
+            background: linear-gradient(90deg, var(--primary-color), transparent);
+            transform-origin: left center;
+            animation: trackingSweep 3s linear infinite;
+        }
+
+        @keyframes trackingSweep {
+            0% {
+                transform: rotate(0deg);
+            }
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        .target-dot {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background: var(--warning-color);
+            border-radius: 50%;
+            box-shadow: 0 0 10px var(--warning-color);
+            animation: targetBlink 2s ease-in-out infinite;
+        }
+
+        @keyframes targetBlink {
+            0%, 100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+            50% {
+                opacity: 0.5;
+                transform: scale(1.3);
+            }
+        }
+
+        .tracking-info {
+            display: flex;
+            justify-content: space-around;
+            font-size: 10px;
+        }
+
+        .tracking-stat {
+            text-align: center;
+        }
+
+        .tracking-value {
+            font-size: 18px;
+            color: var(--warning-color);
+            font-weight: bold;
+        }
+
+        .tracking-label {
+            color: var(--text-secondary);
+            text-transform: uppercase;
+        }
+
+        /* =========================================== */
+        /* WIDGET 10: ESTATÍSTICAS DE COMBATE */
+        /* =========================================== */
+        #combatWidget {
+            bottom: 320px;
+            left: 360px;
+            width: 280px;
+            height: 260px;
+        }
+
+        .combat-stats {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .combat-card {
+            background: rgba(0, 0, 0, 0.5);
+            padding: 15px;
+            border-radius: 6px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .combat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--success-color), var(--primary-color));
+        }
+
+        .combat-number {
+            font-size: 32px;
+            color: var(--success-color);
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .combat-label {
+            font-size: 9px;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+        }
+
+        .combat-efficiency {
+            background: rgba(0, 0, 0, 0.5);
+            padding: 12px;
+            border-radius: 6px;
+            text-align: center;
+        }
+
+        .efficiency-ring {
+            position: relative;
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 10px;
+        }
+
+        .ring-circle {
+            width: 100%;
+            height: 100%;
+            border: 4px solid rgba(0, 217, 255, 0.2);
+            border-radius: 50%;
+            position: relative;
+        }
+
+        .ring-circle::after {
+            content: '';
+            position: absolute;
+            top: -4px;
+            left: -4px;
+            right: -4px;
+            bottom: -4px;
+            border: 4px solid var(--success-color);
+            border-radius: 50%;
+            clip-path: polygon(0 0, 100% 0, 100% 50%, 50% 50%, 50% 100%, 0 100%);
+            animation: ringRotate 3s linear infinite;
+        }
+
+        @keyframes ringRotate {
+            0% {
+                transform: rotate(0deg);
+            }
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        .efficiency-value {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 24px;
+            color: var(--success-color);
+            font-weight: bold;
+        }
+
+        .efficiency-label {
+            font-size: 10px;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+        }
+
+        /* =========================================== */
+        /* BARRA DE FERRAMENTAS GLOBAL */
+        /* =========================================== */
+        .toolbar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(0, 0, 0, 0.95);
+            border-top: 2px solid var(--primary-color);
+            padding: 10px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 1000;
+            backdrop-filter: blur(10px);
+        }
+
+        .toolbar-section {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .toolbar-btn {
+            background: rgba(0, 217, 255, 0.1);
+            border: 1px solid var(--primary-color);
+            border-radius: 4px;
+            padding: 8px 16px;
+            color: var(--primary-color);
+            cursor: pointer;
+            font-size: 11px;
+            text-transform: uppercase;
+            transition: all 0.3s;
+            font-weight: bold;
+        }
+
+        .toolbar-btn:hover {
+            background: rgba(0, 217, 255, 0.2);
+            box-shadow: 0 0 15px rgba(0, 217, 255, 0.3);
+        }
+
+        .toolbar-info {
+            font-size: 11px;
+            color: var(--text-secondary);
+        }
+
+        .toolbar-info span {
+            color: var(--primary-color);
+            font-weight: bold;
+            margin-left: 5px;
+        }
+
+        /* =========================================== */
+        /* RESPONSIVIDADE */
+        /* =========================================== */
+        @media (max-width: 1400px) {
+            .widget {
+                transform: scale(0.9);
+            }
+        }
+
+        @media (max-width: 1024px) {
+            .widget {
+                transform: scale(0.8);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .widget {
+                min-width: 180px;
+                min-height: 120px;
+                padding: 10px;
+            }
+
+            .widget-title {
+                font-size: 10px;
+            }
+
+            .toolbar {
+                flex-direction: column;
+                gap: 10px;
+                padding: 10px;
+            }
+
+            .toolbar-section {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+        }
+
+        /* =========================================== */
+        /* ANIMAÇÕES GLOBAIS */
+        /* =========================================== */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .widget {
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        /* =========================================== */
+        /* ESTADOS DE VISIBILIDADE */
+        /* =========================================== */
+        .widget.hidden {
+            display: none;
+        }
+
+        .widget.minimized .widget-body {
+            display: none;
+        }
+
+        .widget.minimized {
+            height: auto;
+            min-height: auto;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Efeito de Neblina -->
+    <div class="rain-overlay" id="rainOverlay"></div>
+
+    <!-- WIDGET 1: DETECTOR DE AMEAÇAS -->
+    <div class="widget" id="threatWidget">
+        <div class="widget-header">
+            <div class="widget-title">
+                <i class="fas fa-exclamation-triangle"></i> Detector de Ameaças
+            </div>
+            <div class="widget-controls">
+                <button class="widget-btn" onclick="toggleWidget('threatWidget')">
+                    <i class="fas fa-minus"></i>
+                </button>
+            </div>
+        </div>
+        <div class="widget-body">
+            <div class="threat-scanner">
+                <div class="threat-rings">
+                    <div class="threat-ring"></div>
+                    <div class="threat-ring"></div>
+                    <div class="threat-ring"></div>
+                </div>
+                <div class="threat-level">
+                    <div class="threat-value" id="threatValue">3</div>
+                    <div class="threat-label">Ameaças Ativas</div>
+                </div>
+            </div>
+            <div class="threat-list">
+                <div class="threat-item">
+                    <span class="threat-name">Intruso Setor 4</span>
+                    <span class="threat-severity">ALTA</span>
+                </div>
+                <div class="threat-item">
+                    <span class="threat-name">Atividade Suspeita</span>
+                    <span class="threat-severity">MÉDIA</span>
+                </div>
+                <div class="threat-item">
+                    <span class="threat-name">Sinal Desconhecido</span>
+                    <span class="threat-severity">BAIXA</span>
+                </div>
+            </div>
+        </div>
+        <div class="resize-handle"></div>
+    </div>
+
+    <!-- WIDGET 2: ANALISADOR FORENSE -->
+    <div class="widget" id="forensicWidget">
+        <div class="widget-header">
+            <div class="widget-title">
+                <i class="fas fa-dna"></i> Análise Forense
+            </div>
+            <div class="widget-controls">
+                <button class="widget-btn" onclick="toggleWidget('forensicWidget')">
+                    <i class="fas fa-minus"></i>
+                </button>
+            </div>
+        </div>
+        <div class="widget-body">
+            <div class="forensic-display">
+                <div class="dna-strand" id="dnaStrand">
+                    <!-- Barras geradas por JavaScript -->
+                </div>
+                <div class="forensic-data">
+                    <div class="forensic-field">
+                        <span class="forensic-label">Amostra:</span>
+                        <span class="forensic-value">DNA-7829</span>
+                    </div>
+                    <div class="forensic-field">
+                        <span class="forensic-label">Match:</span>
+                        <span class="forensic-value">87.4%</span>
+                    </div>
+                    <div class="forensic-field">
+                        <span class="forensic-label">Banco de Dados:</span>
+                        <span class="forensic-value">GCPD</span>
+                    </div>
+                </div>
+            </div>
+            <div class="scan-progress">
+                <div class="progress-bar">
+                    <div class="progress-fill"></div>
+                </div>
+            </div>
+        </div>
+        <div class="resize-handle"></div>
+    </div>
+
+    <!-- WIDGET 3: MONITORAMENTO DE VEÍCULOS -->
+    <div class="widget" id="vehicleWidget">
+        <div class="widget-header">
+            <div class="widget-title">
+                <i class="fas fa-car"></i> Veículos
+            </div>
+            <div class="widget-controls">
+                <button class="widget-btn" onclick="toggleWidget('vehicleWidget')">
+                    <i class="fas fa-minus"></i>
+                </button>
+            </div>
+        </div>
+        <div class="widget-body">
+            <div class="vehicle-status">
+                <div class="vehicle-card active">
+                    <div class="vehicle-icon">
+                        <i class="fas fa-car-side"></i>
+                    </div>
+                    <div class="vehicle-name">BATMÓVEL</div>
+                    <div class="vehicle-stat">Online - Pronto</div>
+                </div>
+                <div class="vehicle-card">
+                    <div class="vehicle-icon">
+                        <i class="fas fa-motorcycle"></i>
+                    </div>
+                    <div class="vehicle-name">BATCYCLE</div>
+                    <div class="vehicle-stat">Standby - Hangar</div>
+                </div>
+                <div class="vehicle-card active">
+                    <div class="vehicle-icon">
+                        <i class="fas fa-helicopter"></i>
+                    </div>
+                    <div class="vehicle-name">BATWING</div>
+                    <div class="vehicle-stat">Online - Aéreo</div>
+                </div>
+                <div class="vehicle-card">
+                    <div class="vehicle-icon">
+                        <i class="fas fa-ship"></i>
+                    </div>
+                    <div class="vehicle-name">BATBOAT</div>
+                    <div class="vehicle-stat">Offline - Porto</div>
+                </div>
+            </div>
+            <div class="vehicle-metrics">
+                <div class="metric-box">
+                    <div class="metric-number">2</div>
+                    <div class="metric-text">Ativos</div>
+                </div>
+                <div class="metric-box">
+                    <div class="metric-number">4</div>
+                    <div class="metric-text">Total</div>
+                </div>
+                <div class="metric-box">
+                    <div class="metric-number">98%</div>
+                    <div class="metric-text">Status</div>
+                </div>
+            </div>
+        </div>
+        <div class="resize-handle"></div>
+    </div>
+
+    <!-- WIDGET 4: ANÁLISE CLIMÁTICA -->
+    <div class="widget" id="weatherWidget">
+        <div class="widget-header">
+            <div class="widget-title">
+                <i class="fas fa-cloud-rain"></i> Clima Gotham
+            </div>
+            <div class="widget-controls">
+                <button class="widget-btn" onclick="toggleWidget('weatherWidget')">
+                    <i class="fas fa-minus"></i>
+                </button>
+            </div>
+        </div>
+        <div class="widget-body">
+            <div class="weather-main">
+                <div class="weather-icon-large">
+                    <i class="fas fa-cloud-moon"></i>
+                </div>
+                <div class="weather-temp">12°C</div>
+                <div class="weather-condition">Nublado com Névoa</div>
+            </div>
+            <div class="weather-details">
+                <div class="weather-detail">
+                    <div class="detail-icon">
+                        <i class="fas fa-tint"></i>
+                    </div>
+                    <div class="detail-value">78%</div>
+                    <div class="detail-label">Umidade</div>
+                </div>
+                <div class="weather-detail">
+                    <div class="detail-icon">
+                        <i class="fas fa-wind"></i>
+                    </div>
+                    <div class="detail-value">24 km/h</div>
+                    <div class="detail-label">Vento</div>
+                </div>
+                <div class="weather-detail">
+                    <div class="detail-icon">
+                        <i class="fas fa-eye"></i>
+                    </div>
+                    <div class="detail-value">2.5 km</div>
+                    <div class="detail-label">Visibilidade</div>
+                </div>
+                <div class="weather-detail">
+                    <div class="detail-icon">
+                        <i class="fas fa-compress-arrows-alt"></i>
+                    </div>
+                    <div class="detail-value">1013 hPa</div>
+                    <div class="detail-label">Pressão</div>
+                </div>
+            </div>
+        </div>
+        <div class="resize-handle"></div>
+    </div>
+
+    <!-- WIDGET 5: DETECTOR DE MOVIMENTO -->
+    <div class="widget" id="motionWidget">
+        <div class="widget-header">
+            <div class="widget-title">
+                <i class="fas fa-running"></i> Detector de Movimento
+            </div>
+            <div class="widget-controls">
+                <button class="widget-btn" onclick="toggleWidget('motionWidget')">
+                    <i class="fas fa-minus"></i>
+                </button>
+            </div>
+        </div>
+        <div class="widget-body">
+            <div class="motion-grid" id="motionGrid">
+                <!-- Células geradas por JavaScript -->
+            </div>
+            <div class="motion-stats">
+                <div class="motion-stat-item">
+                    <div class="motion-stat-value">7</div>
+                    <div class="motion-stat-label">Detecções</div>
+                </div>
+                <div class="motion-stat-item">
+                    <div class="motion-stat-value">48</div>
+                    <div class="motion-stat-label">Sensores</div>
+                </div>
+                <div class="motion-stat-item">
+                    <div class="motion-stat-value">100%</div>
+                    <div class="motion-stat-label">Cobertura</div>
+                </div>
+            </div>
+        </div>
+        <div class="resize-handle"></div>
+    </div>
+
+    <!-- WIDGET 6: ANÁLISE ESPECTRAL -->
+    <div class="widget" id="spectralWidget">
+        <div class="widget-header">
+            <div class="widget-title">
+                <i class="fas fa-wave-square"></i> Análise Espectral
+            </div>
+            <div class="widget-controls">
+                <button class="widget-btn" onclick="toggleWidget('spectralWidget')">
+                    <i class="fas fa-minus"></i>
+                </button>
+            </div>
+        </div>
+        <div class="widget-body">
+            <div class="spectrum-display">
+                <div class="spectrum-graph">
+                    <div class="spectrum-bar" style="height: 40%;"></div>
+                    <div class="spectrum-bar" style="height: 60%;"></div>
+                    <div class="spectrum-bar" style="height: 80%;"></div>
+                    <div class="spectrum-bar" style="height: 50%;"></div>
+                    <div class="spectrum-bar" style="height: 70%;"></div>
+                    <div class="spectrum-bar" style="height: 45%;"></div>
+                    <div class="spectrum-bar" style="height: 65%;"></div>
+                    <div class="spectrum-bar" style="height: 55%;"></div>
+                </div>
+                <div class="spectrum-info">
+                    <div class="spectrum-item">
+                        <div class="spectrum-label">Frequência</div>
+                        <div class="spectrum-value">2.4 GHz</div>
+                    </div>
+                    <div class="spectrum-item">
+                        <div class="spectrum-label">Amplitude</div>
+                        <div class="spectrum-value">-45 dBm</div>
+                    </div>
+                    <div class="spectrum-item">
+                        <div class="spectrum-label">Largura de Banda</div>
+                        <div class="spectrum-value">20 MHz</div>
+                    </div>
+                    <div class="spectrum-item">
+                        <div class="spectrum-label">SNR</div>
+                        <div class="spectrum-value">42 dB</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="resize-handle"></div>
+    </div>
+
+    <!-- WIDGET 7: VIGILÂNCIA POR SATÉLITE -->
+    <div class="widget" id="satelliteWidget">
+        <div class="widget-header">
+            <div class="widget-title">
+                <i class="fas fa-satellite"></i> Satélite
+            </div>
+            <div class="widget-controls">
+                <button class="widget-btn" onclick="toggleWidget('satelliteWidget')">
+                    <i class="fas fa-minus"></i>
+                </button>
+            </div>
+        </div>
+        <div class="widget-body">
+            <div class="satellite-view">
+                <div class="orbit-path"></div>
+                <div class="orbit-path"></div>
+                <div class="orbit-path"></div>
+                <div class="earth-center"></div>
+                <div class="satellite-icon">
+                    <i class="fas fa-satellite-dish"></i>
+                </div>
+            </div>
+            <div class="satellite-data">
+                <div class="sat-stat">
+                    <div class="sat-stat-value">408km</div>
+                    <div class="sat-stat-label">Altitude</div>
+                </div>
+                <div class="sat-stat">
+                    <div class="sat-stat-value">7.66 km/s</div>
+                    <div class="sat-stat-label">Velocidade</div>
+                </div>
+                <div class="sat-stat">
+                    <div class="sat-stat-value">92.7 min</div>
+                    <div class="sat-stat-label">Órbita</div>
+                </div>
+            </div>
+        </div>
+        <div class="resize-handle"></div>
+    </div>
+
+    <!-- WIDGET 8: PROTOCOLO DE EMERGÊNCIA -->
+    <div class="widget" id="emergencyWidget">
+        <div class="widget-header">
+            <div class="widget-title">
+                <i class="fas fa-exclamation-circle"></i> Emergência
+            </div>
+            <div class="widget-controls">
+                <button class="widget-btn" onclick="toggleWidget('emergencyWidget')">
+                    <i class="fas fa-minus"></i>
+                </button>
+            </div>
+        </div>
+        <div class="widget-body">
+            <div class="emergency-header">
+                <div class="emergency-icon">
+                    <i class="fas fa-shield-alt"></i>
+                </div>
+                <div class="emergency-status">Sistema Standby</div>
+            </div>
+            <div class="emergency-protocols">
+                <button class="protocol-btn" onclick="activateProtocol('lockdown')">
+                    <div class="protocol-icon">
+                        <i class="fas fa-lock"></i>
+                    </div>
+                    <span>Lockdown Total</span>
+                </button>
+                <button class="protocol-btn" onclick="activateProtocol('evacuation')">
+                    <div class="protocol-icon">
+                        <i class="fas fa-running"></i>
+                    </div>
+                    <span>Evacuação</span>
+                </button>
+                <button class="protocol-btn" onclick="activateProtocol('signal')">
+                    <div class="protocol-icon">
+                        <i class="fas fa-broadcast-tower"></i>
+                    </div>
+                    <span>Bat-Sinal</span>
+                </button>
+            </div>
+        </div>
+        <div class="resize-handle"></div>
+    </div>
+
+    <!-- WIDGET 9: RASTREAMENTO DE ALVOS -->
+    <div class="widget" id="trackingWidget">
+        <div class="widget-header">
+            <div class="widget-title">
+                <i class="fas fa-crosshairs"></i> Rastreamento
+            </div>
+            <div class="widget-controls">
+                <button class="widget-btn" onclick="toggleWidget('trackingWidget')">
+                    <i class="fas fa-minus"></i>
+                </button>
+            </div>
+        </div>
+        <div class="widget-body">
+            <div class="tracking-radar">
+                <div class="tracking-sweep"></div>
+                <div class="target-dot" style="top: 30%; left: 40%;"></div>
+                <div class="target-dot" style="top: 60%; left: 70%;"></div>
+                <div class="target-dot" style="top: 45%; left: 25%;"></div>
+                <div class="target-dot" style="top: 75%; left: 55%;"></div>
+                <div class="target-dot" style="top: 20%; left: 65%;"></div>
+            </div>
+            <div class="tracking-info">
+                <div class="tracking-stat">
+                    <div class="tracking-value">5</div>
+                    <div class="tracking-label">Alvos</div>
+                </div>
+                <div class="tracking-stat">
+                    <div class="tracking-value">1.8km</div>
+                    <div class="tracking-label">Distância</div>
+                </div>
+                <div class="tracking-stat">
+                    <div class="tracking-value">100%</div>
+                    <div class="tracking-label">Precisão</div>
+                </div>
+            </div>
+        </div>
+        <div class="resize-handle"></div>
+    </div>
+
+    <!-- WIDGET 10: ESTATÍSTICAS DE COMBATE -->
+    <div class="widget" id="combatWidget">
+        <div class="widget-header">
+            <div class="widget-title">
+                <i class="fas fa-fist-raised"></i> Combate
+            </div>
+            <div class="widget-controls">
+                <button class="widget-btn" onclick="toggleWidget('combatWidget')">
+                    <i class="fas fa-minus"></i>
+                </button>
+            </div>
+        </div>
+        <div class="widget-body">
+            <div class="combat-stats">
+                <div class="combat-card">
+                    <div class="combat-number">147</div>
+                    <div class="combat-label">Confrontos</div>
+                </div>
+                <div class="combat-card">
+                    <div class="combat-number">98%</div>
+                    <div class="combat-label">Taxa de Sucesso</div>
+                </div>
+                <div class="combat-card">
+                    <div class="combat-number">2.4</div>
+                    <div class="combat-label">Tempo Médio (min)</div>
+                </div>
+                <div class="combat-card">
+                    <div class="combat-number">512</div>
+                    <div class="combat-label">Ameaças Neutralizadas</div>
+                </div>
+            </div>
+            <div class="combat-efficiency">
+                <div class="efficiency-ring">
+                    <div class="ring-circle"></div>
+                    <div class="efficiency-value">95%</div>
+                </div>
+                <div class="efficiency-label">Eficiência de Combate</div>
+            </div>
+        </div>
+        <div class="resize-handle"></div>
+    </div>
+
+    <!-- BARRA DE FERRAMENTAS -->
+    <div class="toolbar">
+        <div class="toolbar-section">
+            <div class="toolbar-info">
+                <i class="fas fa-clock"></i>
+                <span id="currentTime">00:00:00</span>
+            </div>
+            <div class="toolbar-info">
+                <i class="fas fa-calendar"></i>
+                <span id="currentDate">--/--/----</span>
+            </div>
+            <div class="toolbar-info">
+                <i class="fas fa-signal"></i>
+                Status:<span>ONLINE</span>
+            </div>
+        </div>
+        <div class="toolbar-section">
+            <button class="toolbar-btn" onclick="resetAllWidgets()">
+                <i class="fas fa-undo"></i> Resetar Layout
+            </button>
+            <button class="toolbar-btn" onclick="toggleAllWidgets()">
+                <i class="fas fa-eye"></i> Mostrar/Ocultar
+            </button>
+            <button class="toolbar-btn" onclick="saveLayout()">
+                <i class="fas fa-save"></i> Salvar
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // =========================================
+        // VARIÁVEIS GLOBAIS
+        // =========================================
+        let threatCount = 3;
+        let motionCells = [];
+
+        // =========================================
+        // INICIALIZAÇÃO
+        // =========================================
+        document.addEventListener('DOMContentLoaded', function () {
+            initWidgets();
+            initToolbar();
+            initForensicDNA();
+            initMotionGrid();
+            setupRainEffect();
+            startThreatMonitoring();
+        });
+
+        // =========================================
+        // SISTEMA DE WIDGETS
+        // =========================================
+        function initWidgets() {
+            const widgets = document.querySelectorAll('.widget');
+            widgets.forEach(widget => {
+                setupWidgetControls(widget);
+            });
+        }
+
+        function setupWidgetControls(element) {
+            let isDragging = false;
+            let isResizing = false;
+            let startX, startY, startWidth, startHeight, startLeft, startTop;
+
+            const resizeHandle = element.querySelector('.resize-handle');
+
+            // Eventos de Início (Mouse e Touch)
+            const onStart = (e) => {
+                const clientX = e.type.includes('touch') ? e.touches[0].clientX : e.clientX;
+                const clientY = e.type.includes('touch') ? e.touches[0].clientY : e.clientY;
+
+                const rect = element.getBoundingClientRect();
+
+                if (e.target === resizeHandle || e.target.parentElement === resizeHandle) {
+                    isResizing = true;
+                } else if (e.target.closest('.widget-header')) {
+                    isDragging = true;
+                }
+
+                if (!isDragging && !isResizing) return;
+
+                startX = clientX;
+                startY = clientY;
+                startWidth = rect.width;
+                startHeight = rect.height;
+                startLeft = rect.left;
+                startTop = rect.top;
+
+                element.classList.add('dragging');
+                e.stopPropagation();
+            };
+
+            // Eventos de Movimentação
+            const onMove = (e) => {
+                if (!isDragging && !isResizing) return;
+
+                const clientX = e.type.includes('touch') ? e.touches[0].clientX : e.clientX;
+                const clientY = e.type.includes('touch') ? e.touches[0].clientY : e.clientY;
+
+                const dx = clientX - startX;
+                const dy = clientY - startY;
+
+                if (isResizing) {
+                    const newW = Math.max(200, startWidth + dx);
+                    const newH = Math.max(150, startHeight + dy);
+
+                    if (startLeft + newW < window.innerWidth) element.style.width = newW + 'px';
+                    if (startTop + newH < window.innerHeight - 60) element.style.height = newH + 'px';
+                } else if (isDragging) {
+                    let newX = startLeft + dx;
+                    let newY = startTop + dy;
+
+                    const margin = 10;
+                    newX = Math.max(margin, Math.min(newX, window.innerWidth - element.offsetWidth - margin));
+                    newY = Math.max(margin, Math.min(newY, window.innerHeight - element.offsetHeight - 60 - margin));
+
+                    element.style.left = newX + 'px';
+                    element.style.top = newY + 'px';
+                    element.style.bottom = 'auto';
+                    element.style.right = 'auto';
+                }
+
+                if (e.cancelable) e.preventDefault();
+            };
+
+            const onEnd = () => {
+                isDragging = false;
+                isResizing = false;
+                element.classList.remove('dragging');
+            };
+
+            element.addEventListener('mousedown', onStart);
+            document.addEventListener('mousemove', onMove);
+            document.addEventListener('mouseup', onEnd);
+
+            element.addEventListener('touchstart', onStart, { passive: false });
+            document.addEventListener('touchmove', onMove, { passive: false });
+            document.addEventListener('touchend', onEnd);
+        }
+
+        function toggleWidget(widgetId) {
+            const widget = document.getElementById(widgetId);
+            widget.classList.toggle('minimized');
+        }
+
+        function resetAllWidgets() {
+            location.reload();
+        }
+
+        function toggleAllWidgets() {
+            const widgets = document.querySelectorAll('.widget');
+            const anyHidden = Array.from(widgets).some(w => w.classList.contains('hidden'));
+
+            widgets.forEach(widget => {
+                if (anyHidden) {
+                    widget.classList.remove('hidden');
+                } else {
+                    widget.classList.add('hidden');
+                }
+            });
+        }
+
+        function saveLayout() {
+            const widgets = document.querySelectorAll('.widget');
+            const layout = {};
+
+            widgets.forEach(widget => {
+                layout[widget.id] = {
+                    top: widget.style.top,
+                    left: widget.style.left,
+                    width: widget.style.width,
+                    height: widget.style.height
+                };
+            });
+
+            localStorage.setItem('bat-hud-layout-v5', JSON.stringify(layout));
+            showNotification('Layout salvo com sucesso!', 'success');
+        }
+
+        function showNotification(message, type = 'info') {
+            console.log(`[${type.toUpperCase()}] ${message}`);
+        }
+
+        // =========================================
+        // BARRA DE FERRAMENTAS
+        // =========================================
+        function initToolbar() {
+            updateDateTime();
+            setInterval(updateDateTime, 1000);
+        }
+
+        function updateDateTime() {
+            const now = new Date();
+
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            const seconds = String(now.getSeconds()).padStart(2, '0');
+            document.getElementById('currentTime').textContent = `${hours}:${minutes}:${seconds}`;
+
+            const day = String(now.getDate()).padStart(2, '0');
+            const month = String(now.getMonth() + 1).padStart(2, '0');
+            const year = now.getFullYear();
+            document.getElementById('currentDate').textContent = `${day}/${month}/${year}`;
+        }
+
+        // =========================================
+        // DETECTOR DE AMEAÇAS
+        // =========================================
+        function startThreatMonitoring() {
+            setInterval(() => {
+                threatCount = Math.floor(Math.random() * 5) + 1;
+                document.getElementById('threatValue').textContent = threatCount;
+            }, 5000);
+        }
+
+        // =========================================
+        // ANALISADOR FORENSE - DNA
+        // =========================================
+        function initForensicDNA() {
+            const dnaStrand = document.getElementById('dnaStrand');
+            for (let i = 0; i < 20; i++) {
+                const bar = document.createElement('div');
+                bar.className = 'dna-bar';
+                const delay = i * 0.1;
+                bar.style.animationDelay = `${delay}s`;
+                dnaStrand.appendChild(bar);
+            }
+        }
+
+        // =========================================
+        // DETECTOR DE MOVIMENTO
+        // =========================================
+        function initMotionGrid() {
+            const grid = document.getElementById('motionGrid');
+            for (let i = 0; i < 48; i++) {
+                const cell = document.createElement('div');
+                cell.className = 'motion-cell';
+                grid.appendChild(cell);
+                motionCells.push(cell);
+            }
+
+            // Simular detecções de movimento aleatórias
+            setInterval(() => {
+                motionCells.forEach(cell => cell.classList.remove('active'));
+                
+                const numActive = Math.floor(Math.random() * 8) + 3;
+                for (let i = 0; i < numActive; i++) {
+                    const randomIndex = Math.floor(Math.random() * motionCells.length);
+                    motionCells[randomIndex].classList.add('active');
+                }
+            }, 2000);
+        }
+
+        // =========================================
+        // PROTOCOLO DE EMERGÊNCIA
+        // =========================================
+        function activateProtocol(type) {
+            const messages = {
+                lockdown: 'Protocolo de Lockdown Ativado!',
+                evacuation: 'Protocolo de Evacuação Iniciado!',
+                signal: 'Bat-Sinal Acionado!'
+            };
+            
+            alert(messages[type] || 'Protocolo Ativado');
+            console.log(`[EMERGÊNCIA] ${messages[type]}`);
+        }
+
+        // =========================================
+        // EFEITO DE CHUVA
+        // =========================================
+        function setupRainEffect() {
+            const rainOverlay = document.getElementById('rainOverlay');
+            document.addEventListener('mousemove', function (e) {
+                const x = e.clientX / window.innerWidth * 100;
+                const y = e.clientY / window.innerHeight * 100;
+                rainOverlay.style.setProperty('--x', `${x}%`);
+                rainOverlay.style.setProperty('--y', `${y}%`);
+            });
+        }
+    </script>
+</body>
+
+</html>
