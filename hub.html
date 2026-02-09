@@ -585,21 +585,21 @@
         }
 
         /* =========================================== */
-        /* SISTEMA DE WIDGETS - RESPONSIVIDADE REVISADA */
+        /* SISTEMA DE WIDGETS - WIDGETS GRANDES E VISÍVEIS */
         /* =========================================== */
         .widget {
             position: absolute !important;
             background: var(--widget-bg);
-            border: 1px solid var(--widget-border);
-            border-radius: 8px;
-            padding: 15px;
-            min-width: 200px;
-            min-height: 140px;
-            max-width: 500px;
+            border: 2px solid var(--widget-border);
+            border-radius: 12px;
+            padding: 20px;
+            min-width: 300px;
+            min-height: 250px;
+            max-width: 600px;
             max-height: 500px;
             backdrop-filter: blur(10px);
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4),
-                0 0 20px rgba(0, 217, 255, 0.1);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.5),
+                0 0 30px rgba(0, 217, 255, 0.15);
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             z-index: 10;
             cursor: move;
@@ -612,20 +612,38 @@
             transform-origin: center;
         }
 
-        /* MOBILE: TAMANHO MINIATURA */
+        /* MOBILE: WIDGETS MAIORES E BEM VISÍVEIS */
         @media (max-width: 768px) {
             .widget {
-                min-width: 120px !important;
-                min-height: 100px !important;
-                max-width: 160px !important;
-                max-height: 180px !important;
-                padding: 8px !important;
-                font-size: 0.8em;
+                min-width: 280px !important;
+                min-height: 230px !important;
+                max-width: 320px !important;
+                max-height: 350px !important;
+                padding: 15px !important;
+                font-size: 0.9em;
+                border-width: 2px;
+                border-radius: 10px;
             }
             
             .widget.folder-stacked {
-                min-width: 110px !important;
-                min-height: 90px !important;
+                min-width: 270px !important;
+                min-height: 220px !important;
+                position: relative !important;
+                left: auto !important;
+                top: auto !important;
+                transform: none !important;
+                margin-bottom: 15px;
+            }
+        }
+
+        /* MOBILE PEQUENO: AINDA VISÍVEIS */
+        @media (max-width: 480px) {
+            .widget {
+                min-width: 260px !important;
+                min-height: 220px !important;
+                max-width: 300px !important;
+                max-height: 320px !important;
+                padding: 12px !important;
             }
         }
 
@@ -650,117 +668,145 @@
         }
 
         /* =========================================== */
-        /* ANIMAÇÃO DE PILHA DE PASTAS */
+        /* LAYOUTS DIFERENTES PARA MOBILE E DESKTOP */
         /* =========================================== */
-        .widget.folder-stacked {
-            position: absolute !important;
-            transform-origin: top left;
-            box-shadow: 
-                0 1px 3px rgba(0, 0, 0, 0.3),
-                0 0 0 1px rgba(0, 217, 255, 0.15),
-                inset 0 -3px 8px rgba(0, 0, 0, 0.4);
-            border-width: 2px;
-            border-style: solid;
-            border-color: var(--widget-border);
-            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-            pointer-events: auto;
-            cursor: pointer;
-            border-top: 4px solid rgba(0, 217, 255, 0.5);
-        }
-
-        /* MOBILE: Reduzir efeito de pasta */
-        @media (max-width: 768px) {
+        
+        /* DESKTOP: PILHA DE PASTAS */
+        @media (min-width: 769px) {
+            .widgets-area {
+                overflow: auto;
+                padding: 20px;
+            }
+            
             .widget.folder-stacked {
-                border-width: 1px;
-                border-top: 3px solid rgba(0, 217, 255, 0.5);
+                position: absolute !important;
+                transform-origin: top left;
+                box-shadow: 
+                    0 5px 15px rgba(0, 0, 0, 0.4),
+                    0 0 0 2px rgba(0, 217, 255, 0.2),
+                    inset 0 -5px 12px rgba(0, 0, 0, 0.4);
+                border-width: 3px;
+                border-style: solid;
+                border-color: var(--widget-border);
+                transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+                pointer-events: auto;
+                cursor: pointer;
+                border-top: 5px solid rgba(0, 217, 255, 0.6);
             }
-        }
-
-        /* Efeito de "pasta" com borda superior destacada */
-        .widget.folder-stacked::before {
-            content: '';
-            position: absolute;
-            top: -2px;
-            left: 15px;
-            right: 15px;
-            height: 10px;
-            background: linear-gradient(180deg, 
-                rgba(0, 217, 255, 0.4) 0%, 
-                transparent 100%);
-            border-radius: 5px 5px 0 0;
-            z-index: 1;
-            pointer-events: none;
-        }
-
-        /* MOBILE: Ajustar efeito de pasta */
-        @media (max-width: 768px) {
+            
             .widget.folder-stacked::before {
-                left: 8px;
-                right: 8px;
-                height: 8px;
+                content: '';
+                position: absolute;
+                top: -3px;
+                left: 20px;
+                right: 20px;
+                height: 12px;
+                background: linear-gradient(180deg, 
+                    rgba(0, 217, 255, 0.5) 0%, 
+                    transparent 100%);
+                border-radius: 6px 6px 0 0;
+                z-index: 1;
+                pointer-events: none;
             }
-        }
-
-        /* Quando o widget está fora da pilha (selecionado) */
-        .widget.folder-stacked.selected {
-            transform: translateY(-50px) scale(1.08) !important;
-            box-shadow: 
-                0 20px 50px rgba(0, 0, 0, 0.7),
-                0 0 50px rgba(0, 217, 255, 0.4),
-                0 0 0 3px var(--primary-color);
-            border-color: var(--primary-color);
-            z-index: 1000 !important;
-            cursor: move;
-            border-top-color: var(--primary-color);
-        }
-
-        /* MOBILE: Ajustar seleção */
-        @media (max-width: 768px) {
+            
             .widget.folder-stacked.selected {
-                transform: translateY(-30px) scale(1.05) !important;
-            }
-        }
-
-        /* Animar todos os widgets da pilha quando um é selecionado */
-        .widgets-area:hover .widget.folder-stacked:not(:hover):not(.selected) {
-            transform: translateY(-8px) !important;
-            transition-delay: 0.1s;
-        }
-
-        /* Efeito de "respiro" na pilha */
-        @keyframes folderBreathe {
-            0%, 100% { 
-                transform: translateY(0) rotate(var(--widget-rotation, 0deg)); 
+                transform: translateY(-60px) scale(1.1) !important;
                 box-shadow: 
-                    0 1px 3px rgba(0, 0, 0, 0.3),
-                    0 0 0 1px rgba(0, 217, 255, 0.15);
+                    0 25px 60px rgba(0, 0, 0, 0.8),
+                    0 0 60px rgba(0, 217, 255, 0.5),
+                    0 0 0 4px var(--primary-color);
+                border-color: var(--primary-color);
+                z-index: 1000 !important;
+                cursor: move;
+                border-top-color: var(--primary-color);
             }
-            50% { 
-                transform: translateY(-3px) rotate(calc(var(--widget-rotation, 0deg) + 0.3deg)); 
-                box-shadow: 
-                    0 3px 8px rgba(0, 0, 0, 0.4),
-                    0 0 0 1px rgba(0, 217, 255, 0.25);
+            
+            .folder-tab {
+                position: absolute;
+                top: -18px;
+                left: 30px;
+                width: 60px;
+                height: 18px;
+                background: linear-gradient(180deg, 
+                    var(--primary-color) 0%, 
+                    rgba(0, 150, 255, 0.9) 100%);
+                border-radius: 8px 8px 0 0;
+                z-index: 3;
+                pointer-events: none;
+                opacity: 0.9;
+                transform: perspective(15px) rotateX(-20deg);
+                box-shadow: 0 -5px 12px rgba(0, 0, 0, 0.5);
+                border: 2px solid rgba(0, 217, 255, 0.7);
+                border-bottom: none;
+            }
+            
+            .folder-number {
+                position: absolute;
+                top: -20px;
+                left: 35px;
+                font-size: 12px;
+                color: rgba(255, 255, 255, 0.95);
+                font-weight: bold;
+                z-index: 4;
+                pointer-events: none;
+                text-shadow: 0 0 10px rgba(0, 217, 255, 0.9);
+                font-family: 'Courier New', monospace;
+                letter-spacing: 1px;
             }
         }
+        
+        /* MOBILE: GRID ORGANIZADO */
+        @media (max-width: 768px) {
+            .widgets-area {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                overflow-y: auto;
+                padding: 15px;
+                gap: 15px;
+            }
+            
+            .widget.folder-stacked {
+                width: 90%;
+                max-width: 320px;
+                box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+                border-top: 4px solid rgba(0, 217, 255, 0.6);
+            }
+            
+            .folder-tab, .folder-number {
+                display: none; /* Esconder em mobile */
+            }
+            
+            .widget.folder-stacked.selected {
+                transform: scale(1.05) !important;
+                box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6),
+                    0 0 40px rgba(0, 217, 255, 0.4);
+                z-index: 1000;
+            }
+            
+            .top-left, .top-right, .bottom-left, .bottom-right {
+                width: 35%;
+                height: 70px !important;
+            }
 
-        .widget.folder-stacked {
-            animation: folderBreathe 4s ease-in-out infinite;
-            animation-delay: calc(var(--widget-index, 0) * 0.2s);
-        }
+            .top-center, .bottom-center {
+                width: 30%;
+                left: 35%;
+                height: 35px !important;
+            }
 
-        .widget.folder-stacked {
-            transition: 
-                transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1),
-                box-shadow 0.4s ease,
-                border-color 0.3s ease,
-                z-index 0.3s ease;
-        }
-
-        .widget.folder-stacked:hover {
-            transition: 
-                transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1),
-                box-shadow 0.3s ease,
-                border-color 0.2s ease;
+            .mid-left, .mid-right {
+                top: 70px !important;
+                height: calc(100% - 140px) !important;
+                width: 30px !important;
+            }
+            
+            .widgets-area {
+                top: 75px !important;
+                left: 30px !important;
+                right: 30px !important;
+                bottom: 75px !important;
+            }
         }
 
         /* Efeito de "pular" mais pronunciado */
@@ -769,10 +815,10 @@
                 transform: translateY(0) scale(1) rotate(var(--widget-rotation, 0deg)); 
             }
             60% { 
-                transform: translateY(-60px) scale(1.12) rotate(calc(var(--widget-rotation, 0deg) - 1.5deg)); 
+                transform: translateY(-80px) scale(1.15) rotate(calc(var(--widget-rotation, 0deg) - 2deg)); 
             }
             100% { 
-                transform: translateY(-50px) scale(1.08) rotate(var(--widget-rotation, 0deg)); 
+                transform: translateY(-60px) scale(1.1) rotate(var(--widget-rotation, 0deg)); 
             }
         }
 
@@ -784,102 +830,30 @@
         @media (max-width: 768px) {
             @keyframes folderJump {
                 0% { 
-                    transform: translateY(0) scale(1) rotate(var(--widget-rotation, 0deg)); 
+                    transform: scale(1); 
                 }
                 60% { 
-                    transform: translateY(-40px) scale(1.08) rotate(calc(var(--widget-rotation, 0deg) - 1deg)); 
+                    transform: scale(1.08); 
                 }
                 100% { 
-                    transform: translateY(-30px) scale(1.05) rotate(var(--widget-rotation, 0deg)); 
+                    transform: scale(1.05); 
                 }
             }
-        }
-
-        /* =========================================== */
-        /* INDICADOR DE PASTA NA PILHA */
-        /* =========================================== */
-        .folder-tab {
-            position: absolute;
-            top: -14px;
-            left: 25px;
-            width: 50px;
-            height: 14px;
-            background: linear-gradient(180deg, 
-                var(--primary-color) 0%, 
-                rgba(0, 150, 255, 0.9) 100%);
-            border-radius: 5px 5px 0 0;
-            z-index: 3;
-            pointer-events: none;
-            opacity: 0.9;
-            transform: perspective(12px) rotateX(-15deg);
-            box-shadow: 0 -3px 8px rgba(0, 0, 0, 0.4);
-            border: 1px solid rgba(0, 217, 255, 0.6);
-            border-bottom: none;
-        }
-
-        /* MOBILE: Reduzir aba da pasta */
-        @media (max-width: 768px) {
-            .folder-tab {
-                top: -10px;
-                left: 20px;
-                width: 40px;
-                height: 10px;
-                transform: perspective(8px) rotateX(-10deg);
-            }
-        }
-
-        /* Número da pasta */
-        .folder-number {
-            position: absolute;
-            top: -16px;
-            left: 30px;
-            font-size: 10px;
-            color: rgba(255, 255, 255, 0.95);
-            font-weight: bold;
-            z-index: 4;
-            pointer-events: none;
-            text-shadow: 0 0 8px rgba(0, 217, 255, 0.8);
-            font-family: 'Courier New', monospace;
-            letter-spacing: 1px;
-        }
-
-        /* MOBILE: Ajustar número da pasta */
-        @media (max-width: 768px) {
-            .folder-number {
-                top: -12px;
-                left: 25px;
-                font-size: 8px;
-            }
-        }
-
-        /* Efeito de pilha */
-        .widget.stacked {
-            transition: all 0.4s cubic-bezier(0.68, -0.55, 0.27, 1.55);
-            box-shadow: 
-                0 2px 4px rgba(0, 0, 0, 0.3),
-                0 0 20px rgba(0, 217, 255, 0.1);
         }
 
         .widget:hover {
-            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.6),
-                0 0 30px rgba(0, 217, 255, 0.2);
+            box-shadow: 0 18px 50px rgba(0, 0, 0, 0.7),
+                0 0 40px rgba(0, 217, 255, 0.25);
             border-color: var(--primary-color);
             z-index: 1000 !important;
-            transform: translateY(-5px) scale(1.02);
-        }
-
-        /* MOBILE: Reduzir efeito hover */
-        @media (max-width: 768px) {
-            .widget:hover {
-                transform: translateY(-3px) scale(1.01);
-            }
+            transform: translateY(-8px) scale(1.03);
         }
 
         .widget.dragging {
             opacity: 0.9;
             cursor: grabbing !important;
             z-index: 1000 !important;
-            box-shadow: 0 0 30px rgba(0, 217, 255, 0.4) !important;
+            box-shadow: 0 0 40px rgba(0, 217, 255, 0.5) !important;
             border-color: var(--primary-color) !important;
         }
 
@@ -891,30 +865,30 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 12px;
-            padding-bottom: 8px;
-            border-bottom: 1px solid rgba(0, 217, 255, 0.2);
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid rgba(0, 217, 255, 0.3);
             flex-shrink: 0;
             cursor: move;
             user-select: none;
-            background: rgba(0, 0, 0, 0.3);
-            border-radius: 6px 6px 0 0;
-            padding: 10px 15px;
+            background: rgba(0, 0, 0, 0.4);
+            border-radius: 10px 10px 0 0;
+            padding: 15px;
         }
 
-        /* MOBILE: Reduzir header */
+        /* MOBILE: Ajustar header */
         @media (max-width: 768px) {
             .widget-header {
-                padding: 6px 10px;
-                margin-bottom: 8px;
+                padding: 12px;
+                margin-bottom: 12px;
             }
         }
 
         .widget-title {
-            font-size: 12px;
+            font-size: 14px;
             color: var(--primary-color);
             text-transform: uppercase;
-            letter-spacing: 1px;
+            letter-spacing: 1.5px;
             font-weight: bold;
             white-space: nowrap;
             overflow: hidden;
@@ -924,14 +898,14 @@
         /* MOBILE: Ajustar título */
         @media (max-width: 768px) {
             .widget-title {
-                font-size: 10px;
-                letter-spacing: 0.5px;
+                font-size: 13px;
+                letter-spacing: 1px;
             }
         }
 
         .widget-controls {
             display: flex;
-            gap: 8px;
+            gap: 10px;
         }
 
         .widget-btn {
@@ -939,34 +913,34 @@
             border: none;
             color: var(--text-secondary);
             cursor: pointer;
-            font-size: 12px;
-            padding: 4px 8px;
-            border-radius: 3px;
+            font-size: 14px;
+            padding: 6px 10px;
+            border-radius: 4px;
             transition: all 0.2s;
-            min-width: 24px;
-            height: 24px;
+            min-width: 28px;
+            height: 28px;
             display: flex;
             align-items: center;
             justify-content: center;
         }
 
-        /* MOBILE: Reduzir botões */
+        /* MOBILE: Ajustar botões */
         @media (max-width: 768px) {
             .widget-btn {
-                font-size: 10px;
-                padding: 2px 4px;
-                min-width: 20px;
-                height: 20px;
+                font-size: 12px;
+                padding: 5px 8px;
+                min-width: 24px;
+                height: 24px;
             }
             
             .widget-controls {
-                gap: 4px;
+                gap: 6px;
             }
         }
 
         .widget-btn:hover {
             color: var(--primary-color);
-            background: rgba(0, 217, 255, 0.1);
+            background: rgba(0, 217, 255, 0.15);
             transform: scale(1.1);
         }
 
@@ -983,20 +957,20 @@
             position: absolute;
             right: 0;
             bottom: 0;
-            width: 20px;
-            height: 20px;
+            width: 25px;
+            height: 25px;
             cursor: nwse-resize;
             z-index: 1001;
             background: linear-gradient(135deg, transparent 50%, var(--primary-color) 50%);
-            opacity: 0.5;
-            border-radius: 0 0 8px 0;
+            opacity: 0.6;
+            border-radius: 0 0 12px 0;
         }
 
         /* MOBILE: Ajustar alça de redimensionamento */
         @media (max-width: 768px) {
             .resize-handle {
-                width: 16px;
-                height: 16px;
+                width: 20px;
+                height: 20px;
             }
         }
 
@@ -1005,7 +979,7 @@
         }
 
         /* =========================================== */
-        /* CONTEÚDO DOS WIDGETS - RESPONSIVO BAT-HUD */
+        /* CONTEÚDO DOS WIDGETS - VISÍVEL E LEGÍVEL */
         /* =========================================== */
         .widget-content {
             flex: 1;
@@ -1013,18 +987,18 @@
             flex-direction: column;
             height: 100%;
             min-height: 0;
-            gap: 10px;
+            gap: 15px;
             overflow: hidden;
-            padding: 12px;
+            padding: 15px;
             box-sizing: border-box;
         }
 
-        /* MOBILE: Reduzir padding do conteúdo */
+        /* MOBILE: Ajustar conteúdo */
         @media (max-width: 768px) {
             .widget-content {
-                padding: 8px !important;
-                gap: 6px !important;
-                font-size: 0.85em;
+                padding: 12px !important;
+                gap: 12px !important;
+                font-size: 0.95em;
             }
         }
 
@@ -1032,90 +1006,45 @@
         .metrics-container {
             display: flex;
             flex-direction: column;
-            gap: 8px;
+            gap: 12px;
             flex: 1;
             min-height: 0;
             overflow: hidden;
         }
 
-        /* Grids responsivos com tema Batman */
-        .responsive-grid {
-            display: grid;
-            gap: 12px;
-            flex: 1;
-            min-height: 0;
-        }
-
-        /* Para grids com 2 colunas */
-        .grid-2-cols {
-            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-        }
-
-        /* Para grids com 3 colunas */
-        .grid-3-cols {
-            grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
-        }
-
-        /* Para grids com 4 colunas */
-        .grid-4-cols {
-            grid-template-columns: repeat(auto-fill, minmax(70px, 1fr));
-        }
-
-        /* MOBILE: Ajustar grids */
-        @media (max-width: 768px) {
-            .grid-2-cols {
-                grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
-                gap: 6px;
-            }
-            
-            .grid-3-cols {
-                grid-template-columns: repeat(auto-fill, minmax(60px, 1fr));
-                gap: 5px;
-            }
-            
-            .grid-4-cols {
-                grid-template-columns: repeat(auto-fill, minmax(50px, 1fr));
-                gap: 4px;
-            }
-            
-            .responsive-grid {
-                gap: 8px;
-            }
-        }
-
-        /* Texto responsivo */
+        /* Texto responsivo GRANDE */
         .responsive-text {
-            font-size: clamp(9px, 1.2vw, 13px);
-            line-height: 1.4;
+            font-size: 13px;
+            line-height: 1.5;
             color: var(--text-secondary);
         }
 
         .responsive-title {
-            font-size: clamp(11px, 1.5vw, 16px);
+            font-size: 18px;
             font-weight: bold;
-            margin: 0 0 10px 0;
+            margin: 0 0 15px 0;
             color: var(--primary-color);
             text-transform: uppercase;
-            letter-spacing: 1px;
+            letter-spacing: 1.5px;
         }
 
         /* MOBILE: Ajustar títulos */
         @media (max-width: 768px) {
             .responsive-title {
-                font-size: 10px !important;
-                margin: 0 0 6px 0 !important;
-                letter-spacing: 0.5px;
+                font-size: 16px !important;
+                margin: 0 0 12px 0 !important;
+                letter-spacing: 1px;
             }
             
             .responsive-text {
-                font-size: 9px !important;
-                line-height: 1.3;
+                font-size: 12px !important;
+                line-height: 1.4;
             }
         }
 
-        /* Valores numéricos responsivos */
+        /* Valores numéricos GRANDES */
         .responsive-value {
-            font-size: clamp(13px, 2vw, 20px);
+            font-size: 24px;
             font-weight: bold;
             font-family: 'Courier New', monospace;
             margin: 0;
@@ -1125,270 +1054,80 @@
         /* MOBILE: Ajustar valores */
         @media (max-width: 768px) {
             .responsive-value {
-                font-size: 11px !important;
+                font-size: 20px !important;
             }
         }
 
-        /* Elementos de interface responsivos */
-        .metric-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 8px;
-            flex-wrap: wrap;
-            gap: 4px;
-        }
-
-        .metric-label {
-            font-size: clamp(8px, 1vw, 11px);
-            color: var(--text-secondary);
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        /* MOBILE: Ajustar labels */
-        @media (max-width: 768px) {
-            .metric-label {
-                font-size: 8px !important;
-                letter-spacing: 0.3px;
-            }
-        }
-
-        /* Cards de métrica responsivos */
+        /* Cards de métrica grandes */
         .metric-card {
-            background: rgba(0, 20, 40, 0.6);
-            border: 1px solid rgba(0, 217, 255, 0.3);
-            border-radius: 6px;
-            padding: 12px;
+            background: rgba(0, 20, 40, 0.7);
+            border: 2px solid rgba(0, 217, 255, 0.4);
+            border-radius: 8px;
+            padding: 15px;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
-            min-height: 80px;
+            min-height: 100px;
             transition: all 0.3s ease;
             backdrop-filter: blur(5px);
         }
 
-        /* MOBILE: Reduzir cards */
+        /* MOBILE: Ajustar cards */
         @media (max-width: 768px) {
             .metric-card {
-                padding: 8px;
-                min-height: 60px;
-                border-radius: 4px;
+                padding: 12px;
+                min-height: 90px;
+                border-radius: 6px;
             }
         }
 
         .metric-card:hover {
-            transform: translateY(-2px);
+            transform: translateY(-3px);
             border-color: var(--primary-color);
-            box-shadow: 0 4px 20px rgba(0, 217, 255, 0.2);
+            box-shadow: 0 6px 25px rgba(0, 217, 255, 0.25);
         }
 
-        /* Contêiner flexível para gráficos e elementos visuais */
+        /* Contêiner flexível para gráficos */
         .chart-container {
             flex: 1;
             min-height: 0;
             position: relative;
             width: 100%;
-            background: rgba(0, 0, 0, 0.3);
-            border-radius: 6px;
-            border: 1px solid rgba(0, 217, 255, 0.2);
-            padding: 10px;
+            background: rgba(0, 0, 0, 0.4);
+            border-radius: 8px;
+            border: 2px solid rgba(0, 217, 255, 0.3);
+            padding: 15px;
         }
 
-        /* MOBILE: Reduzir containers de gráficos */
+        /* MOBILE: Ajustar containers */
         @media (max-width: 768px) {
             .chart-container {
-                padding: 6px;
-                border-radius: 4px;
+                padding: 10px;
+                border-radius: 6px;
             }
-        }
-
-        /* Para listas dentro dos widgets */
-        .responsive-list {
-            display: flex;
-            flex-direction: column;
-            gap: 6px;
-            flex: 1;
-            overflow-y: auto;
-            max-height: 200px;
-        }
-
-        /* MOBILE: Ajustar listas */
-        @media (max-width: 768px) {
-            .responsive-list {
-                max-height: 120px;
-                gap: 4px;
-            }
-        }
-
-        .list-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 8px 10px;
-            background: rgba(0, 10, 30, 0.5);
-            border-radius: 4px;
-            border: 1px solid rgba(0, 217, 255, 0.1);
-            font-size: clamp(9px, 1.1vw, 12px);
-            transition: all 0.2s ease;
-        }
-
-        /* MOBILE: Ajustar itens da lista */
-        @media (max-width: 768px) {
-            .list-item {
-                padding: 6px 8px;
-                font-size: 9px;
-                border-radius: 3px;
-            }
-        }
-
-        .list-item:hover {
-            background: rgba(0, 30, 60, 0.6);
-            border-color: rgba(0, 217, 255, 0.3);
-        }
-
-        /* Controles responsivos */
-        .responsive-control {
-            width: 100%;
-            padding: 8px 10px;
-            background: rgba(0, 10, 30, 0.8);
-            border: 1px solid rgba(0, 217, 255, 0.3);
-            border-radius: 4px;
-            color: var(--text-primary);
-            font-size: clamp(10px, 1.1vw, 13px);
-            margin-top: 5px;
-            box-sizing: border-box;
-            transition: all 0.3s ease;
-        }
-
-        /* MOBILE: Ajustar controles */
-        @media (max-width: 768px) {
-            .responsive-control {
-                padding: 6px 8px;
-                font-size: 10px;
-                margin-top: 3px;
-            }
-        }
-
-        .responsive-control:focus {
-            outline: none;
-            border-color: var(--primary-color);
-            box-shadow: 0 0 10px rgba(0, 217, 255, 0.3);
-        }
-
-        .responsive-button {
-            padding: 10px 15px;
-            border: none;
-            border-radius: 6px;
-            background: linear-gradient(135deg, rgba(0, 217, 255, 0.3), rgba(0, 150, 255, 0.2));
-            color: var(--primary-color);
-            font-size: clamp(10px, 1.2vw, 14px);
-            cursor: pointer;
-            transition: all 0.3s ease;
-            border: 1px solid rgba(0, 217, 255, 0.3);
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            font-weight: bold;
-        }
-
-        /* MOBILE: Ajustar botões */
-        @media (max-width: 768px) {
-            .responsive-button {
-                padding: 8px 12px;
-                font-size: 10px;
-                letter-spacing: 0.5px;
-                border-radius: 4px;
-            }
-        }
-
-        .responsive-button:hover {
-            background: linear-gradient(135deg, rgba(0, 217, 255, 0.4), rgba(0, 150, 255, 0.3));
-            box-shadow: 0 0 15px rgba(0, 217, 255, 0.4);
-            transform: translateY(-1px);
-        }
-
-        .responsive-button.secondary {
-            background: linear-gradient(135deg, rgba(108, 117, 125, 0.3), rgba(73, 80, 87, 0.2));
-            color: #adb5bd;
-        }
-
-        .responsive-button.danger {
-            background: linear-gradient(135deg, rgba(220, 53, 69, 0.3), rgba(185, 28, 28, 0.2));
-            color: #ff6b6b;
-        }
-
-        .trend-indicator {
-            font-size: clamp(12px, 1.5vw, 16px);
-            font-weight: bold;
-        }
-
-        /* Indicadores de status responsivos */
-        .status-indicator {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-size: clamp(9px, 1vw, 12px);
-        }
-
-        .status-dot {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            background: var(--success-color);
-            box-shadow: 0 0 10px var(--success-color);
-        }
-
-        /* Barras de progresso responsivas */
-        .progress-bar {
-            width: 100%;
-            height: 6px;
-            background: rgba(0, 0, 0, 0.5);
-            border-radius: 3px;
-            overflow: hidden;
-            margin: 5px 0;
-        }
-
-        /* MOBILE: Reduzir barras de progresso */
-        @media (max-width: 768px) {
-            .progress-bar {
-                height: 4px;
-                margin: 3px 0;
-            }
-            
-            .status-dot {
-                width: 6px;
-                height: 6px;
-            }
-        }
-
-        .progress-fill {
-            height: 100%;
-            border-radius: 3px;
-            background: linear-gradient(90deg, var(--primary-color), var(--success-color));
-            transition: width 0.5s ease;
         }
 
         /* =========================================== */
-        /* WIDGET 1: RADAR TÁTICO - RESPONSIVO */
+        /* WIDGET 1: RADAR TÁTICO - VISÍVEL */
         /* =========================================== */
         .radar-display {
             background: radial-gradient(circle, 
-                rgba(0, 217, 255, 0.05) 0%, 
-                rgba(0, 150, 255, 0.1) 30%,
+                rgba(0, 217, 255, 0.08) 0%, 
+                rgba(0, 150, 255, 0.15) 30%,
                 transparent 70%);
             border-radius: 50%;
-            border: 2px solid rgba(0, 217, 255, 0.3);
+            border: 3px solid rgba(0, 217, 255, 0.4);
             flex: 1;
-            min-height: 120px;
+            min-height: 180px;
             position: relative;
             overflow: hidden;
         }
 
-        /* MOBILE: Reduzir radar */
+        /* MOBILE: Ajustar radar */
         @media (max-width: 768px) {
             .radar-display {
-                min-height: 80px;
-                border-width: 1px;
+                min-height: 150px;
+                border-width: 2px;
             }
         }
 
@@ -1397,7 +1136,7 @@
             top: 50%;
             left: 50%;
             width: 50%;
-            height: 2px;
+            height: 3px;
             background: linear-gradient(90deg, 
                 transparent, 
                 var(--primary-color) 20%,
@@ -1405,7 +1144,7 @@
                 transparent);
             transform-origin: left center;
             animation: radarSweep 3s linear infinite;
-            filter: drop-shadow(0 0 3px var(--primary-color));
+            filter: drop-shadow(0 0 5px var(--primary-color));
         }
 
         .radar-grid {
@@ -1415,57 +1154,53 @@
             width: 100%;
             height: 100%;
             background-image: 
-                radial-gradient(circle at center, transparent 0%, rgba(0, 217, 255, 0.05) 100%),
-                repeating-conic-gradient(from 0deg, transparent 0deg 15deg, rgba(0, 217, 255, 0.05) 15deg 30deg);
+                radial-gradient(circle at center, transparent 0%, rgba(0, 217, 255, 0.08) 100%),
+                repeating-conic-gradient(from 0deg, transparent 0deg 15deg, rgba(0, 217, 255, 0.08) 15deg 30deg);
         }
 
         .radar-target {
             position: absolute;
-            width: 8px;
-            height: 8px;
+            width: 12px;
+            height: 12px;
             background: var(--danger-color);
             border-radius: 50%;
             transform: translate(-50%, -50%);
             animation: targetPulse 2s infinite;
-            filter: drop-shadow(0 0 5px var(--danger-color));
+            filter: drop-shadow(0 0 8px var(--danger-color));
         }
 
-        /* MOBILE: Reduzir alvos do radar */
+        /* MOBILE: Ajustar alvos */
         @media (max-width: 768px) {
             .radar-target {
-                width: 6px;
-                height: 6px;
+                width: 10px;
+                height: 10px;
             }
         }
 
         .radar-stats {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
-            gap: 10px;
-            margin-top: 12px;
-            padding: 10px;
-            background: rgba(0, 0, 0, 0.3);
-            border-radius: 6px;
-            border: 1px solid rgba(0, 217, 255, 0.2);
+            grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+            padding: 15px;
+            background: rgba(0, 0, 0, 0.4);
+            border-radius: 8px;
+            border: 2px solid rgba(0, 217, 255, 0.3);
         }
 
-        /* MOBILE: Ajustar stats do radar */
+        /* MOBILE: Ajustar stats */
         @media (max-width: 768px) {
             .radar-stats {
                 grid-template-columns: repeat(2, 1fr);
-                gap: 8px;
-                padding: 8px;
-                margin-top: 8px;
-                border-radius: 4px;
+                gap: 12px;
+                padding: 12px;
+                margin-top: 12px;
+                border-radius: 6px;
             }
         }
 
-        .radar-stat {
-            text-align: center;
-        }
-
         .radar-stat-value {
-            font-size: clamp(14px, 1.8vw, 18px);
+            font-size: 22px;
             color: var(--primary-color);
             font-weight: bold;
             font-family: 'Courier New', monospace;
@@ -1474,1533 +1209,385 @@
         /* MOBILE: Ajustar valores do radar */
         @media (max-width: 768px) {
             .radar-stat-value {
-                font-size: 12px;
+                font-size: 18px;
             }
         }
 
         .radar-stat-label {
-            font-size: clamp(9px, 1vw, 11px);
+            font-size: 12px;
             color: var(--text-secondary);
             text-transform: uppercase;
-            margin-top: 2px;
-        }
-
-        /* MOBILE: Ajustar labels do radar */
-        @media (max-width: 768px) {
-            .radar-stat-label {
-                font-size: 8px;
-                margin-top: 1px;
-            }
+            margin-top: 4px;
         }
 
         /* =========================================== */
-        /* WIDGET 2: SISTEMA BAT-HUD - RESPONSIVO */
+        /* WIDGET 2: SISTEMA BAT-HUD - VISÍVEL */
         /* =========================================== */
         .system-metrics {
             display: flex;
             flex-direction: column;
-            gap: 12px;
+            gap: 15px;
         }
 
-        /* MOBILE: Ajustar métricas do sistema */
+        /* MOBILE: Ajustar métricas */
         @media (max-width: 768px) {
             .system-metrics {
-                gap: 8px;
+                gap: 12px;
             }
         }
 
         .system-metric {
-            background: rgba(0, 0, 0, 0.3);
-            padding: 10px;
-            border-radius: 6px;
-            border: 1px solid rgba(0, 217, 255, 0.2);
+            background: rgba(0, 0, 0, 0.4);
+            padding: 15px;
+            border-radius: 8px;
+            border: 2px solid rgba(0, 217, 255, 0.3);
         }
 
         /* MOBILE: Reduzir métricas */
         @media (max-width: 768px) {
             .system-metric {
-                padding: 8px;
-                border-radius: 4px;
+                padding: 12px;
+                border-radius: 6px;
             }
         }
 
         .metric-bar {
-            height: 8px;
-            background: rgba(0, 0, 0, 0.5);
-            border-radius: 4px;
+            height: 12px;
+            background: rgba(0, 0, 0, 0.6);
+            border-radius: 6px;
             overflow: hidden;
-            border: 1px solid rgba(0, 217, 255, 0.2);
-            margin-top: 5px;
+            border: 1px solid rgba(0, 217, 255, 0.3);
+            margin-top: 8px;
         }
 
         .metric-fill {
             height: 100%;
-            border-radius: 4px;
+            border-radius: 6px;
             transition: width 0.5s ease;
             background: linear-gradient(90deg, var(--primary-color), var(--success-color));
         }
 
-        .system-status {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-top: 12px;
-            padding-top: 10px;
-            border-top: 1px solid rgba(0, 217, 255, 0.1);
-        }
-
-        /* MOBILE: Ajustar status do sistema */
-        @media (max-width: 768px) {
-            .system-status {
-                margin-top: 8px;
-                padding-top: 6px;
-            }
-        }
-
         /* =========================================== */
-        /* WIDGET 3: DETECTOR DE AMEAÇAS - RESPONSIVO */
+        /* WIDGET 3: DETECTOR DE AMEAÇAS - VISÍVEL */
         /* =========================================== */
         .threat-scanner {
-            background: rgba(0, 0, 0, 0.5);
-            border-radius: 6px;
+            background: rgba(0, 0, 0, 0.6);
+            border-radius: 8px;
             position: relative;
             overflow: hidden;
             display: flex;
             align-items: center;
             justify-content: center;
             flex: 1;
-            min-height: 70px;
-            border: 1px solid rgba(0, 217, 255, 0.2);
+            min-height: 100px;
+            border: 2px solid rgba(0, 217, 255, 0.3);
         }
 
-        /* MOBILE: Reduzir scanner de ameaças */
+        /* MOBILE: Ajustar scanner */
         @media (max-width: 768px) {
             .threat-scanner {
-                min-height: 50px;
-                border-radius: 4px;
+                min-height: 80px;
+                border-radius: 6px;
             }
         }
 
         .threat-rings {
             position: relative;
-            width: 70px;
-            height: 70px;
+            width: 90px;
+            height: 90px;
         }
 
-        /* MOBILE: Reduzir anéis de ameaça */
+        /* MOBILE: Ajustar anéis */
         @media (max-width: 768px) {
             .threat-rings {
-                width: 50px;
-                height: 50px;
+                width: 70px;
+                height: 70px;
             }
         }
 
         .threat-ring {
             position: absolute;
-            border: 2px solid var(--danger-color);
+            border: 3px solid var(--danger-color);
             border-radius: 50%;
             animation: threatRing 3s ease-in-out infinite;
-            filter: drop-shadow(0 0 5px var(--danger-color));
-        }
-
-        .threat-ring:nth-child(1) { 
-            top: 0; left: 0; right: 0; bottom: 0; 
-            animation-delay: 0s; 
-        }
-        .threat-ring:nth-child(2) { 
-            top: 10px; left: 10px; right: 10px; bottom: 10px; 
-            animation-delay: 0.5s; 
-        }
-        .threat-ring:nth-child(3) { 
-            top: 20px; left: 20px; right: 20px; bottom: 20px; 
-            animation-delay: 1s; 
+            filter: drop-shadow(0 0 8px var(--danger-color));
         }
 
         .threat-level {
             position: absolute;
-            font-size: clamp(16px, 2vw, 20px);
+            font-size: 22px;
             color: var(--danger-color);
             font-weight: bold;
-            text-shadow: 0 0 10px var(--danger-color);
+            text-shadow: 0 0 15px var(--danger-color);
         }
 
-        /* MOBILE: Ajustar nível de ameaça */
+        /* MOBILE: Ajustar nível */
         @media (max-width: 768px) {
             .threat-level {
-                font-size: 14px;
-            }
-        }
-
-        .threat-list {
-            margin-top: 12px;
-            display: flex;
-            flex-direction: column;
-            gap: 6px;
-        }
-
-        .threat-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 8px 10px;
-            background: rgba(255, 50, 50, 0.1);
-            border-radius: 4px;
-            border: 1px solid rgba(255, 50, 50, 0.3);
-        }
-
-        .threat-name {
-            font-size: clamp(10px, 1.1vw, 12px);
-            color: #ff8888;
-        }
-
-        .threat-severity {
-            font-size: clamp(9px, 1vw, 11px);
-            color: var(--danger-color);
-            background: rgba(255, 0, 0, 0.2);
-            padding: 3px 8px;
-            border-radius: 3px;
-            font-weight: bold;
-        }
-
-        /* MOBILE: Ajustar itens de ameaça */
-        @media (max-width: 768px) {
-            .threat-item {
-                padding: 6px 8px;
-            }
-            
-            .threat-name {
-                font-size: 9px;
-            }
-            
-            .threat-severity {
-                font-size: 8px;
-                padding: 2px 6px;
+                font-size: 18px;
             }
         }
 
         /* =========================================== */
-        /* WIDGET 4: ANÁLISE FORENSE - RESPONSIVO */
+        /* WIDGET 4: ANÁLISE FORENSE - VISÍVEL */
         /* =========================================== */
         .dna-strand {
             display: flex;
             justify-content: center;
             align-items: center;
-            gap: 4px;
-            margin-bottom: 15px;
-            height: 60px;
-            padding: 10px;
-            background: rgba(0, 0, 0, 0.3);
-            border-radius: 6px;
+            gap: 6px;
+            margin-bottom: 20px;
+            height: 80px;
+            padding: 15px;
+            background: rgba(0, 0, 0, 0.4);
+            border-radius: 8px;
         }
 
-        /* MOBILE: Reduzir DNA */
+        /* MOBILE: Ajustar DNA */
         @media (max-width: 768px) {
             .dna-strand {
-                height: 40px;
-                margin-bottom: 10px;
-                padding: 8px;
-                gap: 3px;
+                height: 60px;
+                margin-bottom: 15px;
+                padding: 12px;
+                gap: 5px;
             }
         }
 
         .dna-bar {
-            width: 3px;
+            width: 4px;
             background: linear-gradient(180deg, var(--primary-color), var(--success-color));
             border-radius: 2px;
             animation: dnaFloat 2s ease-in-out infinite;
         }
 
-        /* MOBILE: Reduzir barras de DNA */
-        @media (max-width: 768px) {
-            .dna-bar {
-                width: 2px;
-            }
-        }
-
-        .dna-bar:nth-child(odd) {
-            animation-direction: alternate;
-        }
-
-        .dna-bar:nth-child(even) {
-            animation-direction: alternate-reverse;
-        }
-
-        .forensic-data {
-            font-size: 10px;
-            background: rgba(0, 0, 0, 0.3);
-            border-radius: 6px;
-            padding: 10px;
-        }
-
-        /* MOBILE: Ajustar dados forenses */
-        @media (max-width: 768px) {
-            .forensic-data {
-                padding: 8px;
-                border-radius: 4px;
-                font-size: 9px;
-            }
-        }
-
-        .forensic-field {
-            display: flex;
-            justify-content: space-between;
-            padding: 6px 0;
-            border-bottom: 1px solid rgba(0, 217, 255, 0.1);
-        }
-
-        .forensic-field:last-child {
-            border-bottom: none;
-        }
-
-        .forensic-label {
-            color: var(--text-secondary);
-        }
-
-        .forensic-value {
-            color: var(--primary-color);
-            font-weight: bold;
-        }
-
-        /* MOBILE: Ajustar campos forenses */
-        @media (max-width: 768px) {
-            .forensic-field {
-                padding: 4px 0;
-            }
-        }
-
-        .scan-progress {
-            margin-top: 10px;
-        }
-
         /* =========================================== */
-        /* WIDGET 5: VEÍCULOS TÁTICOS - RESPONSIVO */
+        /* WIDGET 5: VEÍCULOS TÁTICOS - VISÍVEL */
         /* =========================================== */
         .vehicle-status {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-            gap: 12px;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 15px;
         }
 
-        /* MOBILE: Ajustar grid de veículos */
+        /* MOBILE: Ajustar grid */
         @media (max-width: 768px) {
             .vehicle-status {
-                grid-template-columns: repeat(2, 1fr);
-                gap: 8px;
+                grid-template-columns: 1fr;
+                gap: 12px;
             }
         }
 
         .vehicle-card {
-            background: rgba(0, 0, 0, 0.3);
-            border-radius: 6px;
-            padding: 12px;
+            background: rgba(0, 0, 0, 0.4);
+            border-radius: 8px;
+            padding: 15px;
             text-align: center;
-            border: 1px solid rgba(0, 217, 255, 0.2);
+            border: 2px solid rgba(0, 217, 255, 0.3);
             transition: all 0.3s ease;
         }
 
-        /* MOBILE: Reduzir cards de veículo */
+        /* MOBILE: Ajustar cards */
         @media (max-width: 768px) {
             .vehicle-card {
-                padding: 8px;
-                border-radius: 4px;
+                padding: 12px;
+                border-radius: 6px;
             }
         }
 
-        .vehicle-card.active {
-            border-color: var(--success-color);
-            box-shadow: 0 0 15px rgba(0, 255, 136, 0.3);
-        }
-
-        .vehicle-card:hover {
-            border-color: var(--primary-color);
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(0, 217, 255, 0.2);
-        }
-
         .vehicle-icon {
-            font-size: clamp(24px, 3vw, 32px);
-            margin-bottom: 8px;
-            filter: drop-shadow(0 0 8px rgba(0, 217, 255, 0.5));
+            font-size: 36px;
+            margin-bottom: 10px;
+            filter: drop-shadow(0 0 12px rgba(0, 217, 255, 0.6));
         }
 
-        /* MOBILE: Reduzir ícones de veículo */
+        /* MOBILE: Ajustar ícones */
         @media (max-width: 768px) {
             .vehicle-icon {
-                font-size: 20px;
-                margin-bottom: 6px;
+                font-size: 32px;
+                margin-bottom: 8px;
             }
         }
 
         .vehicle-name {
-            font-size: clamp(11px, 1.3vw, 14px);
+            font-size: 16px;
             color: var(--primary-color);
             font-weight: bold;
-            margin-bottom: 6px;
+            margin-bottom: 8px;
         }
 
-        /* MOBILE: Ajustar nomes de veículo */
+        /* MOBILE: Ajustar nomes */
         @media (max-width: 768px) {
             .vehicle-name {
-                font-size: 10px;
-                margin-bottom: 4px;
-            }
-        }
-
-        .vehicle-stats {
-            display: flex;
-            justify-content: space-around;
-            margin-top: 8px;
-        }
-
-        .vehicle-stat {
-            text-align: center;
-        }
-
-        .vehicle-stat-value {
-            font-size: clamp(10px, 1.2vw, 13px);
-            color: var(--success-color);
-            font-weight: bold;
-        }
-
-        .vehicle-stat-label {
-            font-size: clamp(8px, 1vw, 10px);
-            color: var(--text-secondary);
-        }
-
-        /* MOBILE: Ajustar stats de veículo */
-        @media (max-width: 768px) {
-            .vehicle-stats {
-                margin-top: 4px;
-            }
-            
-            .vehicle-stat-value {
-                font-size: 9px;
-            }
-            
-            .vehicle-stat-label {
-                font-size: 7px;
+                font-size: 14px;
+                margin-bottom: 6px;
             }
         }
 
         /* =========================================== */
-        /* WIDGET 6: CLIMA GOTHAM - RESPONSIVO */
+        /* WIDGET 6: CLIMA GOTHAM - VISÍVEL */
         /* =========================================== */
         .weather-main {
-            background: rgba(0, 0, 0, 0.3);
-            padding: 15px;
-            border-radius: 8px;
+            background: rgba(0, 0, 0, 0.4);
+            padding: 20px;
+            border-radius: 10px;
             text-align: center;
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
             flex: 1;
-            min-height: 90px;
-            border: 1px solid rgba(0, 217, 255, 0.2);
+            min-height: 120px;
+            border: 2px solid rgba(0, 217, 255, 0.3);
         }
 
-        /* MOBILE: Reduzir clima */
+        /* MOBILE: Ajustar clima */
         @media (max-width: 768px) {
             .weather-main {
-                padding: 10px;
-                min-height: 70px;
-                border-radius: 6px;
+                padding: 15px;
+                min-height: 100px;
+                border-radius: 8px;
             }
         }
 
         .weather-icon-large {
-            font-size: clamp(32px, 4vw, 40px);
-            margin-bottom: 10px;
-            filter: drop-shadow(0 0 10px rgba(0, 217, 255, 0.5));
+            font-size: 48px;
+            margin-bottom: 15px;
+            filter: drop-shadow(0 0 15px rgba(0, 217, 255, 0.6));
         }
 
-        /* MOBILE: Reduzir ícone do clima */
+        /* MOBILE: Ajustar ícone */
         @media (max-width: 768px) {
             .weather-icon-large {
-                font-size: 24px;
-                margin-bottom: 6px;
+                font-size: 40px;
+                margin-bottom: 12px;
             }
         }
 
         .weather-temp {
-            font-size: clamp(24px, 3vw, 32px);
+            font-size: 32px;
             color: var(--primary-color);
             font-weight: bold;
             font-family: 'Courier New', monospace;
-            margin-bottom: 6px;
+            margin-bottom: 8px;
         }
 
         /* MOBILE: Ajustar temperatura */
         @media (max-width: 768px) {
             .weather-temp {
-                font-size: 18px;
-                margin-bottom: 4px;
-            }
-        }
-
-        .weather-condition {
-            font-size: clamp(11px, 1.3vw, 14px);
-            color: var(--text-secondary);
-            margin-bottom: 10px;
-        }
-
-        .weather-details {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
-            gap: 10px;
-            width: 100%;
-            margin-top: 12px;
-        }
-
-        /* MOBILE: Ajustar detalhes do clima */
-        @media (max-width: 768px) {
-            .weather-condition {
-                font-size: 10px;
-                margin-bottom: 6px;
-            }
-            
-            .weather-details {
-                grid-template-columns: repeat(2, 1fr);
-                gap: 6px;
-                margin-top: 8px;
-            }
-        }
-
-        .weather-detail {
-            background: rgba(0, 0, 0, 0.5);
-            padding: 8px;
-            border-radius: 4px;
-            border: 1px solid rgba(0, 217, 255, 0.1);
-        }
-
-        /* MOBILE: Reduzir detalhes do clima */
-        @media (max-width: 768px) {
-            .weather-detail {
-                padding: 6px;
-                border-radius: 3px;
-            }
-        }
-
-        .weather-detail-label {
-            font-size: clamp(8px, 1vw, 10px);
-            color: var(--text-secondary);
-            display: block;
-            text-transform: uppercase;
-        }
-
-        .weather-detail-value {
-            font-size: clamp(10px, 1.2vw, 13px);
-            color: var(--primary-color);
-            font-weight: bold;
-            display: block;
-            margin-top: 3px;
-        }
-
-        /* MOBILE: Ajustar labels e valores do clima */
-        @media (max-width: 768px) {
-            .weather-detail-label {
-                font-size: 7px;
-            }
-            
-            .weather-detail-value {
-                font-size: 9px;
-                margin-top: 2px;
-            }
-        }
-
-        /* =========================================== */
-        /* WIDGET 7: DETECTOR DE MOVIMENTO - RESPONSIVO */
-        /* =========================================== */
-        .motion-grid {
-            display: grid;
-            grid-template-columns: repeat(8, 1fr);
-            gap: 3px;
-            height: 120px;
-            background: rgba(0, 0, 0, 0.5);
-            padding: 8px;
-            border-radius: 6px;
-            border: 1px solid rgba(0, 217, 255, 0.2);
-        }
-
-        /* MOBILE: Reduzir grid de movimento */
-        @media (max-width: 768px) {
-            .motion-grid {
-                grid-template-columns: repeat(6, 1fr);
-                height: 80px;
-                padding: 6px;
-                border-radius: 4px;
-            }
-        }
-
-        .motion-cell {
-            background: rgba(0, 217, 255, 0.05);
-            border-radius: 2px;
-            transition: all 0.3s ease;
-            aspect-ratio: 1;
-        }
-
-        .motion-cell.active {
-            background: var(--danger-color);
-            box-shadow: 0 0 5px var(--danger-color);
-            animation: motionPulse 1s infinite;
-        }
-
-        .motion-info {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-top: 10px;
-            font-size: clamp(10px, 1.1vw, 12px);
-            color: var(--text-secondary);
-            background: rgba(0, 0, 0, 0.3);
-            padding: 8px;
-            border-radius: 4px;
-        }
-
-        /* MOBILE: Ajustar info de movimento */
-        @media (max-width: 768px) {
-            .motion-info {
-                margin-top: 8px;
-                padding: 6px;
-                font-size: 9px;
-            }
-        }
-
-        /* =========================================== */
-        /* WIDGET 8: ANÁLISE ESPECTRAL - RESPONSIVO */
-        /* =========================================== */
-        .spectrum-display {
-            background: rgba(0, 0, 0, 0.5);
-            padding: 15px;
-            border-radius: 6px;
-            margin-bottom: 10px;
-            border: 1px solid rgba(0, 217, 255, 0.2);
-        }
-
-        /* MOBILE: Reduzir display espectral */
-        @media (max-width: 768px) {
-            .spectrum-display {
-                padding: 10px;
-                margin-bottom: 8px;
-                border-radius: 4px;
-            }
-        }
-
-        .spectrum-graph {
-            display: flex;
-            align-items: flex-end;
-            justify-content: center;
-            gap: 2px;
-            height: 120px;
-            margin-bottom: 15px;
-            padding: 0 10px;
-        }
-
-        /* MOBILE: Reduzir gráfico espectral */
-        @media (max-width: 768px) {
-            .spectrum-graph {
-                height: 80px;
-                margin-bottom: 10px;
-            }
-        }
-
-        .spectrum-bar {
-            flex: 1;
-            max-width: 15px;
-            background: linear-gradient(180deg, var(--info-color), var(--primary-color));
-            border-radius: 2px 2px 0 0;
-            transition: height 0.2s;
-            animation: spectrumWave 3s ease-in-out infinite;
-        }
-
-        /* MOBILE: Reduzir barras espectrais */
-        @media (max-width: 768px) {
-            .spectrum-bar {
-                max-width: 12px;
-            }
-        }
-
-        .spectrum-bar:nth-child(1) { animation-delay: 0s; }
-        .spectrum-bar:nth-child(2) { animation-delay: 0.1s; }
-        .spectrum-bar:nth-child(3) { animation-delay: 0.2s; }
-        .spectrum-bar:nth-child(4) { animation-delay: 0.3s; }
-        .spectrum-bar:nth-child(5) { animation-delay: 0.4s; }
-
-        .spectrum-info {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-            gap: 8px;
-        }
-
-        /* MOBILE: Ajustar info espectral */
-        @media (max-width: 768px) {
-            .spectrum-info {
-                grid-template-columns: repeat(2, 1fr);
-                gap: 6px;
-            }
-        }
-
-        .spectrum-item {
-            background: rgba(0, 0, 0, 0.3);
-            padding: 8px;
-            border-radius: 4px;
-            font-size: 10px;
-            text-align: center;
-            border: 1px solid rgba(0, 217, 255, 0.1);
-        }
-
-        /* MOBILE: Reduzir itens espectrais */
-        @media (max-width: 768px) {
-            .spectrum-item {
-                padding: 6px;
-                font-size: 9px;
-                border-radius: 3px;
-            }
-        }
-
-        .spectrum-label {
-            color: var(--text-secondary);
-            margin-bottom: 4px;
-            font-size: clamp(8px, 1vw, 10px);
-        }
-
-        .spectrum-value {
-            color: var(--info-color);
-            font-weight: bold;
-            font-size: clamp(12px, 1.5vw, 14px);
-        }
-
-        /* MOBILE: Ajustar labels e valores espectrais */
-        @media (max-width: 768px) {
-            .spectrum-label {
-                font-size: 7px;
-                margin-bottom: 2px;
-            }
-            
-            .spectrum-value {
-                font-size: 10px;
-            }
-        }
-
-        /* =========================================== */
-        /* WIDGET 9: VIGILÂNCIA SATÉLITE - RESPONSIVO */
-        /* =========================================== */
-        .satellite-view {
-            position: relative;
-            width: 100%;
-            height: 220px;
-            background: radial-gradient(circle at center, rgba(0, 217, 255, 0.1), rgba(0, 0, 0, 0.8));
-            border-radius: 6px;
-            overflow: hidden;
-            margin-bottom: 10px;
-            border: 1px solid rgba(0, 217, 255, 0.2);
-        }
-
-        /* MOBILE: Reduzir visão de satélite */
-        @media (max-width: 768px) {
-            .satellite-view {
-                height: 140px;
-                margin-bottom: 8px;
-                border-radius: 4px;
-            }
-        }
-
-        .orbit-path {
-            position: absolute;
-            border: 1px dashed rgba(0, 217, 255, 0.3);
-            border-radius: 50%;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-        }
-
-        .orbit-path:nth-child(1) { width: 80%; height: 80%; }
-        .orbit-path:nth-child(2) { width: 60%; height: 60%; }
-        .orbit-path:nth-child(3) { width: 40%; height: 40%; }
-
-        .satellite-icon {
-            position: absolute;
-            width: 24px;
-            height: 24px;
-            background: var(--primary-color);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 12px;
-            color: #000;
-            animation: satelliteOrbit 10s linear infinite;
-            box-shadow: 0 0 15px var(--primary-color);
-        }
-
-        /* MOBILE: Reduzir ícone do satélite */
-        @media (max-width: 768px) {
-            .satellite-icon {
-                width: 18px;
-                height: 18px;
-                font-size: 10px;
-            }
-        }
-
-        .earth-center {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 60px;
-            height: 60px;
-            background: radial-gradient(circle, var(--success-color), var(--primary-dark));
-            border-radius: 50%;
-            box-shadow: 0 0 30px rgba(0, 217, 255, 0.5);
-        }
-
-        /* MOBILE: Reduzir centro da Terra */
-        @media (max-width: 768px) {
-            .earth-center {
-                width: 40px;
-                height: 40px;
-            }
-        }
-
-        .satellite-data {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-            gap: 8px;
-        }
-
-        /* MOBILE: Ajustar dados de satélite */
-        @media (max-width: 768px) {
-            .satellite-data {
-                grid-template-columns: repeat(2, 1fr);
-                gap: 6px;
-            }
-        }
-
-        .sat-stat {
-            background: rgba(0, 0, 0, 0.5);
-            padding: 8px;
-            border-radius: 4px;
-            text-align: center;
-            font-size: 10px;
-            border: 1px solid rgba(0, 217, 255, 0.1);
-        }
-
-        /* MOBILE: Reduzir stats de satélite */
-        @media (max-width: 768px) {
-            .sat-stat {
-                padding: 6px;
-                font-size: 9px;
-                border-radius: 3px;
-            }
-        }
-
-        .sat-stat-value {
-            color: var(--primary-color);
-            font-weight: bold;
-            font-size: clamp(14px, 1.8vw, 16px);
-            margin-bottom: 3px;
-        }
-
-        /* MOBILE: Ajustar valores de satélite */
-        @media (max-width: 768px) {
-            .sat-stat-value {
-                font-size: 12px;
-                margin-bottom: 2px;
-            }
-        }
-
-        .sat-stat-label {
-            color: var(--text-secondary);
-            text-transform: uppercase;
-            font-size: clamp(8px, 1vw, 10px);
-        }
-
-        /* MOBILE: Ajustar labels de satélite */
-        @media (max-width: 768px) {
-            .sat-stat-label {
-                font-size: 7px;
-            }
-        }
-
-        /* =========================================== */
-        /* WIDGET 10: PROTOCOLO EMERGÊNCIA - RESPONSIVO */
-        /* =========================================== */
-        .emergency-header {
-            background: linear-gradient(135deg, rgba(255, 0, 64, 0.2), rgba(255, 50, 50, 0.1));
-            padding: 15px;
-            border-radius: 6px;
-            text-align: center;
-            margin-bottom: 15px;
-            border: 2px solid var(--danger-color);
-        }
-
-        /* MOBILE: Reduzir header de emergência */
-        @media (max-width: 768px) {
-            .emergency-header {
-                padding: 10px;
-                margin-bottom: 10px;
-                border-width: 1px;
-                border-radius: 4px;
-            }
-        }
-
-        .emergency-icon {
-            font-size: 48px;
-            color: var(--danger-color);
-            margin-bottom: 10px;
-            animation: emergencyPulse 1.5s ease-in-out infinite;
-        }
-
-        /* MOBILE: Reduzir ícone de emergência */
-        @media (max-width: 768px) {
-            .emergency-icon {
-                font-size: 32px;
+                font-size: 28px;
                 margin-bottom: 6px;
             }
         }
 
-        .emergency-status {
-            font-size: clamp(14px, 1.8vw, 16px);
-            color: var(--text-primary);
-            font-weight: bold;
-            text-transform: uppercase;
+        /* =========================================== */
+        /* MENSAGEM CENTRAL */
+        /* =========================================== */
+        .hint {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: #0af;
+            text-align: center;
+            z-index: 1;
+            pointer-events: none;
+            letter-spacing: 1px;
+            font-size: 18px;
+            width: 90%;
+            max-width: 500px;
         }
 
-        /* MOBILE: Ajustar status de emergência */
-        @media (max-width: 768px) {
-            .emergency-status {
-                font-size: 12px;
-            }
-        }
-
-        .emergency-protocols {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-        }
-
-        .protocol-btn {
-            background: rgba(0, 0, 0, 0.5);
-            padding: 12px;
-            border-radius: 6px;
-            border: 1px solid var(--danger-color);
-            color: var(--text-primary);
-            cursor: pointer;
-            font-size: clamp(10px, 1.1vw, 11px);
-            text-transform: uppercase;
-            font-weight: bold;
-            transition: all 0.3s;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        /* MOBILE: Reduzir botões de protocolo */
-        @media (max-width: 768px) {
-            .protocol-btn {
-                padding: 8px;
-                gap: 6px;
-                font-size: 9px;
-                border-radius: 4px;
-            }
-        }
-
-        .protocol-btn:hover {
-            background: rgba(255, 0, 64, 0.2);
-            transform: translateX(5px);
-            box-shadow: 0 0 15px rgba(255, 0, 64, 0.5);
-        }
-
-        .protocol-icon {
-            width: 30px;
-            height: 30px;
-            background: var(--danger-color);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+        .hint span {
             font-size: 14px;
-            flex-shrink: 0;
-        }
-
-        /* MOBILE: Reduzir ícone de protocolo */
-        @media (max-width: 768px) {
-            .protocol-icon {
-                width: 24px;
-                height: 24px;
-                font-size: 12px;
-            }
-        }
-
-        /* =========================================== */
-        /* WIDGET 11: RASTREAMENTO DE ALVOS - RESPONSIVO */
-        /* =========================================== */
-        .tracking-radar {
-            position: relative;
-            width: 180px;
-            height: 180px;
-            margin: 0 auto 15px;
-            background: radial-gradient(circle, rgba(0, 217, 255, 0.1), transparent);
-            border: 2px solid var(--primary-color);
-            border-radius: 50%;
-        }
-
-        /* MOBILE: Reduzir radar de rastreamento */
-        @media (max-width: 768px) {
-            .tracking-radar {
-                width: 120px;
-                height: 120px;
-                margin: 0 auto 10px;
-                border-width: 1px;
-            }
-        }
-
-        .tracking-sweep {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            width: 50%;
-            height: 2px;
-            background: linear-gradient(90deg, var(--primary-color), transparent);
-            transform-origin: left center;
-            animation: trackingSweep 3s linear infinite;
-        }
-
-        .target-dot {
-            position: absolute;
-            width: 10px;
-            height: 10px;
-            background: var(--warning-color);
-            border-radius: 50%;
-            box-shadow: 0 0 10px var(--warning-color);
-            animation: targetBlink 2s ease-in-out infinite;
-            transform: translate(-50%, -50%);
-        }
-
-        /* MOBILE: Reduzir pontos de alvo */
-        @media (max-width: 768px) {
-            .target-dot {
-                width: 8px;
-                height: 8px;
-            }
-        }
-
-        .tracking-info {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 10px;
-            font-size: 10px;
-        }
-
-        /* MOBILE: Ajustar info de rastreamento */
-        @media (max-width: 768px) {
-            .tracking-info {
-                grid-template-columns: repeat(3, 1fr);
-                gap: 6px;
-                font-size: 9px;
-            }
-        }
-
-        .tracking-stat {
-            text-align: center;
-            background: rgba(0, 0, 0, 0.3);
-            padding: 8px;
-            border-radius: 4px;
-            border: 1px solid rgba(0, 217, 255, 0.2);
-        }
-
-        /* MOBILE: Reduzir stats de rastreamento */
-        @media (max-width: 768px) {
-            .tracking-stat {
-                padding: 6px;
-                border-radius: 3px;
-            }
-        }
-
-        .tracking-value {
-            font-size: clamp(16px, 2vw, 18px);
-            color: var(--warning-color);
-            font-weight: bold;
+            opacity: 0.8;
             display: block;
+            margin-top: 8px;
         }
 
-        /* MOBILE: Ajustar valores de rastreamento */
-        @media (max-width: 768px) {
-            .tracking-value {
-                font-size: 12px;
-            }
-        }
-
-        .tracking-label {
-            color: var(--text-secondary);
-            text-transform: uppercase;
-            font-size: clamp(8px, 1vw, 10px);
+        .hint img {
+            width: 200px;
+            height: auto;
             display: block;
-            margin-top: 2px;
+            margin: 0 auto 25px;
+            filter: drop-shadow(0 0 20px rgba(0, 217, 255, 0.7));
         }
 
-        /* MOBILE: Ajustar labels de rastreamento */
+        /* MOBILE: Ajustar hint */
         @media (max-width: 768px) {
-            .tracking-label {
-                font-size: 7px;
-                margin-top: 1px;
-            }
-        }
-
-        /* =========================================== */
-        /* WIDGET 12: ESTATÍSTICAS COMBATE - RESPONSIVO */
-        /* =========================================== */
-        .combat-stats {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 12px;
-        }
-
-        /* MOBILE: Ajustar stats de combate */
-        @media (max-width: 768px) {
-            .combat-stats {
-                gap: 8px;
-            }
-        }
-
-        .combat-card {
-            background: rgba(0, 0, 0, 0.3);
-            border-radius: 6px;
-            padding: 12px;
-            text-align: center;
-            border: 1px solid rgba(0, 217, 255, 0.2);
-            transition: all 0.3s ease;
-        }
-
-        /* MOBILE: Reduzir cards de combate */
-        @media (max-width: 768px) {
-            .combat-card {
-                padding: 8px;
-                border-radius: 4px;
-            }
-        }
-
-        .combat-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 15px rgba(0, 217, 255, 0.2);
-        }
-
-        .combat-number {
-            font-size: clamp(20px, 2.5vw, 28px);
-            font-weight: bold;
-            margin-bottom: 5px;
-        }
-
-        /* MOBILE: Ajustar números de combate */
-        @media (max-width: 768px) {
-            .combat-number {
+            .hint {
                 font-size: 16px;
-                margin-bottom: 3px;
-            }
-        }
-
-        .combat-label {
-            font-size: clamp(9px, 1vw, 11px);
-            color: var(--text-secondary);
-            text-transform: uppercase;
-        }
-
-        /* MOBILE: Ajustar labels de combate */
-        @media (max-width: 768px) {
-            .combat-label {
-                font-size: 8px;
-            }
-        }
-
-        .combat-efficiency {
-            margin-top: 15px;
-            background: rgba(0, 0, 0, 0.3);
-            padding: 12px;
-            border-radius: 6px;
-            border: 1px solid rgba(0, 217, 255, 0.2);
-        }
-
-        /* MOBILE: Reduzir eficiência de combate */
-        @media (max-width: 768px) {
-            .combat-efficiency {
-                margin-top: 10px;
-                padding: 8px;
-                border-radius: 4px;
-            }
-        }
-
-        /* =========================================== */
-        /* WIDGET 13: COMUNICAÇÕES - RESPONSIVO */
-        /* =========================================== */
-        .comms-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 10px;
-        }
-
-        /* MOBILE: Ajustar grid de comunicações */
-        @media (max-width: 768px) {
-            .comms-grid {
-                grid-template-columns: 1fr;
-                gap: 8px;
-            }
-        }
-
-        .comms-channel {
-            background: rgba(0, 0, 0, 0.3);
-            padding: 12px;
-            border-radius: 6px;
-            text-align: center;
-            border: 1px solid rgba(0, 217, 255, 0.2);
-            transition: all 0.3s ease;
-        }
-
-        /* MOBILE: Reduzir canais de comunicação */
-        @media (max-width: 768px) {
-            .comms-channel {
-                padding: 8px;
-                border-radius: 4px;
-            }
-        }
-
-        .comms-channel:hover {
-            transform: translateY(-2px);
-            border-color: var(--primary-color);
-        }
-
-        .comms-icon {
-            font-size: 24px;
-            color: var(--primary-color);
-            margin-bottom: 8px;
-            filter: drop-shadow(0 0 5px rgba(0, 217, 255, 0.5));
-        }
-
-        /* MOBILE: Reduzir ícones de comunicação */
-        @media (max-width: 768px) {
-            .comms-icon {
-                font-size: 20px;
-                margin-bottom: 6px;
-            }
-        }
-
-        .comms-name {
-            font-size: clamp(10px, 1.1vw, 11px);
-            color: var(--text-primary);
-            margin-bottom: 4px;
-            font-weight: bold;
-        }
-
-        /* MOBILE: Ajustar nomes de comunicação */
-        @media (max-width: 768px) {
-            .comms-name {
-                font-size: 9px;
-                margin-bottom: 2px;
-            }
-        }
-
-        .comms-status {
-            font-size: clamp(9px, 1vw, 10px);
-            color: var(--success-color);
-            background: rgba(0, 255, 136, 0.1);
-            padding: 3px 6px;
-            border-radius: 3px;
-            display: inline-block;
-        }
-
-        /* MOBILE: Ajustar status de comunicação */
-        @media (max-width: 768px) {
-            .comms-status {
-                font-size: 8px;
-                padding: 2px 4px;
-            }
-        }
-
-        /* =========================================== */
-        /* WIDGET 14: SISTEMA DE ENERGIA - RESPONSIVO */
-        /* =========================================== */
-        .power-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 12px;
-        }
-
-        /* MOBILE: Ajustar grid de energia */
-        @media (max-width: 768px) {
-            .power-grid {
-                grid-template-columns: 1fr;
-                gap: 8px;
-            }
-        }
-
-        .power-cell {
-            background: rgba(0, 0, 0, 0.3);
-            border-radius: 6px;
-            padding: 15px;
-            text-align: center;
-            border: 1px solid rgba(0, 217, 255, 0.2);
-            transition: all 0.3s ease;
-        }
-
-        /* MOBILE: Reduzir células de energia */
-        @media (max-width: 768px) {
-            .power-cell {
-                padding: 10px;
-                border-radius: 4px;
-            }
-        }
-
-        .power-cell:hover {
-            transform: translateY(-2px);
-            border-color: var(--primary-color);
-        }
-
-        .power-value {
-            font-size: clamp(20px, 2.5vw, 24px);
-            color: var(--primary-color);
-            font-weight: bold;
-            margin-bottom: 5px;
-        }
-
-        /* MOBILE: Ajustar valores de energia */
-        @media (max-width: 768px) {
-            .power-value {
-                font-size: 16px;
-                margin-bottom: 3px;
-            }
-        }
-
-        .power-label {
-            font-size: clamp(9px, 1vw, 10px);
-            color: var(--text-secondary);
-            text-transform: uppercase;
-        }
-
-        /* MOBILE: Ajustar labels de energia */
-        @media (max-width: 768px) {
-            .power-label {
-                font-size: 8px;
-            }
-        }
-
-        .power-total {
-            margin-top: 15px;
-            background: rgba(0, 0, 0, 0.3);
-            padding: 12px;
-            border-radius: 6px;
-            border: 1px solid rgba(0, 217, 255, 0.2);
-        }
-
-        /* MOBILE: Reduzir total de energia */
-        @media (max-width: 768px) {
-            .power-total {
-                margin-top: 10px;
-                padding: 8px;
-                border-radius: 4px;
-            }
-        }
-
-        /* =========================================== */
-        /* WIDGET 15: SCANNER BIOMÉTRICO - RESPONSIVO */
-        /* =========================================== */
-        .biometric-display {
-            background: rgba(0, 0, 0, 0.5);
-            border-radius: 6px;
-            position: relative;
-            overflow: hidden;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex: 1;
-            min-height: 70px;
-            border: 1px solid rgba(0, 217, 255, 0.2);
-        }
-
-        /* MOBILE: Reduzir display biométrico */
-        @media (max-width: 768px) {
-            .biometric-display {
-                min-height: 50px;
-                border-radius: 4px;
-            }
-        }
-
-        .fingerprint {
-            position: relative;
-            width: 60px;
-            height: 60px;
-            background: 
-                radial-gradient(circle at 30px 30px, rgba(0, 217, 255, 0.1) 0%, transparent 60%),
-                repeating-conic-gradient(from 0deg, transparent 0deg 10deg, rgba(0, 217, 255, 0.05) 10deg 20deg);
-            border-radius: 50%;
-            border: 2px solid rgba(0, 217, 255, 0.3);
-        }
-
-        /* MOBILE: Reduzir fingerprint */
-        @media (max-width: 768px) {
-            .fingerprint {
-                width: 40px;
-                height: 40px;
-                border-width: 1px;
-            }
-        }
-
-        .scan-line {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 3px;
-            background: linear-gradient(90deg, 
-                transparent, 
-                var(--primary-color),
-                transparent);
-            animation: scanLine 2s linear infinite;
-            filter: drop-shadow(0 0 5px var(--primary-color));
-        }
-
-        .biometric-data {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 10px;
-            margin-top: 12px;
-        }
-
-        /* MOBILE: Ajustar dados biométricos */
-        @media (max-width: 768px) {
-            .biometric-data {
-                grid-template-columns: 1fr;
-                gap: 8px;
-                margin-top: 8px;
-            }
-        }
-
-        .bio-field {
-            background: rgba(0, 0, 0, 0.3);
-            padding: 8px;
-            border-radius: 4px;
-            border: 1px solid rgba(0, 217, 255, 0.2);
-        }
-
-        /* MOBILE: Reduzir campos biométricos */
-        @media (max-width: 768px) {
-            .bio-field {
-                padding: 6px;
-                border-radius: 3px;
-            }
-        }
-
-        .bio-label {
-            font-size: clamp(9px, 1vw, 11px);
-            color: var(--text-secondary);
-            display: block;
-            text-transform: uppercase;
-        }
-
-        .bio-value {
-            font-size: clamp(11px, 1.3vw, 14px);
-            color: var(--primary-color);
-            font-weight: bold;
-            font-family: 'Courier New', monospace;
-            display: block;
-            margin-top: 3px;
-        }
-
-        /* MOBILE: Ajustar labels e valores biométricos */
-        @media (max-width: 768px) {
-            .bio-label {
-                font-size: 8px;
             }
             
-            .bio-value {
-                font-size: 10px;
-                margin-top: 2px;
+            .hint img {
+                width: 150px;
+                margin: 0 auto 15px;
+            }
+            
+            .hint span {
+                font-size: 12px;
             }
         }
 
         /* =========================================== */
-        /* WIDGET 16: ANÁLISE DE VOZ - RESPONSIVO */
+        /* ANIMAÇÕES GLOBAIS */
         /* =========================================== */
-        .voice-visualizer {
-            background: rgba(0, 0, 0, 0.5);
-            border-radius: 6px;
-            display: flex;
-            align-items: flex-end;
-            justify-content: space-around;
-            padding: 12px;
-            gap: 3px;
-            flex: 1;
-            min-height: 70px;
-            border: 1px solid rgba(0, 217, 255, 0.2);
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+            20%, 40%, 60%, 80% { transform: translateX(5px); }
         }
 
-        /* MOBILE: Reduzir visualizador de voz */
-        @media (max-width: 768px) {
-            .voice-visualizer {
-                min-height: 50px;
-                padding: 8px;
-                gap: 2px;
-                border-radius: 4px;
+        @keyframes targetPulse {
+            0%, 100% { opacity: 0.6; transform: translate(-50%, -50%) scale(1); }
+            50% { opacity: 1; transform: translate(-50%, -50%) scale(1.3); }
+        }
+
+        @keyframes threatRing {
+            0%, 100% { 
+                transform: scale(1); 
+                opacity: 0.4; 
+                border-width: 3px;
+            }
+            50% { 
+                transform: scale(1.15); 
+                opacity: 1; 
+                border-width: 4px;
             }
         }
 
-        .voice-bar {
-            width: 5px;
-            background: linear-gradient(to top, 
-                var(--primary-color) 0%,
-                var(--success-color) 100%);
-            border-radius: 3px 3px 0 0;
-            animation: voicePulse 0.5s ease-in-out infinite alternate;
-            animation-delay: calc(var(--i, 0) * 0.1s);
+        @keyframes radarSweep {
+            from { transform: translate(-50%, -50%) rotate(0deg); }
+            to { transform: translate(-50%, -50%) rotate(360deg); }
         }
 
-        /* MOBILE: Reduzir barras de voz */
-        @media (max-width: 768px) {
-            .voice-bar {
-                width: 4px;
-            }
+        @keyframes dnaFloat {
+            0%, 100% { height: 40%; }
+            50% { height: 100%; }
         }
 
-        .voice-controls {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-            margin-top: 12px;
+        /* =========================================== */
+        /* BUG FIXES */
+        /* =========================================== */
+        .widget.minimized .widget-body {
+            display: none;
         }
 
-        /* MOBILE: Ajustar controles de voz */
-        @media (max-width: 768px) {
-            .voice-controls {
-                gap: 8px;
-                margin-top: 8px;
-            }
+        .widget.minimized {
+            height: auto;
+            min-height: auto;
+            padding-bottom: 5px;
         }
 
-        .voice-btn {
-            padding: 8px 12px;
-            background: rgba(0, 217, 255, 0.1);
-            border: 1px solid var(--primary-color);
-            color: var(--primary-color);
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: clamp(10px, 1.1vw, 13px);
-            text-transform: uppercase;
-            transition: all 0.3s ease;
-            font-family: 'Courier New', monospace;
-            text-align: center;
+        .widget.minimized .resize-handle {
+            display: none;
         }
 
-        /* MOBILE: Reduzir botões de voz */
-        @media (max-width: 768px) {
-            .voice-btn {
-                padding: 6px 8px;
-                font-size: 10px;
-                border-radius: 3px;
-            }
+        .widget-header {
+            cursor: grab;
         }
 
-        .voice-btn:hover {
-            background: rgba(0, 217, 255, 0.2);
-            transform: translateY(-1px);
-            box-shadow: 0 0 10px rgba(0, 217, 255, 0.3);
+        .widget-header:active {
+            cursor: grabbing;
         }
 
         /* =========================================== */
@@ -3056,14 +1643,6 @@
             filter: drop-shadow(0 0 10px rgba(0, 217, 255, 0.5));
         }
 
-        /* MOBILE: Reduzir ícones das peças */
-        @media (max-width: 768px) {
-            .piece-link-icon {
-                font-size: 18px;
-                margin-bottom: 4px;
-            }
-        }
-
         .piece-link-text {
             color: rgba(0, 217, 255, 0.9);
             font-size: 11px;
@@ -3074,10 +1653,15 @@
             line-height: 1.3;
         }
 
-        /* MOBILE: Reduzir texto das peças */
+        /* MOBILE: Ajustar peças */
         @media (max-width: 768px) {
+            .piece-link-icon {
+                font-size: 20px;
+                margin-bottom: 6px;
+            }
+            
             .piece-link-text {
-                font-size: 9px;
+                font-size: 10px;
                 line-height: 1.2;
             }
         }
@@ -3145,251 +1729,6 @@
             width: 30%;
             height: 80px;
             clip-path: polygon(30% 0, 100% 0, 100% 100%, 0 100%);
-        }
-
-        /* MOBILE: Ajustar tamanho das peças */
-        @media (max-width: 768px) {
-            .top-left,
-            .top-right,
-            .bottom-left,
-            .bottom-right {
-                width: 35%;
-                height: 60px !important;
-            }
-
-            .top-center,
-            .bottom-center {
-                width: 30%;
-                left: 35%;
-                height: 30px !important;
-            }
-
-            .mid-left,
-            .mid-right {
-                top: 60px !important;
-                height: calc(100% - 120px) !important;
-                width: 25px !important;
-            }
-            
-            .widgets-area {
-                top: 65px !important;
-                left: 25px !important;
-                right: 25px !important;
-                bottom: 65px !important;
-            }
-        }
-
-        /* =========================================== */
-        /* MENSAGEM CENTRAL */
-        /* =========================================== */
-        .hint {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            color: #0af;
-            text-align: center;
-            z-index: 1;
-            pointer-events: none;
-            letter-spacing: 1px;
-            font-size: 16px;
-            width: 90%;
-            max-width: 400px;
-        }
-
-        .hint span {
-            font-size: 11px;
-            opacity: 0.7;
-            display: block;
-            margin-top: 5px;
-        }
-
-        .hint img {
-            width: 180px;
-            height: auto;
-            display: block;
-            margin: 0 auto 20px;
-            filter: drop-shadow(0 0 15px rgba(0, 217, 255, 0.6));
-        }
-
-        /* MOBILE: Ajustar hint */
-        @media (max-width: 768px) {
-            .hint {
-                font-size: 14px;
-            }
-            
-            .hint img {
-                width: 120px;
-                margin: 0 auto 10px;
-            }
-            
-            .hint span {
-                font-size: 9px;
-            }
-        }
-
-        /* =========================================== */
-        /* ANIMAÇÕES GLOBAIS */
-        /* =========================================== */
-        @keyframes shake {
-            0%, 100% { transform: translateX(0); }
-            10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
-            20%, 40%, 60%, 80% { transform: translateX(5px); }
-        }
-
-        /* =========================================== */
-        /* BUG FIXES */
-        /* =========================================== */
-        .widget.minimized .widget-body {
-            display: none;
-        }
-
-        .widget.minimized {
-            height: auto;
-            min-height: auto;
-            padding-bottom: 5px;
-        }
-
-        .widget.minimized .resize-handle {
-            display: none;
-        }
-
-        .widget-header {
-            cursor: grab;
-        }
-
-        .widget-header:active {
-            cursor: grabbing;
-        }
-
-        /* =========================================== */
-        /* RESPONSIVIDADE MOBILE - ADICIONAIS */
-        /* =========================================== */
-        @media (max-width: 480px) {
-            .widget {
-                min-width: 100px !important;
-                min-height: 80px !important;
-                max-width: 140px !important;
-                max-height: 150px !important;
-                padding: 6px !important;
-                font-size: 0.7em;
-            }
-            
-            .widget.folder-stacked {
-                min-width: 90px !important;
-                min-height: 70px !important;
-            }
-            
-            .widget-title {
-                font-size: 8px;
-            }
-            
-            .widget-btn {
-                font-size: 8px;
-                min-width: 18px;
-                height: 18px;
-            }
-            
-            .top-left,
-            .top-right,
-            .bottom-left,
-            .bottom-right {
-                width: 40%;
-                height: 50px !important;
-            }
-
-            .top-center,
-            .bottom-center {
-                width: 20%;
-                left: 40%;
-                height: 25px !important;
-            }
-
-            .mid-left,
-            .mid-right {
-                width: 20px;
-                height: calc(100% - 100px);
-                top: 50px !important;
-            }
-            
-            .widgets-area {
-                top: 55px !important;
-                left: 20px !important;
-                right: 20px !important;
-                bottom: 55px !important;
-            }
-        }
-
-        /* ANIMAÇÕES ADICIONAIS */
-        @keyframes targetPulse {
-            0%, 100% { opacity: 0.5; transform: translate(-50%, -50%) scale(1); }
-            50% { opacity: 1; transform: translate(-50%, -50%) scale(1.2); }
-        }
-
-        @keyframes voicePulse {
-            from { height: 10%; }
-            to { height: 90%; }
-        }
-
-        @keyframes scanLine {
-            from { top: 0; }
-            to { top: 100%; }
-        }
-
-        @keyframes threatRing {
-            0%, 100% { 
-                transform: scale(1); 
-                opacity: 0.3; 
-                border-width: 2px;
-            }
-            50% { 
-                transform: scale(1.1); 
-                opacity: 1; 
-                border-width: 3px;
-            }
-        }
-
-        @keyframes motionPulse {
-            0%, 100% { opacity: 0.7; }
-            50% { opacity: 1; }
-        }
-
-        @keyframes radarSweep {
-            from { transform: translate(-50%, -50%) rotate(0deg); }
-            to { transform: translate(-50%, -50%) rotate(360deg); }
-        }
-
-        @keyframes dnaFloat {
-            0%, 100% { height: 30%; }
-            50% { height: 100%; }
-        }
-
-        @keyframes spectrumWave {
-            0%, 100% { height: 20%; }
-            50% { height: 90%; }
-        }
-
-        @keyframes satelliteOrbit {
-            0% { top: 10%; left: 50%; }
-            25% { top: 50%; left: 90%; }
-            50% { top: 90%; left: 50%; }
-            75% { top: 50%; left: 10%; }
-            100% { top: 10%; left: 50%; }
-        }
-
-        @keyframes emergencyPulse {
-            0%, 100% { transform: scale(1); opacity: 1; }
-            50% { transform: scale(1.2); opacity: 0.7; }
-        }
-
-        @keyframes trackingSweep {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        @keyframes targetBlink {
-            0%, 100% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
-            50% { opacity: 0.5; transform: translate(-50%, -50%) scale(1.3); }
         }
     </style>
 </head>
@@ -3586,33 +1925,32 @@
 
     <script>
         // ===========================================
-        // BAT-HUD SYSTEM v6.0 - 16 WIDGETS COMO MORCEGOS EM PILHA
+        // BAT-HUD SYSTEM v6.0 - WIDGETS VISÍVEIS
         // ===========================================
-        // Versão com responsividade mobile otimizada
 
         const BatHUD = {
             // ===========================================
-            // CONFIGURAÇÕES RESPONSIVAS
+            // CONFIGURAÇÕES
             // ===========================================
             config: {
                 // Desktop
-                widgetMinWidth: 200,
-                widgetMinHeight: 140,
-                widgetMaxWidth: 500,
+                widgetMinWidth: 300,
+                widgetMinHeight: 250,
+                widgetMaxWidth: 600,
                 widgetMaxHeight: 500,
                 // Mobile
-                widgetMobileMinWidth: 120,
-                widgetMobileMinHeight: 100,
-                widgetMobileMaxWidth: 160,
-                widgetMobileMaxHeight: 180,
+                widgetMobileMinWidth: 280,
+                widgetMobileMinHeight: 230,
+                widgetMobileMaxWidth: 320,
+                widgetMobileMaxHeight: 350,
                 
-                boundaryMargin: 5,
-                stackOffsetX: 15,
-                stackOffsetY: 15,
+                boundaryMargin: 10,
+                stackOffsetX: 20,
+                stackOffsetY: 20,
                 batAnimationDuration: 1500,
-                batDelayBetween: 150,
+                batDelayBetween: 200,
                 stackAnimationDuration: 600,
-                folderJumpHeight: 50
+                folderJumpHeight: 60
             },
 
             // ===========================================
@@ -3631,7 +1969,7 @@
                 startTop: 0,
                 startWidth: 0,
                 startHeight: 0,
-                stackPosition: { x: 20, y: 20 },
+                stackPosition: { x: 30, y: 30 },
                 activeIntervals: [],
                 batAnimations: [],
                 selectedWidget: null,
@@ -3722,15 +2060,14 @@
                         icon: 'fas fa-exclamation-triangle',
                         content: `
                             <div class="widget-content">
-                                <h4 class="responsive-title">AMEAÇAS</h4>
+                                <h4 class="responsive-title">DETECTOR DE AMEAÇAS</h4>
                                 <div class="threat-scanner">
-                                    <div class="threat-level">ALTO</div>
-                                </div>
-                                <div class="threat-list">
-                                    <div class="threat-item">
-                                        <span class="threat-name">Intruso</span>
-                                        <span class="threat-severity">ALTA</span>
+                                    <div class="threat-rings">
+                                        <div class="threat-ring"></div>
+                                        <div class="threat-ring"></div>
+                                        <div class="threat-ring"></div>
                                     </div>
+                                    <div class="threat-level">ALTO</div>
                                 </div>
                             </div>
                         `
@@ -3743,7 +2080,7 @@
                         icon: 'fas fa-dna',
                         content: `
                             <div class="widget-content">
-                                <h4 class="responsive-title">FORENSE</h4>
+                                <h4 class="responsive-title">ANÁLISE FORENSE</h4>
                                 <div class="dna-strand" id="dnaStrand"></div>
                                 <div class="forensic-data">
                                     <div class="forensic-field">
@@ -3762,7 +2099,7 @@
                         icon: 'fas fa-car',
                         content: `
                             <div class="widget-content">
-                                <h4 class="responsive-title">FROTA</h4>
+                                <h4 class="responsive-title">VEÍCULOS TÁTICOS</h4>
                                 <div class="vehicle-status">
                                     <div class="vehicle-card active">
                                         <div class="vehicle-icon">🚗</div>
@@ -3784,7 +2121,7 @@
                         icon: 'fas fa-cloud-rain',
                         content: `
                             <div class="widget-content">
-                                <h4 class="responsive-title">CLIMA</h4>
+                                <h4 class="responsive-title">CLIMA GOTHAM</h4>
                                 <div class="weather-main">
                                     <div class="weather-icon-large">🌧️</div>
                                     <div class="weather-temp">12°C</div>
@@ -3801,7 +2138,7 @@
                         icon: 'fas fa-running',
                         content: `
                             <div class="widget-content">
-                                <h4 class="responsive-title">MOVIMENTO</h4>
+                                <h4 class="responsive-title">DETECTOR DE MOVIMENTO</h4>
                                 <div class="motion-grid" id="motionGrid"></div>
                                 <div class="motion-info">
                                     <span>ATIVAS: <span style="color: var(--danger-color);">3</span></span>
@@ -3817,7 +2154,7 @@
                         icon: 'fas fa-wave-square',
                         content: `
                             <div class="widget-content">
-                                <h4 class="responsive-title">ESPECTRO</h4>
+                                <h4 class="responsive-title">ANÁLISE ESPECTRAL</h4>
                                 <div class="spectrum-display">
                                     <div class="spectrum-graph"></div>
                                     <div class="spectrum-info">
@@ -3837,7 +2174,7 @@
                         icon: 'fas fa-satellite',
                         content: `
                             <div class="widget-content">
-                                <h4 class="responsive-title">SATÉLITE</h4>
+                                <h4 class="responsive-title">VIGILÂNCIA SATÉLITE</h4>
                                 <div class="satellite-view">
                                     <div class="earth-center"></div>
                                     <div class="satellite-icon">
@@ -3855,7 +2192,7 @@
                         icon: 'fas fa-exclamation-circle',
                         content: `
                             <div class="widget-content">
-                                <h4 class="responsive-title">EMERGÊNCIA</h4>
+                                <h4 class="responsive-title">PROTOCOLO EMERGÊNCIA</h4>
                                 <div class="emergency-header">
                                     <div class="emergency-status">STANDBY</div>
                                 </div>
@@ -3875,7 +2212,7 @@
                         icon: 'fas fa-crosshairs',
                         content: `
                             <div class="widget-content">
-                                <h4 class="responsive-title">RASTREAR</h4>
+                                <h4 class="responsive-title">RASTREAMENTO DE ALVOS</h4>
                                 <div class="tracking-radar">
                                     <div class="tracking-sweep"></div>
                                     <div class="target-dot" style="top: 30%; left: 40%;"></div>
@@ -3891,7 +2228,7 @@
                         icon: 'fas fa-fist-raised',
                         content: `
                             <div class="widget-content">
-                                <h4 class="responsive-title">COMBATE</h4>
+                                <h4 class="responsive-title">ESTATÍSTICAS COMBATE</h4>
                                 <div class="combat-stats">
                                     <div class="combat-card">
                                         <div class="combat-number">147</div>
@@ -3909,7 +2246,7 @@
                         icon: 'fas fa-broadcast-tower',
                         content: `
                             <div class="widget-content">
-                                <h4 class="responsive-title">COMUNICAÇÃO</h4>
+                                <h4 class="responsive-title">COMUNICAÇÕES</h4>
                                 <div class="comms-grid">
                                     <div class="comms-channel">
                                         <div class="comms-name">BAT-CHANNEL</div>
@@ -3927,7 +2264,7 @@
                         icon: 'fas fa-bolt',
                         content: `
                             <div class="widget-content">
-                                <h4 class="responsive-title">ENERGIA</h4>
+                                <h4 class="responsive-title">SISTEMA DE ENERGIA</h4>
                                 <div class="power-grid">
                                     <div class="power-cell">
                                         <div class="power-value">98%</div>
@@ -3945,7 +2282,7 @@
                         icon: 'fas fa-fingerprint',
                         content: `
                             <div class="widget-content">
-                                <h4 class="responsive-title">SCAN</h4>
+                                <h4 class="responsive-title">SCANNER BIOMÉTRICO</h4>
                                 <div class="biometric-display">
                                     <div class="fingerprint"></div>
                                 </div>
@@ -3960,7 +2297,7 @@
                         icon: 'fas fa-microphone',
                         content: `
                             <div class="widget-content">
-                                <h4 class="responsive-title">VOZ</h4>
+                                <h4 class="responsive-title">ANÁLISE DE VOZ</h4>
                                 <div class="voice-visualizer" id="voiceVisualizer"></div>
                                 <div class="voice-controls">
                                     <button class="voice-btn" onclick="BatHUD.toggleVoiceRecording()">
@@ -4150,40 +2487,6 @@
             },
 
             // ===========================================
-            // FUNÇÃO DE AJUSTE DE CONTEÚDO RESPONSIVO
-            // ===========================================
-            adjustWidgetsContent() {
-                const widgets = document.querySelectorAll('.widget');
-                
-                widgets.forEach(widget => {
-                    const content = widget.querySelector('.widget-content');
-                    if (content) {
-                        const widgetHeight = widget.clientHeight;
-                        const headerHeight = widget.querySelector('.widget-header')?.clientHeight || 0;
-                        
-                        // Ajusta altura máxima do conteúdo
-                        content.style.maxHeight = `${widgetHeight - headerHeight - 20}px`;
-                        
-                        // Ajusta grids baseado no tamanho disponível
-                        const grids = content.querySelectorAll('.responsive-grid');
-                        grids.forEach(grid => {
-                            const availableWidth = grid.clientWidth;
-                            
-                            if (this.state.isMobile) {
-                                if (grid.classList.contains('grid-2-cols')) {
-                                    grid.style.gridTemplateColumns = 'repeat(auto-fill, minmax(80px, 1fr))';
-                                }
-                                
-                                if (grid.classList.contains('grid-3-cols')) {
-                                    grid.style.gridTemplateColumns = 'repeat(auto-fill, minmax(60px, 1fr))';
-                                }
-                            }
-                        });
-                    }
-                });
-            },
-
-            // ===========================================
             // ANIMAÇÃO DE MORCEGOS E PILHA
             // ===========================================
             loadWidgetsAsBats() {
@@ -4223,15 +2526,24 @@
                 const minWidth = this.state.isMobile ? this.config.widgetMobileMinWidth : this.config.widgetMinWidth;
                 const minHeight = this.state.isMobile ? this.config.widgetMobileMinHeight : this.config.widgetMinHeight;
                 
-                const maxX = areaRect.width - minWidth;
-                const maxY = areaRect.height - minHeight;
+                // Calcular posição final baseada no layout
+                let finalX, finalY;
                 
-                const stackX = 20 + (index * this.config.stackOffsetX);
-                const stackY = 20 + (index * this.config.stackOffsetY);
-                
-                // Garantir que está dentro dos limites
-                const finalX = Math.min(stackX, maxX);
-                const finalY = Math.min(stackY, maxY);
+                if (this.state.isMobile) {
+                    // MOBILE: Layout em coluna centralizada
+                    finalX = (areaRect.width - minWidth) / 2;
+                    finalY = 20 + (index * (minHeight + 20));
+                } else {
+                    // DESKTOP: Efeito de pilha
+                    const stackX = 30 + (index * this.config.stackOffsetX * 0.7);
+                    const stackY = 30 + (index * this.config.stackOffsetY * 0.6);
+                    
+                    const maxX = areaRect.width - minWidth - 30;
+                    const maxY = areaRect.height - minHeight - 30;
+                    
+                    finalX = Math.min(stackX, maxX);
+                    finalY = Math.min(stackY, maxY);
+                }
                 
                 // Criar morcego
                 const bat = this.createBatElement();
@@ -4257,7 +2569,7 @@
                 
                 // Quando o morcego chegar, mostrar o widget
                 setTimeout(() => {
-                    this.showWidgetAtStackPosition(widget, finalX, finalY, index);
+                    this.showWidgetAtPosition(widget, finalX, finalY, index);
                     bat.remove();
                 }, this.config.batAnimationDuration - 100);
                 
@@ -4275,60 +2587,55 @@
                 return bat;
             },
 
-            showWidgetAtStackPosition(widget, x, y, index) {
+            showWidgetAtPosition(widget, x, y, index) {
                 const widgetsArea = document.getElementById('widgetsArea');
                 const areaRect = widgetsArea.getBoundingClientRect();
                 
                 const minWidth = this.state.isMobile ? this.config.widgetMobileMinWidth : this.config.widgetMinWidth;
                 const minHeight = this.state.isMobile ? this.config.widgetMobileMinHeight : this.config.widgetMinHeight;
                 
-                const maxX = areaRect.width - minWidth;
-                const maxY = areaRect.height - minHeight;
+                // Verificar limites
+                const maxX = areaRect.width - minWidth - 20;
+                const maxY = areaRect.height - minHeight - 20;
                 
-                const finalX = Math.min(x, maxX);
-                const finalY = Math.min(y, maxY);
+                const finalX = Math.max(20, Math.min(x, maxX));
+                const finalY = Math.max(20, Math.min(y, maxY));
                 
-                // Aplicar classe de pasta
-                widget.classList.add('folder-stacked');
-                widget.classList.remove('stacked');
+                // Posicionar widget
+                widget.style.left = `${finalX}px`;
+                widget.style.top = `${finalY}px`;
                 
-                // Definir índice CSS para animação
-                widget.style.setProperty('--widget-index', index);
+                if (!this.state.isMobile) {
+                    // DESKTOP: Adicionar efeito de pasta
+                    widget.classList.add('folder-stacked');
+                    
+                    // Adicionar rotação aleatória
+                    const rotation = (Math.random() * 1.5) - 0.75;
+                    widget.style.transform = `rotate(${rotation}deg)`;
+                    
+                    // Adicionar aba da pasta
+                    const folderTab = document.createElement('div');
+                    folderTab.className = 'folder-tab';
+                    
+                    const folderNumber = document.createElement('div');
+                    folderNumber.className = 'folder-number';
+                    folderNumber.textContent = (index + 1).toString().padStart(2, '0');
+                    
+                    widget.appendChild(folderTab);
+                    widget.appendChild(folderNumber);
+                } else {
+                    // MOBILE: Layout simples
+                    widget.classList.add('folder-stacked');
+                    widget.style.transform = 'none';
+                }
                 
-                // Calcular posição da pilha com rotação aleatória
-                const rotation = (Math.random() * 1) - 0.5;
-                widget.style.setProperty('--widget-rotation', `${rotation}deg`);
-                
-                const stackX = finalX + (index * this.config.stackOffsetX * 0.5);
-                const stackY = finalY + (index * this.config.stackOffsetY * 0.7);
-                
-                // Garantir limites novamente
-                const finalStackX = Math.min(stackX, maxX);
-                const finalStackY = Math.min(stackY, maxY);
-                
-                // Posicionar widget na pilha
-                widget.style.left = `${finalStackX}px`;
-                widget.style.top = `${finalStackY}px`;
-                widget.style.transform = `rotate(${rotation}deg)`;
-                widget.style.zIndex = index + 10;
-                
-                // Adicionar aba da pasta
-                const folderTab = document.createElement('div');
-                folderTab.className = 'folder-tab';
-                
-                const folderNumber = document.createElement('div');
-                folderNumber.className = 'folder-number';
-                folderNumber.textContent = (index + 1).toString().padStart(2, '0');
-                
-                widget.appendChild(folderTab);
-                widget.appendChild(folderNumber);
-                
-                // Animação de aterrissagem
+                // Animação de entrada
                 widget.classList.add('landing');
                 widget.style.opacity = '1';
+                widget.style.zIndex = index + 10;
                 
-                // Configurar eventos de hover
-                this.setupFolderHover(widget);
+                // Configurar eventos
+                this.setupWidgetEvents(widget, index);
                 
                 // Inicializar interações após animação
                 setTimeout(() => {
@@ -4336,73 +2643,60 @@
                     this.initWidgetInteractions(widget);
                 }, 600);
                 
-                // Salvar posição da pilha
+                // Salvar posição
                 this.saveWidgetPosition(widget.id, { 
-                    left: finalStackX, 
-                    top: finalStackY, 
+                    left: finalX, 
+                    top: finalY, 
                     zIndex: index + 10,
-                    rotation: rotation 
+                    rotation: this.state.isMobile ? 0 : rotation 
                 });
             },
 
-            setupFolderHover(widget) {
+            setupWidgetEvents(widget, index) {
                 let hoverTimeout;
                 
                 widget.addEventListener('mouseenter', () => {
+                    if (this.state.isMobile) return;
+                    
                     clearTimeout(hoverTimeout);
                     
                     if (this.state.selectedWidget && this.state.selectedWidget !== widget) {
                         this.state.selectedWidget.classList.remove('selected');
                     }
                     
-                    // Destacar esta widget
                     this.state.selectedWidget = widget;
                     widget.classList.add('selected');
                     widget.style.zIndex = '1000';
-                    
-                    // Levantar ligeiramente os outros widgets
-                    this.raiseOtherWidgets(widget.id);
                 });
                 
                 widget.addEventListener('mouseleave', () => {
+                    if (this.state.isMobile) return;
+                    
                     hoverTimeout = setTimeout(() => {
                         if (!this.state.isDragging && !this.state.isResizing) {
                             widget.classList.remove('selected');
-                            
-                            // Restaurar z-index original
-                            const index = parseInt(widget.dataset.index);
                             widget.style.zIndex = (index + 10).toString();
-                            
-                            // Rebaixar os outros widgets
-                            this.lowerOtherWidgets();
-                            
                             this.state.selectedWidget = null;
                         }
                     }, 100);
                 });
-            },
-
-            raiseOtherWidgets(excludeId) {
-                Object.values(this.state.widgets).forEach(otherWidget => {
-                    if (otherWidget.id !== excludeId && otherWidget.style.display !== 'none') {
-                        const currentTransform = otherWidget.style.transform || '';
-                        const rotationMatch = currentTransform.match(/rotate\(([^)]+)\)/);
-                        const rotation = rotationMatch ? rotationMatch[1] : '0deg';
-                        const liftAmount = this.state.isMobile ? -5 : -8;
-                        otherWidget.style.transform = `translateY(${liftAmount}px) ${rotation}`;
-                    }
-                });
-            },
-
-            lowerOtherWidgets() {
-                Object.values(this.state.widgets).forEach(widget => {
-                    if (widget.style.display !== 'none') {
-                        const currentTransform = widget.style.transform || '';
-                        const rotationMatch = currentTransform.match(/rotate\(([^)]+)\)/);
-                        const rotation = rotationMatch ? rotationMatch[1] : '0deg';
-                        widget.style.transform = `translateY(0px) ${rotation}`;
-                    }
-                });
+                
+                // Eventos de toque para mobile
+                if (this.state.isMobile) {
+                    widget.addEventListener('click', (e) => {
+                        if (e.target.closest('.widget-btn')) return;
+                        
+                        if (widget.classList.contains('selected')) {
+                            widget.classList.remove('selected');
+                        } else {
+                            if (this.state.selectedWidget) {
+                                this.state.selectedWidget.classList.remove('selected');
+                            }
+                            widget.classList.add('selected');
+                            this.state.selectedWidget = widget;
+                        }
+                    });
+                }
             },
 
             createWidget(template, index) {
@@ -4431,24 +2725,7 @@
                     <div class="resize-handle"></div>
                 `;
 
-                // Aplicar tamanhos baseados no dispositivo
-                this.applyWidgetSizes(widget);
-
                 return widget;
-            },
-
-            applyWidgetSizes(widget) {
-                if (this.state.isMobile) {
-                    widget.style.minWidth = this.config.widgetMobileMinWidth + 'px';
-                    widget.style.minHeight = this.config.widgetMobileMinHeight + 'px';
-                    widget.style.maxWidth = this.config.widgetMobileMaxWidth + 'px';
-                    widget.style.maxHeight = this.config.widgetMobileMaxHeight + 'px';
-                } else {
-                    widget.style.minWidth = this.config.widgetMinWidth + 'px';
-                    widget.style.minHeight = this.config.widgetMinHeight + 'px';
-                    widget.style.maxWidth = this.config.widgetMaxWidth + 'px';
-                    widget.style.maxHeight = this.config.widgetMaxHeight + 'px';
-                }
             },
 
             // ===========================================
@@ -4462,14 +2739,14 @@
                         bar.className = 'dna-bar';
                         const delay = i * 0.1;
                         bar.style.animationDelay = `${delay}s`;
-                        bar.style.height = `${30 + Math.random() * 70}%`;
+                        bar.style.height = `${40 + Math.random() * 60}%`;
                         dnaStrand.appendChild(bar);
                         this.state.dnaBars.push(bar);
                     }
                     
                     setInterval(() => {
                         this.state.dnaBars.forEach((bar, i) => {
-                            const newHeight = 30 + Math.random() * 70;
+                            const newHeight = 40 + Math.random() * 60;
                             bar.style.height = `${newHeight}%`;
                         });
                     }, 2000);
@@ -4480,7 +2757,8 @@
                 const grid = document.getElementById('motionGrid');
                 if (grid) {
                     const columns = this.state.isMobile ? 6 : 8;
-                    const total = columns * 6;
+                    const rows = 6;
+                    const total = columns * rows;
                     
                     for (let i = 0; i < total; i++) {
                         const cell = document.createElement('div');
@@ -4504,13 +2782,13 @@
             initVoiceVisualizer() {
                 const visualizer = document.getElementById('voiceVisualizer');
                 if (visualizer) {
-                    const barsCount = this.state.isMobile ? 8 : 10;
+                    const barsCount = this.state.isMobile ? 12 : 15;
                     
                     for (let i = 0; i < barsCount; i++) {
                         const bar = document.createElement('div');
                         bar.className = 'voice-bar';
                         bar.style.setProperty('--i', i);
-                        bar.style.height = `${20 + Math.random() * 60}%`;
+                        bar.style.height = `${20 + Math.random() * 70}%`;
                         visualizer.appendChild(bar);
                     }
                     
@@ -4525,108 +2803,7 @@
             },
 
             // ===========================================
-            // FUNÇÕES DOS WIDGETS
-            // ===========================================
-            restartSystem() {
-                alert('Sistema Bat-HUD reiniciando...');
-            },
-
-            scanThreats() {
-                alert('Escaneamento de ameaças iniciado...');
-            },
-
-            analyzeSpectrum() {
-                alert('Análise espectral em progresso...');
-            },
-
-            activateProtocol(type) {
-                const messages = {
-                    lockdown: 'PROTOCOLO DE LOCKDOWN ATIVADO!',
-                    evacuation: 'PROTOCOLO DE EVACUAÇÃO INICIADO!',
-                    signal: 'BAT-SINAL ATIVADO!',
-                    backup: 'REFORÇOS SOLICITADOS!'
-                };
-                
-                alert(messages[type] || 'Protocolo Ativado');
-            },
-
-            initiateTracking() {
-                alert('Rastreamento de alvos iniciado...');
-            },
-
-            generateCombatReport() {
-                alert('Relatório de combate gerado com sucesso!');
-            },
-
-            sendCommsMessage() {
-                const message = document.getElementById('commsMessage')?.value;
-                if (message) {
-                    alert(`Mensagem enviada: "${message}"`);
-                    document.getElementById('commsMessage').value = '';
-                } else {
-                    alert('Digite uma mensagem primeiro!');
-                }
-            },
-
-            powerManagement() {
-                alert('Gerenciamento de energia aberto...');
-            },
-
-            scanBiometric(target) {
-                if (target) {
-                    alert(`Scanner biométrico iniciado para: ${target.toUpperCase()}`);
-                }
-            },
-
-            initiateBiometricScan() {
-                alert('Scanner biométrico iniciado...');
-            },
-
-            toggleVoiceRecording() {
-                const recordBtn = document.getElementById('recordBtn');
-                const voiceStatus = document.getElementById('voiceStatus');
-                
-                this.state.voiceRecording = !this.state.voiceRecording;
-                
-                if (this.state.voiceRecording) {
-                    recordBtn.innerHTML = '<i class="fas fa-stop"></i> PARAR';
-                    recordBtn.style.background = 'rgba(255, 0, 64, 0.2)';
-                    recordBtn.style.borderColor = 'var(--danger-color)';
-                    if (voiceStatus) {
-                        voiceStatus.textContent = 'GRAVANDO...';
-                        voiceStatus.style.color = 'var(--danger-color)';
-                    }
-                } else {
-                    recordBtn.innerHTML = '<i class="fas fa-microphone"></i> GRAVAR';
-                    recordBtn.style.background = 'rgba(0, 217, 255, 0.1)';
-                    recordBtn.style.borderColor = 'var(--primary-color)';
-                    if (voiceStatus) {
-                        voiceStatus.textContent = 'PRONTO';
-                        voiceStatus.style.color = 'var(--success-color)';
-                    }
-                }
-            },
-
-            analyzeVoice() {
-                alert('Análise de voz em processamento...');
-            },
-
-            updateSensitivity(value) {
-                const element = document.getElementById('sensitivityValue');
-                if (element) {
-                    element.textContent = `${value}%`;
-                }
-            },
-
-            updateVoiceSensitivity(value) {
-                const element = document.getElementById('voiceSensitivity');
-                if (element) {
-                    element.textContent = `${value}%`;
-                }
-            },
-
-            // ===========================================
-            // INTERAÇÕES DOS WIDGETS COM LIMITES
+            // INTERAÇÕES DOS WIDGETS
             // ===========================================
             initWidgetInteractions(widget) {
                 const header = widget.querySelector('.widget-header');
@@ -4739,7 +2916,7 @@
                     let newWidth = this.state.startWidth + dx;
                     let newHeight = this.state.startHeight + dy;
 
-                    // Aplicar limites baseados no dispositivo
+                    // Aplicar limites
                     if (this.state.isMobile) {
                         newWidth = Math.max(this.config.widgetMobileMinWidth,
                             Math.min(newWidth, this.config.widgetMobileMaxWidth));
@@ -4769,12 +2946,6 @@
                         this.state.dragWidget.style.left = constrainedPosition.left + 'px';
                         this.state.dragWidget.style.top = constrainedPosition.top + 'px';
                     }
-                }
-                
-                if (this.state.isResizing) {
-                    setTimeout(() => {
-                        this.adjustWidgetsContent();
-                    }, 50);
                 }
             },
 
@@ -4827,18 +2998,12 @@
                             height: this.state.dragWidget.offsetHeight,
                             zIndex: parseInt(this.state.dragWidget.style.zIndex) || 10
                         });
-                        
-                        setTimeout(() => {
-                            this.adjustWidgetsContent();
-                        }, 100);
                     }
                 }
                 
                 this.state.isDragging = false;
                 this.state.isResizing = false;
                 this.state.dragWidget = null;
-                
-                this.lowerOtherWidgets();
             },
 
             // ===========================================
@@ -4864,11 +3029,6 @@
                 const widget = document.getElementById(widgetId);
                 if (widget) {
                     widget.classList.toggle('minimized');
-                    if (!widget.classList.contains('minimized')) {
-                        setTimeout(() => {
-                            this.adjustWidgetsContent();
-                        }, 300);
-                    }
                 }
             },
 
@@ -4888,8 +3048,25 @@
                         }
                     }
                 });
+            },
+
+            // ===========================================
+            // FUNÇÕES DOS WIDGETS
+            // ===========================================
+            activateProtocol(type) {
+                const messages = {
+                    lockdown: 'PROTOCOLO DE LOCKDOWN ATIVADO!',
+                    evacuation: 'PROTOCOLO DE EVACUAÇÃO INICIADO!',
+                    signal: 'BAT-SINAL ATIVADO!',
+                    backup: 'REFORÇOS SOLICITADOS!'
+                };
                 
-                this.adjustWidgetsContent();
+                alert(messages[type] || 'Protocolo Ativado');
+            },
+
+            toggleVoiceRecording() {
+                this.state.voiceRecording = !this.state.voiceRecording;
+                alert(this.state.voiceRecording ? 'Gravação iniciada' : 'Gravação parada');
             },
 
             // ===========================================
@@ -4992,19 +3169,7 @@
         window.minimizeWidget = (widgetId) => BatHUD.minimizeWidget(widgetId);
         window.hideWidget = (widgetId) => BatHUD.hideWidget(widgetId);
         window.activateProtocol = (type) => BatHUD.activateProtocol(type);
-        window.restartSystem = () => BatHUD.restartSystem();
-        window.scanThreats = () => BatHUD.scanThreats();
-        window.analyzeSpectrum = () => BatHUD.analyzeSpectrum();
-        window.initiateTracking = () => BatHUD.initiateTracking();
-        window.generateCombatReport = () => BatHUD.generateCombatReport();
-        window.sendCommsMessage = () => BatHUD.sendCommsMessage();
-        window.powerManagement = () => BatHUD.powerManagement();
-        window.scanBiometric = (target) => BatHUD.scanBiometric(target);
-        window.initiateBiometricScan = () => BatHUD.initiateBiometricScan();
         window.toggleVoiceRecording = () => BatHUD.toggleVoiceRecording();
-        window.analyzeVoice = () => BatHUD.analyzeVoice();
-        window.updateSensitivity = (value) => BatHUD.updateSensitivity(value);
-        window.updateVoiceSensitivity = (value) => BatHUD.updateVoiceSensitivity(value);
     </script>
 </body>
 </html>
