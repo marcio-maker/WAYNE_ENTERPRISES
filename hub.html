@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WAYNE ENTERPRISES - BAT-HUD SYSTEM v6.0 - MORCEGOS EM PILHA</title>
+    <title>WAYNE ENTERPRISES - BAT-HUD SYSTEM v6.0 INTEGRADO</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         /* =========================================== */
@@ -25,8 +25,48 @@
             --border-color: rgba(0, 217, 255, 0.3);
             --widget-bg: rgba(10, 20, 40, 0.92);
             --widget-border: rgba(0, 217, 255, 0.4);
-            --hud-pieces-bg: rgba(0, 150, 255, 0.1);
-            --folder-shadow: rgba(0, 0, 0, 0.4);
+        }
+
+        /* =========================================== */
+        /* SISTEMA DE ENTRADA SUAVE DOS WIDGETS */
+        /* =========================================== */
+        
+        /* Efeito de entrada suave dos widgets */
+        @keyframes widgetFloatIn {
+            0% {
+                opacity: 0;
+                transform: translateY(20px) scale(0.98);
+            }
+            70% {
+                opacity: 0.8;
+                transform: translateY(-3px) scale(1.01);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        /* Efeito de glow sutil na entrada */
+        @keyframes widgetEntryGlow {
+            0% {
+                box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4),
+                    0 0 20px rgba(0, 217, 255, 0.1);
+            }
+            50% {
+                box-shadow: 0 12px 40px rgba(0, 0, 0, 0.6),
+                    0 0 25px rgba(0, 217, 255, 0.2);
+            }
+            100% {
+                box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4),
+                    0 0 20px rgba(0, 217, 255, 0.1);
+            }
+        }
+
+        /* Classe para animação de entrada */
+        .widget.entering {
+            animation: widgetFloatIn 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards,
+                      widgetEntryGlow 1.5s ease-in-out;
         }
 
         /* =========================================== */
@@ -49,83 +89,10 @@
             font-family: 'Arial', sans-serif;
             color: var(--text-primary);
             touch-action: manipulation;
-            user-select: none;
         }
 
         /* =========================================== */
-        /* EFEITO DE MORCEGOS VOANDO */
-        /* =========================================== */
-        .bat-effect {
-            position: absolute;
-            width: 40px;
-            height: 20px;
-            pointer-events: none;
-            z-index: 1001;
-            filter: drop-shadow(0 0 10px var(--primary-color));
-        }
-
-        .bat-wing {
-            position: absolute;
-            width: 15px;
-            height: 20px;
-            background: var(--primary-color);
-            opacity: 0.3;
-            border-radius: 50%;
-        }
-
-        .bat-wing.left {
-            left: 0;
-            transform-origin: right center;
-            animation: flapLeft 0.3s ease-in-out infinite;
-        }
-
-        .bat-wing.right {
-            right: 0;
-            transform-origin: left center;
-            animation: flapRight 0.3s ease-in-out infinite;
-        }
-
-        .bat-body {
-            position: absolute;
-            left: 50%;
-            top: 50%;
-            transform: translate(-50%, -50%);
-            width: 10px;
-            height: 10px;
-            background: var(--primary-color);
-            border-radius: 50%;
-            opacity: 0.5;
-        }
-
-        @keyframes flapLeft {
-            0%, 100% { transform: rotate(0deg); }
-            50% { transform: rotate(-30deg); }
-        }
-
-        @keyframes flapRight {
-            0%, 100% { transform: rotate(0deg); }
-            50% { transform: rotate(30deg); }
-        }
-
-        @keyframes batFly {
-            0% {
-                transform: translate(var(--start-x), var(--start-y)) rotate(0deg);
-                opacity: 0;
-            }
-            20% {
-                opacity: 1;
-            }
-            80% {
-                opacity: 1;
-            }
-            100% {
-                transform: translate(var(--end-x), var(--end-y)) rotate(-5deg);
-                opacity: 0;
-            }
-        }
-
-        /* =========================================== */
-        /* EFEITO DE NEBLINA GOTHAM */
+        /* EFEITO DE NEBLINA GOTHAM - REATIVO */
         /* =========================================== */
         .rain-overlay {
             position: fixed;
@@ -162,12 +129,19 @@
         }
 
         @keyframes fogPulse {
-            0% { transform: scale(1); opacity: 0.3; }
-            100% { transform: scale(1.2); opacity: 0.6; }
+            0% {
+                transform: scale(1);
+                opacity: 0.3;
+            }
+
+            100% {
+                transform: scale(1.2);
+                opacity: 0.6;
+            }
         }
 
         /* =========================================== */
-        /* SISTEMA DE ALERTA */
+        /* SISTEMA DE ALERTA DE EMERGÊNCIA */
         /* =========================================== */
         .emergency-alert {
             display: none;
@@ -230,8 +204,15 @@
         }
 
         @keyframes emergencyPulse {
-            0% { background: rgba(255, 0, 0, 0.95); }
-            100% { background: rgba(255, 50, 50, 0.95); }
+            0% {
+                background: rgba(255, 0, 0, 0.95);
+                box-shadow: 0 0 100px rgba(255, 0, 0, 0.8) inset;
+            }
+
+            100% {
+                background: rgba(255, 50, 50, 0.95);
+                box-shadow: 0 0 150px rgba(255, 0, 0, 1) inset;
+            }
         }
 
         /* =========================================== */
@@ -269,6 +250,18 @@
             font-weight: bold;
         }
 
+        @keyframes alertFadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
         .timer-skip {
             background: rgba(255, 0, 0, 0.5);
             border: 1px solid #ff0000;
@@ -283,11 +276,6 @@
 
         .timer-skip:hover {
             background: rgba(255, 0, 0, 0.8);
-        }
-
-        @keyframes alertFadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
         }
 
         /* =========================================== */
@@ -319,8 +307,15 @@
         }
 
         @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(-20px); }
-            to { opacity: 1; transform: translateY(0); }
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         .auth-frame::before,
@@ -381,8 +376,14 @@
         }
 
         @keyframes batPulse {
-            0%, 100% { opacity: 0.3; }
-            50% { opacity: 1; }
+            0%,
+            100% {
+                opacity: 0.3;
+            }
+
+            50% {
+                opacity: 1;
+            }
         }
 
         .auth-form {
@@ -545,62 +546,46 @@
         }
 
         /* =========================================== */
-        /* ÁREA DOS WIDGETS - COM LIMITES DAS PEÇAS */
+        /* ÁREA DOS WIDGETS - LAYOUT RESPONSIVO */
         /* =========================================== */
         .widgets-area {
             position: absolute;
-            top: 80px; /* Começa abaixo da peça top */
-            left: 35px; /* Começa depois da peça left */
-            right: 35px; /* Termina antes da peça right */
-            bottom: 80px; /* Termina antes da peça bottom */
+            top: 80px;
+            left: 35px;
+            right: 35px;
+            bottom: 80px;
             z-index: 6;
-            overflow: visible;
-            background: rgba(0, 0, 0, 0.05);
-            border-radius: 8px;
-            /* Borda de limite visível (apenas para debug) */
-            border: 1px dashed rgba(0, 217, 255, 0.1);
+            pointer-events: none;
+            overflow: hidden;
         }
 
-        /* Overlay de limite visual (opcional) */
-        .boundary-overlay {
-            position: absolute;
-            top: 0;
-            left: 0;
+        /* Container principal dos widgets (para posição inicial) */
+        .widgets-container {
+            position: relative;
             width: 100%;
             height: 100%;
             pointer-events: none;
-            z-index: 5;
         }
 
-        .boundary-overlay::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            border: 2px solid rgba(0, 217, 255, 0.1);
-            border-radius: 8px;
-            box-shadow: inset 0 0 20px rgba(0, 217, 255, 0.05);
+        .widgets-area .widget {
+            pointer-events: auto;
         }
 
         /* =========================================== */
-        /* SISTEMA DE WIDGETS - WIDGETS GRANDES E VISÍVEIS */
+        /* SISTEMA DE WIDGETS BASE */
         /* =========================================== */
         .widget {
-            position: absolute !important;
+            position: absolute;
             background: var(--widget-bg);
-            border: 2px solid var(--widget-border);
-            border-radius: 12px;
-            padding: 20px;
-            min-width: 300px;
-            min-height: 250px;
-            max-width: 600px;
-            max-height: 500px;
+            border: 1px solid var(--widget-border);
+            border-radius: 8px;
+            padding: 15px;
+            min-width: 200px;
+            min-height: 140px;
             backdrop-filter: blur(10px);
-            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.5),
-                0 0 30px rgba(0, 217, 255, 0.15);
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4),
+                0 0 20px rgba(0, 217, 255, 0.1);
+            transition: all 0.3s ease;
             z-index: 10;
             cursor: move;
             overflow: hidden;
@@ -608,304 +593,58 @@
             flex-direction: column;
             resize: both;
             overflow: auto;
-            user-select: none;
-            transform-origin: center;
+            /* Estado inicial para animação */
+            opacity: 0;
+            transform: translateY(20px);
         }
 
-        /* MOBILE: WIDGETS MAIORES E BEM VISÍVEIS */
-        @media (max-width: 768px) {
-            .widget {
-                min-width: 280px !important;
-                min-height: 230px !important;
-                max-width: 320px !important;
-                max-height: 350px !important;
-                padding: 15px !important;
-                font-size: 0.9em;
-                border-width: 2px;
-                border-radius: 10px;
-            }
-            
-            .widget.folder-stacked {
-                min-width: 270px !important;
-                min-height: 220px !important;
-                position: relative !important;
-                left: auto !important;
-                top: auto !important;
-                transform: none !important;
-                margin-bottom: 15px;
-            }
-        }
-
-        /* MOBILE PEQUENO: AINDA VISÍVEIS */
-        @media (max-width: 480px) {
-            .widget {
-                min-width: 260px !important;
-                min-height: 220px !important;
-                max-width: 300px !important;
-                max-height: 320px !important;
-                padding: 12px !important;
-            }
-        }
-
-        /* Animação de entrada do widget */
-        @keyframes widgetLand {
-            0% {
-                transform: scale(0) rotate(-10deg);
-                opacity: 0;
-            }
-            50% {
-                transform: scale(1.1) rotate(5deg);
-                opacity: 1;
-            }
-            100% {
-                transform: scale(1) rotate(0deg);
-                opacity: 1;
-            }
-        }
-
-        .widget.landing {
-            animation: widgetLand 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
-        }
-
-        /* =========================================== */
-        /* LAYOUTS DIFERENTES PARA MOBILE E DESKTOP */
-        /* =========================================== */
-        
-        /* DESKTOP: PILHA DE PASTAS */
-        @media (min-width: 769px) {
-            .widgets-area {
-                overflow: auto;
-                padding: 20px;
-            }
-            
-            .widget.folder-stacked {
-                position: absolute !important;
-                transform-origin: top left;
-                box-shadow: 
-                    0 5px 15px rgba(0, 0, 0, 0.4),
-                    0 0 0 2px rgba(0, 217, 255, 0.2),
-                    inset 0 -5px 12px rgba(0, 0, 0, 0.4);
-                border-width: 3px;
-                border-style: solid;
-                border-color: var(--widget-border);
-                transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-                pointer-events: auto;
-                cursor: pointer;
-                border-top: 5px solid rgba(0, 217, 255, 0.6);
-            }
-            
-            .widget.folder-stacked::before {
-                content: '';
-                position: absolute;
-                top: -3px;
-                left: 20px;
-                right: 20px;
-                height: 12px;
-                background: linear-gradient(180deg, 
-                    rgba(0, 217, 255, 0.5) 0%, 
-                    transparent 100%);
-                border-radius: 6px 6px 0 0;
-                z-index: 1;
-                pointer-events: none;
-            }
-            
-            .widget.folder-stacked.selected {
-                transform: translateY(-60px) scale(1.1) !important;
-                box-shadow: 
-                    0 25px 60px rgba(0, 0, 0, 0.8),
-                    0 0 60px rgba(0, 217, 255, 0.5),
-                    0 0 0 4px var(--primary-color);
-                border-color: var(--primary-color);
-                z-index: 1000 !important;
-                cursor: move;
-                border-top-color: var(--primary-color);
-            }
-            
-            .folder-tab {
-                position: absolute;
-                top: -18px;
-                left: 30px;
-                width: 60px;
-                height: 18px;
-                background: linear-gradient(180deg, 
-                    var(--primary-color) 0%, 
-                    rgba(0, 150, 255, 0.9) 100%);
-                border-radius: 8px 8px 0 0;
-                z-index: 3;
-                pointer-events: none;
-                opacity: 0.9;
-                transform: perspective(15px) rotateX(-20deg);
-                box-shadow: 0 -5px 12px rgba(0, 0, 0, 0.5);
-                border: 2px solid rgba(0, 217, 255, 0.7);
-                border-bottom: none;
-            }
-            
-            .folder-number {
-                position: absolute;
-                top: -20px;
-                left: 35px;
-                font-size: 12px;
-                color: rgba(255, 255, 255, 0.95);
-                font-weight: bold;
-                z-index: 4;
-                pointer-events: none;
-                text-shadow: 0 0 10px rgba(0, 217, 255, 0.9);
-                font-family: 'Courier New', monospace;
-                letter-spacing: 1px;
-            }
-        }
-        
-        /* MOBILE: GRID ORGANIZADO */
-        @media (max-width: 768px) {
-            .widgets-area {
-                display: flex;
-                flex-direction: column;
-                align-items: center;
-                overflow-y: auto;
-                padding: 15px;
-                gap: 15px;
-            }
-            
-            .widget.folder-stacked {
-                width: 90%;
-                max-width: 320px;
-                box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
-                border-top: 4px solid rgba(0, 217, 255, 0.6);
-            }
-            
-            .folder-tab, .folder-number {
-                display: none; /* Esconder em mobile */
-            }
-            
-            .widget.folder-stacked.selected {
-                transform: scale(1.05) !important;
-                box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6),
-                    0 0 40px rgba(0, 217, 255, 0.4);
-                z-index: 1000;
-            }
-            
-            .top-left, .top-right, .bottom-left, .bottom-right {
-                width: 35%;
-                height: 70px !important;
-            }
-
-            .top-center, .bottom-center {
-                width: 30%;
-                left: 35%;
-                height: 35px !important;
-            }
-
-            .mid-left, .mid-right {
-                top: 70px !important;
-                height: calc(100% - 140px) !important;
-                width: 30px !important;
-            }
-            
-            .widgets-area {
-                top: 75px !important;
-                left: 30px !important;
-                right: 30px !important;
-                bottom: 75px !important;
-            }
-        }
-
-        /* Efeito de "pular" mais pronunciado */
-        @keyframes folderJump {
-            0% { 
-                transform: translateY(0) scale(1) rotate(var(--widget-rotation, 0deg)); 
-            }
-            60% { 
-                transform: translateY(-80px) scale(1.15) rotate(calc(var(--widget-rotation, 0deg) - 2deg)); 
-            }
-            100% { 
-                transform: translateY(-60px) scale(1.1) rotate(var(--widget-rotation, 0deg)); 
-            }
-        }
-
-        .widget.folder-stacked.selected {
-            animation: folderJump 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
-        }
-
-        /* MOBILE: Ajustar animação de pulo */
-        @media (max-width: 768px) {
-            @keyframes folderJump {
-                0% { 
-                    transform: scale(1); 
-                }
-                60% { 
-                    transform: scale(1.08); 
-                }
-                100% { 
-                    transform: scale(1.05); 
-                }
-            }
+        /* Remove o resize padrão do navegador mas mantém nossa funcionalidade */
+        .widget::-webkit-resizer {
+            display: none;
         }
 
         .widget:hover {
-            box-shadow: 0 18px 50px rgba(0, 0, 0, 0.7),
-                0 0 40px rgba(0, 217, 255, 0.25);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.6),
+                0 0 30px rgba(0, 217, 255, 0.2);
             border-color: var(--primary-color);
-            z-index: 1000 !important;
-            transform: translateY(-8px) scale(1.03);
         }
 
         .widget.dragging {
-            opacity: 0.9;
-            cursor: grabbing !important;
-            z-index: 1000 !important;
-            box-shadow: 0 0 40px rgba(0, 217, 255, 0.5) !important;
-            border-color: var(--primary-color) !important;
+            opacity: 0.8;
+            cursor: grabbing;
+            z-index: 1000;
         }
 
         .widget.resizing {
-            cursor: nwse-resize !important;
+            cursor: nwse-resize;
         }
 
         .widget-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 15px;
-            padding-bottom: 10px;
-            border-bottom: 2px solid rgba(0, 217, 255, 0.3);
+            margin-bottom: 12px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid rgba(0, 217, 255, 0.2);
             flex-shrink: 0;
             cursor: move;
             user-select: none;
-            background: rgba(0, 0, 0, 0.4);
-            border-radius: 10px 10px 0 0;
-            padding: 15px;
-        }
-
-        /* MOBILE: Ajustar header */
-        @media (max-width: 768px) {
-            .widget-header {
-                padding: 12px;
-                margin-bottom: 12px;
-            }
         }
 
         .widget-title {
-            font-size: 14px;
+            font-size: 12px;
             color: var(--primary-color);
             text-transform: uppercase;
-            letter-spacing: 1.5px;
+            letter-spacing: 1px;
             font-weight: bold;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
         }
 
-        /* MOBILE: Ajustar título */
-        @media (max-width: 768px) {
-            .widget-title {
-                font-size: 13px;
-                letter-spacing: 1px;
-            }
-        }
-
         .widget-controls {
             display: flex;
-            gap: 10px;
+            gap: 8px;
         }
 
         .widget-btn {
@@ -913,34 +652,14 @@
             border: none;
             color: var(--text-secondary);
             cursor: pointer;
-            font-size: 14px;
-            padding: 6px 10px;
-            border-radius: 4px;
+            font-size: 12px;
+            padding: 2px 6px;
             transition: all 0.2s;
-            min-width: 28px;
-            height: 28px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        /* MOBILE: Ajustar botões */
-        @media (max-width: 768px) {
-            .widget-btn {
-                font-size: 12px;
-                padding: 5px 8px;
-                min-width: 24px;
-                height: 24px;
-            }
-            
-            .widget-controls {
-                gap: 6px;
-            }
+            min-width: 20px;
         }
 
         .widget-btn:hover {
             color: var(--primary-color);
-            background: rgba(0, 217, 255, 0.15);
             transform: scale(1.1);
         }
 
@@ -957,21 +676,13 @@
             position: absolute;
             right: 0;
             bottom: 0;
-            width: 25px;
-            height: 25px;
+            width: 20px;
+            height: 20px;
             cursor: nwse-resize;
             z-index: 1001;
             background: linear-gradient(135deg, transparent 50%, var(--primary-color) 50%);
-            opacity: 0.6;
-            border-radius: 0 0 12px 0;
-        }
-
-        /* MOBILE: Ajustar alça de redimensionamento */
-        @media (max-width: 768px) {
-            .resize-handle {
-                width: 20px;
-                height: 20px;
-            }
+            opacity: 0.5;
+            border-radius: 0 0 8px 0;
         }
 
         .resize-handle:hover {
@@ -979,156 +690,127 @@
         }
 
         /* =========================================== */
-        /* CONTEÚDO DOS WIDGETS - VISÍVEL E LEGÍVEL */
+        /* CONTEÚDO RESPONSIVO DOS WIDGETS */
         /* =========================================== */
+        /* Sistema de escalonamento automático */
         .widget-content {
             flex: 1;
             display: flex;
             flex-direction: column;
             height: 100%;
             min-height: 0;
-            gap: 15px;
-            overflow: hidden;
-            padding: 15px;
-            box-sizing: border-box;
         }
 
-        /* MOBILE: Ajustar conteúdo */
-        @media (max-width: 768px) {
-            .widget-content {
-                padding: 12px !important;
-                gap: 12px !important;
-                font-size: 0.95em;
-            }
-        }
-
-        /* Container flexível para métricas */
-        .metrics-container {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
+        /* Elementos visuais que escalam */
+        .radar-display,
+        .voice-visualizer,
+        .biometric-display,
+        .threat-scanner,
+        .satellite-view,
+        .tracking-radar,
+        .weather-main,
+        .emergency-header {
             flex: 1;
-            min-height: 0;
-            overflow: hidden;
-        }
-
-        /* Texto responsivo GRANDE */
-        .responsive-text {
-            font-size: 13px;
-            line-height: 1.5;
-            color: var(--text-secondary);
-        }
-
-        .responsive-title {
-            font-size: 18px;
-            font-weight: bold;
-            margin: 0 0 15px 0;
-            color: var(--primary-color);
-            text-transform: uppercase;
-            letter-spacing: 1.5px;
-        }
-
-        /* MOBILE: Ajustar títulos */
-        @media (max-width: 768px) {
-            .responsive-title {
-                font-size: 16px !important;
-                margin: 0 0 12px 0 !important;
-                letter-spacing: 1px;
-            }
-            
-            .responsive-text {
-                font-size: 12px !important;
-                line-height: 1.4;
-            }
-        }
-
-        /* Valores numéricos GRANDES */
-        .responsive-value {
-            font-size: 24px;
-            font-weight: bold;
-            font-family: 'Courier New', monospace;
-            margin: 0;
-            color: var(--primary-color);
-        }
-
-        /* MOBILE: Ajustar valores */
-        @media (max-width: 768px) {
-            .responsive-value {
-                font-size: 20px !important;
-            }
-        }
-
-        /* Cards de métrica grandes */
-        .metric-card {
-            background: rgba(0, 20, 40, 0.7);
-            border: 2px solid rgba(0, 217, 255, 0.4);
-            border-radius: 8px;
-            padding: 15px;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            min-height: 100px;
-            transition: all 0.3s ease;
-            backdrop-filter: blur(5px);
-        }
-
-        /* MOBILE: Ajustar cards */
-        @media (max-width: 768px) {
-            .metric-card {
-                padding: 12px;
-                min-height: 90px;
-                border-radius: 6px;
-            }
-        }
-
-        .metric-card:hover {
-            transform: translateY(-3px);
-            border-color: var(--primary-color);
-            box-shadow: 0 6px 25px rgba(0, 217, 255, 0.25);
-        }
-
-        /* Contêiner flexível para gráficos */
-        .chart-container {
-            flex: 1;
-            min-height: 0;
+            min-height: 60px;
             position: relative;
-            width: 100%;
-            background: rgba(0, 0, 0, 0.4);
-            border-radius: 8px;
-            border: 2px solid rgba(0, 217, 255, 0.3);
-            padding: 15px;
+            overflow: hidden;
         }
 
-        /* MOBILE: Ajustar containers */
-        @media (max-width: 768px) {
-            .chart-container {
-                padding: 10px;
-                border-radius: 6px;
-            }
+        /* Containers de dados */
+        .radar-stats,
+        .voice-controls,
+        .biometric-data,
+        .threat-list,
+        .forensic-data,
+        .vehicle-status,
+        .combat-stats,
+        .forensic-display {
+            margin-top: auto;
+            flex-shrink: 0;
+        }
+
+        /* Sistema de escalas fluidas */
+        .widget {
+            /* Tamanhos de fonte responsivos */
+            --font-title: clamp(10px, 1.2vw, 12px);
+            --font-value: clamp(14px, 2vw, 24px);
+            --font-label: clamp(8px, 0.8vw, 10px);
+            --font-text: clamp(9px, 1vw, 11px);
+        }
+
+        .widget-title {
+            font-size: var(--font-title);
+        }
+
+        .radar-stat-value,
+        .threat-value,
+        .weather-temp,
+        .combat-number {
+            font-size: var(--font-value);
+        }
+
+        .radar-stat-label,
+        .threat-label,
+        .weather-condition,
+        .combat-label,
+        .bio-label,
+        .forensic-label {
+            font-size: var(--font-label);
+        }
+
+        .radar-stat-value,
+        .threat-value,
+        .weather-temp {
+            font-size: var(--font-value);
+        }
+
+        .metric-label,
+        .metric-value,
+        .bio-value,
+        .forensic-value {
+            font-size: var(--font-text);
         }
 
         /* =========================================== */
-        /* WIDGET 1: RADAR TÁTICO - VISÍVEL */
+        /* WIDGET 1: RADAR DE MONITORAMENTO */
         /* =========================================== */
         .radar-display {
-            background: radial-gradient(circle, 
-                rgba(0, 217, 255, 0.08) 0%, 
-                rgba(0, 150, 255, 0.15) 30%,
-                transparent 70%);
+            background: radial-gradient(circle, rgba(0, 217, 255, 0.05) 0%, transparent 70%);
             border-radius: 50%;
-            border: 3px solid rgba(0, 217, 255, 0.4);
-            flex: 1;
-            min-height: 180px;
-            position: relative;
-            overflow: hidden;
+            border: 2px solid rgba(0, 217, 255, 0.3);
         }
 
-        /* MOBILE: Ajustar radar */
-        @media (max-width: 768px) {
-            .radar-display {
-                min-height: 150px;
-                border-width: 2px;
-            }
+        .radar-grid {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 100%;
+            height: 100%;
+        }
+
+        .radar-circle {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            border: 1px solid rgba(0, 217, 255, 0.2);
+            border-radius: 50%;
+        }
+
+        .radar-circle:nth-child(1) {
+            width: 30%;
+            height: 30%;
+        }
+
+        .radar-circle:nth-child(2) {
+            width: 60%;
+            height: 60%;
+        }
+
+        .radar-circle:nth-child(3) {
+            width: 90%;
+            height: 90%;
         }
 
         .radar-sweep {
@@ -1136,467 +818,841 @@
             top: 50%;
             left: 50%;
             width: 50%;
-            height: 3px;
-            background: linear-gradient(90deg, 
-                transparent, 
-                var(--primary-color) 20%,
-                var(--primary-color) 80%,
-                transparent);
+            height: 2px;
+            background: linear-gradient(90deg, var(--primary-color), transparent);
             transform-origin: left center;
-            animation: radarSweep 3s linear infinite;
-            filter: drop-shadow(0 0 5px var(--primary-color));
+            animation: radarSweep 4s linear infinite;
         }
 
-        .radar-grid {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-image: 
-                radial-gradient(circle at center, transparent 0%, rgba(0, 217, 255, 0.08) 100%),
-                repeating-conic-gradient(from 0deg, transparent 0deg 15deg, rgba(0, 217, 255, 0.08) 15deg 30deg);
+        @keyframes radarSweep {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
         }
 
         .radar-target {
             position: absolute;
-            width: 12px;
-            height: 12px;
-            background: var(--danger-color);
+            width: 8px;
+            height: 8px;
             border-radius: 50%;
-            transform: translate(-50%, -50%);
-            animation: targetPulse 2s infinite;
-            filter: drop-shadow(0 0 8px var(--danger-color));
+            animation: pulse 2s ease-in-out infinite;
         }
 
-        /* MOBILE: Ajustar alvos */
-        @media (max-width: 768px) {
-            .radar-target {
-                width: 10px;
-                height: 10px;
+        .radar-target.friendly {
+            background: var(--success-color);
+            box-shadow: 0 0 10px var(--success-color);
+        }
+
+        .radar-target.hostile {
+            background: var(--danger-color);
+            box-shadow: 0 0 10px var(--danger-color);
+        }
+
+        .radar-target.neutral {
+            background: var(--warning-color);
+            box-shadow: 0 0 10px var(--warning-color);
+        }
+
+        @keyframes pulse {
+            0%,
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+
+            50% {
+                transform: scale(1.3);
+                opacity: 0.7;
             }
         }
 
         .radar-stats {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
-            gap: 15px;
-            margin-top: 15px;
-            padding: 15px;
-            background: rgba(0, 0, 0, 0.4);
-            border-radius: 8px;
-            border: 2px solid rgba(0, 217, 255, 0.3);
+            display: flex;
+            justify-content: space-around;
+            margin-top: 10px;
         }
 
-        /* MOBILE: Ajustar stats */
-        @media (max-width: 768px) {
-            .radar-stats {
-                grid-template-columns: repeat(2, 1fr);
-                gap: 12px;
-                padding: 12px;
-                margin-top: 12px;
-                border-radius: 6px;
-            }
+        .radar-stat {
+            text-align: center;
+            flex: 1;
         }
 
         .radar-stat-value {
-            font-size: 22px;
             color: var(--primary-color);
             font-weight: bold;
-            font-family: 'Courier New', monospace;
-        }
-
-        /* MOBILE: Ajustar valores do radar */
-        @media (max-width: 768px) {
-            .radar-stat-value {
-                font-size: 18px;
-            }
+            display: block;
         }
 
         .radar-stat-label {
-            font-size: 12px;
             color: var(--text-secondary);
             text-transform: uppercase;
-            margin-top: 4px;
+            display: block;
         }
 
         /* =========================================== */
-        /* WIDGET 2: SISTEMA BAT-HUD - VISÍVEL */
+        /* WIDGET 2: MONITOR DE SISTEMA */
         /* =========================================== */
-        .system-metrics {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-        }
-
-        /* MOBILE: Ajustar métricas */
-        @media (max-width: 768px) {
-            .system-metrics {
-                gap: 12px;
-            }
-        }
-
         .system-metric {
-            background: rgba(0, 0, 0, 0.4);
-            padding: 15px;
-            border-radius: 8px;
-            border: 2px solid rgba(0, 217, 255, 0.3);
+            margin-bottom: 10px;
         }
 
-        /* MOBILE: Reduzir métricas */
-        @media (max-width: 768px) {
-            .system-metric {
-                padding: 12px;
-                border-radius: 6px;
-            }
+        .metric-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 5px;
+        }
+
+        .metric-label {
+            color: var(--text-secondary);
+        }
+
+        .metric-value {
+            color: var(--primary-color);
+            font-weight: bold;
         }
 
         .metric-bar {
-            height: 12px;
-            background: rgba(0, 0, 0, 0.6);
-            border-radius: 6px;
+            height: 6px;
+            background: rgba(0, 0, 0, 0.5);
+            border-radius: 3px;
             overflow: hidden;
-            border: 1px solid rgba(0, 217, 255, 0.3);
-            margin-top: 8px;
+            position: relative;
         }
 
         .metric-fill {
             height: 100%;
-            border-radius: 6px;
-            transition: width 0.5s ease;
             background: linear-gradient(90deg, var(--primary-color), var(--success-color));
+            border-radius: 3px;
+            transition: width 0.5s ease;
+            position: relative;
+        }
+
+        .metric-fill::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            animation: shimmer 2s infinite;
+        }
+
+        @keyframes shimmer {
+            0% {
+                transform: translateX(-100%);
+            }
+
+            100% {
+                transform: translateX(100%);
+            }
         }
 
         /* =========================================== */
-        /* WIDGET 3: DETECTOR DE AMEAÇAS - VISÍVEL */
+        /* WIDGET 3: ANALISADOR DE VOZ */
         /* =========================================== */
-        .threat-scanner {
-            background: rgba(0, 0, 0, 0.6);
-            border-radius: 8px;
+        .voice-visualizer {
+            background: rgba(0, 0, 0, 0.5);
+            border-radius: 6px;
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-around;
+            padding: 8px;
+            gap: 2px;
+        }
+
+        .voice-bar {
+            flex: 1;
+            background: linear-gradient(180deg, var(--primary-color), var(--primary-dark));
+            border-radius: 2px;
+            transition: height 0.1s ease;
+            min-height: 3px;
+        }
+
+        .voice-controls {
+            display: flex;
+            gap: 8px;
+            margin-top: 10px;
+        }
+
+        .voice-btn {
+            flex: 1;
+            padding: 6px;
+            background: rgba(0, 217, 255, 0.1);
+            border: 1px solid var(--primary-color);
+            border-radius: 4px;
+            color: var(--primary-color);
+            cursor: pointer;
+            text-transform: uppercase;
+            transition: all 0.3s;
+        }
+
+        .voice-btn:hover {
+            background: rgba(0, 217, 255, 0.2);
+            box-shadow: 0 0 10px rgba(0, 217, 255, 0.3);
+        }
+
+        .voice-btn.active {
+            background: var(--primary-color);
+            color: #000;
+            box-shadow: 0 0 20px var(--primary-color);
+        }
+
+        /* =========================================== */
+        /* WIDGET 4: SCANNER BIOMÉTRICO */
+        /* =========================================== */
+        .biometric-display {
+            background: rgba(0, 0, 0, 0.5);
+            border-radius: 6px;
             position: relative;
             overflow: hidden;
             display: flex;
             align-items: center;
             justify-content: center;
-            flex: 1;
-            min-height: 100px;
-            border: 2px solid rgba(0, 217, 255, 0.3);
         }
 
-        /* MOBILE: Ajustar scanner */
-        @media (max-width: 768px) {
-            .threat-scanner {
-                min-height: 80px;
-                border-radius: 6px;
+        .fingerprint {
+            width: 60px;
+            height: 60px;
+            border: 2px solid var(--success-color);
+            border-radius: 50%;
+            position: relative;
+            animation: scanPulse 2s ease-in-out infinite;
+        }
+
+        @keyframes scanPulse {
+            0%,
+            100% {
+                box-shadow: 0 0 15px var(--success-color);
+                opacity: 1;
             }
+
+            50% {
+                box-shadow: 0 0 30px var(--success-color);
+                opacity: 0.7;
+            }
+        }
+
+        .fingerprint::before,
+        .fingerprint::after {
+            content: '';
+            position: absolute;
+            background: var(--success-color);
+            border-radius: 50%;
+        }
+
+        .fingerprint::before {
+            width: 60%;
+            height: 60%;
+            top: 20%;
+            left: 20%;
+            opacity: 0.3;
+        }
+
+        .fingerprint::after {
+            width: 30%;
+            height: 30%;
+            top: 35%;
+            left: 35%;
+            opacity: 0.5;
+        }
+
+        .scan-line {
+            position: absolute;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--success-color), transparent);
+            animation: scanMove 2s linear infinite;
+        }
+
+        @keyframes scanMove {
+            0% {
+                top: 0;
+            }
+
+            100% {
+                top: 100%;
+            }
+        }
+
+        .biometric-data {
+            margin-top: 8px;
+        }
+
+        .bio-field {
+            display: flex;
+            justify-content: space-between;
+            padding: 4px 0;
+            border-bottom: 1px solid rgba(0, 217, 255, 0.1);
+        }
+
+        .bio-field:last-child {
+            border-bottom: none;
+        }
+
+        .bio-label {
+            color: var(--text-secondary);
+        }
+
+        .bio-value {
+            color: var(--success-color);
+            font-weight: bold;
+        }
+
+        /* =========================================== */
+        /* WIDGET 5: DETECTOR DE AMEAÇAS */
+        /* =========================================== */
+        .threat-scanner {
+            background: rgba(0, 0, 0, 0.5);
+            border-radius: 6px;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         .threat-rings {
             position: relative;
-            width: 90px;
-            height: 90px;
-        }
-
-        /* MOBILE: Ajustar anéis */
-        @media (max-width: 768px) {
-            .threat-rings {
-                width: 70px;
-                height: 70px;
-            }
+            width: 80px;
+            height: 80px;
         }
 
         .threat-ring {
             position: absolute;
-            border: 3px solid var(--danger-color);
+            border: 2px solid var(--danger-color);
             border-radius: 50%;
-            animation: threatRing 3s ease-in-out infinite;
-            filter: drop-shadow(0 0 8px var(--danger-color));
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            animation: threatPulse 2s ease-in-out infinite;
+        }
+
+        .threat-ring:nth-child(1) {
+            width: 100%;
+            height: 100%;
+            animation-delay: 0s;
+        }
+
+        .threat-ring:nth-child(2) {
+            width: 70%;
+            height: 70%;
+            animation-delay: 0.3s;
+        }
+
+        .threat-ring:nth-child(3) {
+            width: 40%;
+            height: 40%;
+            animation-delay: 0.6s;
+        }
+
+        @keyframes threatPulse {
+            0%, 100% {
+                opacity: 0.3;
+                transform: translate(-50%, -50%) scale(1);
+            }
+            50% {
+                opacity: 1;
+                transform: translate(-50%, -50%) scale(1.1);
+            }
         }
 
         .threat-level {
             position: absolute;
-            font-size: 22px;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            z-index: 1;
+        }
+
+        .threat-value {
             color: var(--danger-color);
             font-weight: bold;
-            text-shadow: 0 0 15px var(--danger-color);
+            text-shadow: 0 0 10px var(--danger-color);
         }
 
-        /* MOBILE: Ajustar nível */
-        @media (max-width: 768px) {
-            .threat-level {
-                font-size: 18px;
-            }
+        .threat-label {
+            color: var(--text-secondary);
+            text-transform: uppercase;
+        }
+
+        .threat-list {
+            max-height: 70px;
+            overflow-y: auto;
+            margin-top: 8px;
+        }
+
+        .threat-item {
+            background: rgba(255, 0, 64, 0.1);
+            padding: 5px;
+            margin-bottom: 3px;
+            border-radius: 4px;
+            border-left: 3px solid var(--danger-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .threat-name {
+            color: var(--text-primary);
+        }
+
+        .threat-severity {
+            color: var(--danger-color);
+            font-weight: bold;
         }
 
         /* =========================================== */
-        /* WIDGET 4: ANÁLISE FORENSE - VISÍVEL */
+        /* WIDGET 6: ANALISADOR FORENSE */
         /* =========================================== */
+        .forensic-display {
+            background: rgba(0, 0, 0, 0.5);
+            padding: 10px;
+            border-radius: 6px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
         .dna-strand {
             display: flex;
-            justify-content: center;
+            gap: 2px;
+            margin-bottom: 8px;
+            height: 30px;
             align-items: center;
-            gap: 6px;
-            margin-bottom: 20px;
-            height: 80px;
-            padding: 15px;
-            background: rgba(0, 0, 0, 0.4);
-            border-radius: 8px;
-        }
-
-        /* MOBILE: Ajustar DNA */
-        @media (max-width: 768px) {
-            .dna-strand {
-                height: 60px;
-                margin-bottom: 15px;
-                padding: 12px;
-                gap: 5px;
-            }
+            flex: 1;
         }
 
         .dna-bar {
-            width: 4px;
+            flex: 1;
             background: linear-gradient(180deg, var(--primary-color), var(--success-color));
             border-radius: 2px;
             animation: dnaFloat 2s ease-in-out infinite;
         }
 
+        .dna-bar:nth-child(odd) {
+            animation-direction: alternate;
+        }
+
+        .dna-bar:nth-child(even) {
+            animation-direction: alternate-reverse;
+        }
+
+        @keyframes dnaFloat {
+            0%, 100% {
+                height: 30%;
+            }
+            50% {
+                height: 100%;
+            }
+        }
+
+        .forensic-data {
+            margin-top: auto;
+        }
+
+        .forensic-field {
+            display: flex;
+            justify-content: space-between;
+            padding: 4px 0;
+            border-bottom: 1px solid rgba(0, 217, 255, 0.1);
+        }
+
+        .forensic-field:last-child {
+            border-bottom: none;
+        }
+
+        .forensic-label {
+            color: var(--text-secondary);
+        }
+
+        .forensic-value {
+            color: var(--primary-color);
+            font-weight: bold;
+        }
+
         /* =========================================== */
-        /* WIDGET 5: VEÍCULOS TÁTICOS - VISÍVEL */
+        /* WIDGET 7: MONITORAMENTO DE VEÍCULOS */
         /* =========================================== */
         .vehicle-status {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-            gap: 15px;
-        }
-
-        /* MOBILE: Ajustar grid */
-        @media (max-width: 768px) {
-            .vehicle-status {
-                grid-template-columns: 1fr;
-                gap: 12px;
-            }
+            grid-template-columns: 1fr 1fr;
+            gap: 6px;
         }
 
         .vehicle-card {
-            background: rgba(0, 0, 0, 0.4);
-            border-radius: 8px;
-            padding: 15px;
+            background: rgba(0, 0, 0, 0.5);
+            padding: 8px;
+            border-radius: 6px;
+            border: 1px solid rgba(0, 217, 255, 0.2);
             text-align: center;
-            border: 2px solid rgba(0, 217, 255, 0.3);
-            transition: all 0.3s ease;
+            transition: all 0.3s;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 50px;
         }
 
-        /* MOBILE: Ajustar cards */
-        @media (max-width: 768px) {
-            .vehicle-card {
-                padding: 12px;
-                border-radius: 6px;
-            }
+        .vehicle-card:hover {
+            border-color: var(--primary-color);
+        }
+
+        .vehicle-card.active {
+            border-color: var(--success-color);
+            background: rgba(0, 255, 136, 0.1);
         }
 
         .vehicle-icon {
-            font-size: 36px;
-            margin-bottom: 10px;
-            filter: drop-shadow(0 0 12px rgba(0, 217, 255, 0.6));
+            color: var(--primary-color);
+            margin-bottom: 4px;
         }
 
-        /* MOBILE: Ajustar ícones */
-        @media (max-width: 768px) {
-            .vehicle-icon {
-                font-size: 32px;
-                margin-bottom: 8px;
+        .vehicle-card.active .vehicle-icon {
+            color: var(--success-color);
+            animation: vehiclePulse 2s ease-in-out infinite;
+        }
+
+        @keyframes vehiclePulse {
+            0%, 100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.1);
             }
         }
 
         .vehicle-name {
-            font-size: 16px;
-            color: var(--primary-color);
+            color: var(--text-primary);
             font-weight: bold;
-            margin-bottom: 8px;
+            margin-bottom: 2px;
         }
 
-        /* MOBILE: Ajustar nomes */
-        @media (max-width: 768px) {
-            .vehicle-name {
-                font-size: 14px;
-                margin-bottom: 6px;
-            }
+        .vehicle-stat {
+            color: var(--text-secondary);
         }
 
         /* =========================================== */
-        /* WIDGET 6: CLIMA GOTHAM - VISÍVEL */
+        /* WIDGET 8: ANÁLISE CLIMÁTICA */
         /* =========================================== */
         .weather-main {
-            background: rgba(0, 0, 0, 0.4);
-            padding: 20px;
-            border-radius: 10px;
+            background: rgba(0, 0, 0, 0.5);
+            padding: 12px;
+            border-radius: 6px;
             text-align: center;
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            flex: 1;
-            min-height: 120px;
-            border: 2px solid rgba(0, 217, 255, 0.3);
-        }
-
-        /* MOBILE: Ajustar clima */
-        @media (max-width: 768px) {
-            .weather-main {
-                padding: 15px;
-                min-height: 100px;
-                border-radius: 8px;
-            }
         }
 
         .weather-icon-large {
-            font-size: 48px;
-            margin-bottom: 15px;
-            filter: drop-shadow(0 0 15px rgba(0, 217, 255, 0.6));
+            color: var(--primary-color);
+            margin-bottom: 6px;
+            animation: weatherFloat 3s ease-in-out infinite;
         }
 
-        /* MOBILE: Ajustar ícone */
-        @media (max-width: 768px) {
-            .weather-icon-large {
-                font-size: 40px;
-                margin-bottom: 12px;
+        @keyframes weatherFloat {
+            0%, 100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-6px);
             }
         }
 
         .weather-temp {
-            font-size: 32px;
-            color: var(--primary-color);
+            color: var(--text-primary);
             font-weight: bold;
-            font-family: 'Courier New', monospace;
-            margin-bottom: 8px;
+            margin-bottom: 2px;
         }
 
-        /* MOBILE: Ajustar temperatura */
-        @media (max-width: 768px) {
-            .weather-temp {
-                font-size: 28px;
-                margin-bottom: 6px;
+        .weather-condition {
+            color: var(--text-secondary);
+            text-transform: uppercase;
+        }
+
+        /* =========================================== */
+        /* WIDGET 9: DETECTOR DE MOVIMENTO */
+        /* =========================================== */
+        .motion-grid {
+            display: grid;
+            grid-template-columns: repeat(8, 1fr);
+            grid-template-rows: repeat(5, 1fr);
+            gap: 2px;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            padding: 6px;
+            border-radius: 6px;
+        }
+
+        .motion-cell {
+            background: rgba(0, 217, 255, 0.1);
+            border-radius: 2px;
+            transition: all 0.3s;
+        }
+
+        .motion-cell.active {
+            background: var(--danger-color);
+            box-shadow: 0 0 6px var(--danger-color);
+            animation: motionBlink 1s ease-in-out infinite;
+        }
+
+        @keyframes motionBlink {
+            0%, 100% {
+                opacity: 1;
+            }
+            50% {
+                opacity: 0.3;
             }
         }
 
         /* =========================================== */
-        /* MENSAGEM CENTRAL */
+        /* WIDGET 10: ANÁLISE ESPECTRAL */
         /* =========================================== */
-        .hint {
+        .spectrum-display {
+            background: rgba(0, 0, 0, 0.5);
+            padding: 10px;
+            border-radius: 6px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .spectrum-graph {
+            display: flex;
+            align-items: flex-end;
+            gap: 2px;
+            height: 60px;
+            margin-bottom: 8px;
+            flex: 1;
+        }
+
+        .spectrum-bar {
+            flex: 1;
+            background: linear-gradient(180deg, var(--info-color), var(--primary-color));
+            border-radius: 2px 2px 0 0;
+            animation: spectrumWave 3s ease-in-out infinite;
+        }
+
+        @keyframes spectrumWave {
+            0%, 100% {
+                height: 20%;
+            }
+            50% {
+                height: 80%;
+            }
+        }
+
+        /* =========================================== */
+        /* WIDGET 11: VIGILÂNCIA POR SATÉLITE */
+        /* =========================================== */
+        .satellite-view {
+            background: radial-gradient(circle at center, rgba(0, 217, 255, 0.1), rgba(0, 0, 0, 0.8));
+            border-radius: 6px;
+            overflow: hidden;
+        }
+
+        .earth-center {
             position: absolute;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            color: #0af;
+            width: 30px;
+            height: 30px;
+            background: radial-gradient(circle, var(--success-color), var(--primary-dark));
+            border-radius: 50%;
+            box-shadow: 0 0 15px rgba(0, 217, 255, 0.5);
+        }
+
+        .satellite-icon {
+            position: absolute;
+            width: 16px;
+            height: 16px;
+            background: var(--primary-color);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #000;
+            animation: satelliteOrbit 8s linear infinite;
+            box-shadow: 0 0 8px var(--primary-color);
+        }
+
+        @keyframes satelliteOrbit {
+            0% {
+                top: 10%;
+                left: 50%;
+            }
+            25% {
+                top: 50%;
+                left: 90%;
+            }
+            50% {
+                top: 90%;
+                left: 50%;
+            }
+            75% {
+                top: 50%;
+                left: 10%;
+            }
+            100% {
+                top: 10%;
+                left: 50%;
+            }
+        }
+
+        /* =========================================== */
+        /* WIDGET 12: RASTREAMENTO DE ALVOS */
+        /* =========================================== */
+        .tracking-radar {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle, rgba(0, 217, 255, 0.1), transparent);
+            border: 2px solid var(--primary-color);
+            border-radius: 50%;
+        }
+
+        .tracking-sweep {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 50%;
+            height: 2px;
+            background: linear-gradient(90deg, var(--primary-color), transparent);
+            transform-origin: left center;
+            animation: trackingSweep 3s linear infinite;
+        }
+
+        @keyframes trackingSweep {
+            0% {
+                transform: rotate(0deg);
+            }
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        .target-dot {
+            position: absolute;
+            width: 6px;
+            height: 6px;
+            background: var(--warning-color);
+            border-radius: 50%;
+            box-shadow: 0 0 6px var(--warning-color);
+            animation: targetBlink 1.5s ease-in-out infinite;
+        }
+
+        @keyframes targetBlink {
+            0%, 100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+            50% {
+                opacity: 0.5;
+                transform: scale(1.2);
+            }
+        }
+
+        /* =========================================== */
+        /* WIDGET 13: PROTOCOLO DE EMERGÊNCIA */
+        /* =========================================== */
+        .emergency-header {
+            background: rgba(255, 0, 64, 0.2);
+            padding: 10px;
+            border-radius: 6px;
             text-align: center;
-            z-index: 1;
-            pointer-events: none;
-            letter-spacing: 1px;
-            font-size: 18px;
-            width: 90%;
-            max-width: 500px;
+            border: 2px solid var(--danger-color);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
         }
 
-        .hint span {
-            font-size: 14px;
-            opacity: 0.8;
-            display: block;
-            margin-top: 8px;
+        .emergency-icon {
+            color: var(--danger-color);
+            margin-bottom: 6px;
+            animation: emergencyPulse 1.5s ease-in-out infinite;
         }
 
-        .hint img {
-            width: 200px;
-            height: auto;
-            display: block;
-            margin: 0 auto 25px;
-            filter: drop-shadow(0 0 20px rgba(0, 217, 255, 0.7));
-        }
-
-        /* MOBILE: Ajustar hint */
-        @media (max-width: 768px) {
-            .hint {
-                font-size: 16px;
+        @keyframes emergencyPulse {
+            0%, 100% {
+                transform: scale(1);
+                opacity: 1;
             }
-            
-            .hint img {
-                width: 150px;
-                margin: 0 auto 15px;
-            }
-            
-            .hint span {
-                font-size: 12px;
+            50% {
+                transform: scale(1.2);
+                opacity: 0.7;
             }
         }
 
-        /* =========================================== */
-        /* ANIMAÇÕES GLOBAIS */
-        /* =========================================== */
-        @keyframes shake {
-            0%, 100% { transform: translateX(0); }
-            10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
-            20%, 40%, 60%, 80% { transform: translateX(5px); }
-        }
-
-        @keyframes targetPulse {
-            0%, 100% { opacity: 0.6; transform: translate(-50%, -50%) scale(1); }
-            50% { opacity: 1; transform: translate(-50%, -50%) scale(1.3); }
-        }
-
-        @keyframes threatRing {
-            0%, 100% { 
-                transform: scale(1); 
-                opacity: 0.4; 
-                border-width: 3px;
-            }
-            50% { 
-                transform: scale(1.15); 
-                opacity: 1; 
-                border-width: 4px;
-            }
-        }
-
-        @keyframes radarSweep {
-            from { transform: translate(-50%, -50%) rotate(0deg); }
-            to { transform: translate(-50%, -50%) rotate(360deg); }
-        }
-
-        @keyframes dnaFloat {
-            0%, 100% { height: 40%; }
-            50% { height: 100%; }
+        .emergency-status {
+            color: var(--text-primary);
+            font-weight: bold;
+            text-transform: uppercase;
         }
 
         /* =========================================== */
-        /* BUG FIXES */
+        /* WIDGET 14: ESTATÍSTICAS DE COMBATE */
         /* =========================================== */
-        .widget.minimized .widget-body {
-            display: none;
+        .combat-stats {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 6px;
+            height: 100%;
         }
 
-        .widget.minimized {
-            height: auto;
-            min-height: auto;
-            padding-bottom: 5px;
+        .combat-card {
+            background: rgba(0, 0, 0, 0.5);
+            padding: 8px;
+            border-radius: 6px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
         }
 
-        .widget.minimized .resize-handle {
-            display: none;
+        .combat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, var(--success-color), var(--primary-color));
         }
 
-        .widget-header {
-            cursor: grab;
+        .combat-number {
+            color: var(--success-color);
+            font-weight: bold;
+            margin-bottom: 2px;
         }
 
-        .widget-header:active {
-            cursor: grabbing;
+        .combat-label {
+            color: var(--text-secondary);
+            text-transform: uppercase;
         }
 
         /* =========================================== */
-        /* PEÇAS DA INTERFACE - RESPONSIVIDADE */
+        /* PEÇAS DA INTERFACE (ORIGINAL) */
         /* =========================================== */
         .piece-container {
             position: absolute;
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            z-index: 100;
+            z-index: 7;
+        }
+
+        .piece-container:hover {
+            transform: scale(1.02);
+            z-index: 20;
         }
 
         .piece-svg {
@@ -1609,17 +1665,33 @@
             transition: all 0.3s ease;
         }
 
+        .piece-container:hover .piece-svg {
+            filter: drop-shadow(0 0 25px rgba(0, 217, 255, 0.6));
+        }
+
+        .piece-container:hover .piece-svg path {
+            stroke: #fff;
+            stroke-width: 3;
+        }
+
         .piece-bg {
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: var(--hud-pieces-bg);
+            background: rgba(0, 150, 255, 0.1);
             clip-path: inherit;
             transition: all 0.3s ease;
         }
 
+        .piece-container:hover .piece-bg {
+            background: rgba(0, 217, 255, 0.3);
+        }
+
+        /* =========================================== */
+        /* LINKS PARA PÁGINAS EXTERNAS */
+        /* =========================================== */
         .piece-link {
             position: absolute;
             top: 0;
@@ -1631,9 +1703,14 @@
             align-items: center;
             justify-content: center;
             text-decoration: none;
-            z-index: 110;
+            z-index: 10;
             padding: 10px;
+            transition: all 0.3s ease;
             cursor: pointer;
+        }
+
+        .piece-link:hover {
+            text-decoration: none;
         }
 
         .piece-link-icon {
@@ -1641,6 +1718,12 @@
             color: var(--primary-color);
             margin-bottom: 8px;
             filter: drop-shadow(0 0 10px rgba(0, 217, 255, 0.5));
+            transition: all 0.3s ease;
+        }
+
+        .piece-container:hover .piece-link-icon {
+            color: #fff;
+            transform: scale(1.2);
         }
 
         .piece-link-text {
@@ -1651,19 +1734,12 @@
             text-transform: uppercase;
             text-align: center;
             line-height: 1.3;
+            transition: all 0.3s ease;
         }
 
-        /* MOBILE: Ajustar peças */
-        @media (max-width: 768px) {
-            .piece-link-icon {
-                font-size: 20px;
-                margin-bottom: 6px;
-            }
-            
-            .piece-link-text {
-                font-size: 10px;
-                line-height: 1.2;
-            }
+        .piece-container:hover .piece-link-text {
+            color: #fff;
+            text-shadow: 0 0 15px var(--primary-color);
         }
 
         /* POSICIONAMENTO DAS PEÇAS */
@@ -1729,6 +1805,418 @@
             width: 30%;
             height: 80px;
             clip-path: polygon(30% 0, 100% 0, 100% 100%, 0 100%);
+        }
+
+        /* POSICIONAMENTO DOS LINKS */
+        .top-left .piece-link-text {
+            font-size: 9px;
+            line-height: 1.1;
+            width: 85%;
+        }
+
+        .top-center .piece-link-text {
+            font-size: 10px;
+            line-height: 1.1;
+            width: 95%;
+        }
+
+        .top-right .piece-link-text {
+            font-size: 9px;
+            line-height: 1.1;
+            width: 85%;
+        }
+
+        .mid-left .piece-link-text {
+            white-space: nowrap;
+            font-size: 9px;
+            max-width: 200px;
+            transform: rotate(-90deg);
+        }
+
+        .mid-right .piece-link-text {
+            white-space: nowrap;
+            font-size: 9px;
+            max-width: 200px;
+            transform: rotate(90deg);
+        }
+
+        .bottom-left .piece-link-text {
+            font-size: 9px;
+            line-height: 1.1;
+            width: 85%;
+        }
+
+        .bottom-center .piece-link-text {
+            font-size: 10px;
+            line-height: 1.1;
+            width: 95%;
+        }
+
+        .bottom-right .piece-link-text {
+            font-size: 9px;
+            line-height: 1.1;
+            width: 85%;
+        }
+
+        /* MENSAGEM CENTRAL */
+        .hint {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: #0af;
+            text-align: center;
+            z-index: 1;
+            pointer-events: none;
+            letter-spacing: 1px;
+            font-size: 16px;
+            width: 90%;
+            max-width: 400px;
+        }
+
+        .hint span {
+            font-size: 11px;
+            opacity: 0.7;
+            display: block;
+            margin-top: 5px;
+        }
+
+        /* =========================================== */
+        /* ANIMAÇÕES GLOBAIS */
+        /* =========================================== */
+        @keyframes shake {
+            0%,
+            100% {
+                transform: translateX(0);
+            }
+
+            10%,
+            30%,
+            50%,
+            70%,
+            90% {
+                transform: translateX(-5px);
+            }
+
+            20%,
+            40%,
+            60%,
+            80% {
+                transform: translateX(5px);
+            }
+        }
+
+        /* =========================================== */
+        /* RESPONSIVIDADE MOBILE */
+        /* =========================================== */
+        @media (max-width: 768px) {
+            .hud-frame {
+                overflow: visible;
+                position: relative;
+            }
+
+            .top-left,
+            .top-right,
+            .bottom-left,
+            .bottom-right {
+                width: 35%;
+                height: 65px !important;
+            }
+
+            .top-center,
+            .bottom-center {
+                width: 30%;
+                left: 35%;
+                height: 35px !important;
+            }
+
+            .mid-left,
+            .mid-right {
+                width: 25px;
+                height: calc(100% - 130px);
+            }
+
+            .piece-link-text {
+                font-size: 7px !important;
+                line-height: 1 !important;
+            }
+
+            .piece-link-icon {
+                font-size: 16px;
+                margin-bottom: 3px;
+            }
+
+            .mid-left .piece-link-text,
+            .mid-right .piece-link-text {
+                font-size: 6px !important;
+                max-width: 120px;
+            }
+
+            /* ÁREA DOS WIDGETS MOBILE */
+            .widgets-area {
+                top: 65px;
+                left: 25px;
+                right: 25px;
+                bottom: 65px;
+            }
+
+            .widget {
+                min-width: 160px;
+                min-height: 120px;
+                padding: 10px;
+            }
+
+            .widget-title {
+                font-size: 10px;
+            }
+
+            .hint {
+                font-size: 12px;
+                width: 85%;
+            }
+
+            .hint img {
+                width: 100px !important;
+                margin-bottom: 8px;
+            }
+
+            .hint span {
+                font-size: 9px;
+            }
+
+            .alert-timer {
+                bottom: 40px;
+                right: 10px;
+                padding: 5px 10px;
+                font-size: 11px;
+            }
+
+            .timer-skip {
+                font-size: 9px;
+                padding: 2px 6px;
+            }
+
+            .user-indicator {
+                font-size: 9px;
+                padding: 5px 10px;
+                max-width: 130px;
+                top: 5px;
+                right: 5px;
+            }
+
+            /* Ajustes de tamanhos para mobile */
+            .fingerprint {
+                width: 50px;
+                height: 50px;
+            }
+
+            .threat-rings {
+                width: 60px;
+                height: 60px;
+            }
+
+            .earth-center {
+                width: 25px;
+                height: 25px;
+            }
+
+            .satellite-icon {
+                width: 12px;
+                height: 12px;
+                font-size: 8px;
+            }
+
+            .motion-grid {
+                grid-template-columns: repeat(6, 1fr);
+                grid-template-rows: repeat(4, 1fr);
+                gap: 1px;
+                padding: 4px;
+            }
+
+            .weather-icon-large {
+                font-size: 28px;
+            }
+
+            .emergency-icon {
+                font-size: 24px;
+            }
+
+            .vehicle-icon {
+                font-size: 16px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .top-left,
+            .top-right,
+            .bottom-left,
+            .bottom-right {
+                width: 40%;
+                height: 55px !important;
+            }
+
+            .top-center,
+            .bottom-center {
+                width: 20%;
+                left: 40%;
+                height: 30px !important;
+            }
+
+            .mid-left,
+            .mid-right {
+                width: 20px;
+                height: calc(100% - 110px);
+            }
+
+            .piece-link-text {
+                font-size: 6px !important;
+            }
+
+            .piece-link-icon {
+                font-size: 14px;
+            }
+
+            .widgets-area {
+                top: 55px;
+                left: 20px;
+                right: 20px;
+                bottom: 55px;
+            }
+
+            .widget {
+                min-width: 140px;
+                min-height: 100px;
+                padding: 8px;
+            }
+
+            /* Ajustes adicionais para telas muito pequenas */
+            .widget {
+                --font-title: 9px;
+                --font-value: 12px;
+                --font-label: 7px;
+                --font-text: 8px;
+            }
+
+            .fingerprint {
+                width: 40px;
+                height: 40px;
+            }
+
+            .threat-rings {
+                width: 50px;
+                height: 50px;
+            }
+
+            .dna-strand {
+                height: 20px;
+            }
+
+            .spectrum-graph {
+                height: 40px;
+            }
+
+            .voice-visualizer {
+                padding: 6px;
+            }
+        }
+
+        /* Ajuste para landscape em mobile */
+        @media (max-width: 768px) and (orientation: landscape) {
+            .top-left,
+            .top-right,
+            .bottom-left,
+            .bottom-right {
+                height: 50px !important;
+            }
+
+            .mid-left,
+            .mid-right {
+                height: calc(100% - 100px);
+            }
+
+            .widgets-area {
+                top: 50px;
+                bottom: 50px;
+            }
+
+            .widget {
+                min-width: 180px;
+                min-height: 100px;
+            }
+        }
+
+        /* Suporte para iOS */
+        @supports (-webkit-touch-callout: none) {
+
+            input,
+            textarea {
+                font-size: 16px !important;
+            }
+        }
+
+        /* =========================================== */
+        /* BUG FIXES E AJUSTES FINAIS */
+        /* =========================================== */
+        .piece-container:hover .piece-svg path {
+            stroke: #fff !important;
+            stroke-width: 3 !important;
+        }
+
+        .hint img {
+            width: 180px;
+            height: auto;
+            display: block;
+            margin: 0 auto 20px;
+            filter: drop-shadow(0 0 15px rgba(0, 217, 255, 0.6));
+            max-width: 100%;
+        }
+
+        .widget.hidden {
+            display: none;
+        }
+
+        .widget.minimized .widget-body {
+            display: none;
+        }
+
+        .widget.minimized {
+            height: auto;
+            min-height: auto;
+            padding-bottom: 5px;
+        }
+
+        .widget.minimized .resize-handle {
+            display: none;
+        }
+
+        /* =========================================== */
+        /* CONTROLES DE WIDGETS RESTAURADOS */
+        /* =========================================== */
+        .widget-controls {
+            display: flex !important;
+        }
+
+        .widget-btn {
+            background: transparent;
+            border: none;
+            color: var(--text-secondary);
+            cursor: pointer;
+            font-size: 12px;
+            padding: 2px 6px;
+            transition: all 0.2s;
+            opacity: 0.7;
+        }
+
+        .widget-btn:hover {
+            color: var(--primary-color);
+            transform: scale(1.1);
+            opacity: 1;
+        }
+
+        /* Para garantir que os widgets não fiquem muito pequenos */
+        .widget {
+            max-width: 90vw;
+            max-height: 90vh;
         }
     </style>
 </head>
@@ -1822,11 +2310,10 @@
     <div class="hud-frame" id="hudFrame">
         <!-- Área dos Widgets -->
         <div class="widgets-area" id="widgetsArea">
-            <!-- Widgets serão criados dinamicamente -->
-            <div class="boundary-overlay"></div>
+            <!-- Widgets serão criados dinamicamente pelo JavaScript -->
         </div>
 
-        <!-- Peças da Interface -->
+        <!-- Peça superior esquerda -->
         <div class="piece-container top-left">
             <svg class="piece-svg" viewBox="0 0 100 100" preserveAspectRatio="none">
                 <path d="M0,0 L100,0 L70,100 L0,100 Z" fill="none" stroke="#00d9ff" stroke-width="2" />
@@ -1838,6 +2325,7 @@
             </a>
         </div>
 
+        <!-- Peça superior central -->
         <div class="piece-container top-center">
             <svg class="piece-svg" viewBox="0 0 100 100" preserveAspectRatio="none">
                 <path d="M0,0 L100,0 L90,100 L10,100 Z" fill="none" stroke="#00d9ff" stroke-width="2" />
@@ -1849,6 +2337,7 @@
             </a>
         </div>
 
+        <!-- Peça superior direita -->
         <div class="piece-container top-right">
             <svg class="piece-svg" viewBox="0 0 100 100" preserveAspectRatio="none">
                 <path d="M0,0 L100,0 L100,100 L30,100 Z" fill="none" stroke="#00d9ff" stroke-width="2" />
@@ -1860,6 +2349,7 @@
             </a>
         </div>
 
+        <!-- Peça lateral esquerda -->
         <div class="piece-container mid-left">
             <svg class="piece-svg" viewBox="0 0 100 100" preserveAspectRatio="none">
                 <path d="M0,0 L100,10 L100,90 L0,100 Z" fill="none" stroke="#00d9ff" stroke-width="2" />
@@ -1871,6 +2361,7 @@
             </a>
         </div>
 
+        <!-- Peça lateral direita -->
         <div class="piece-container mid-right">
             <svg class="piece-svg" viewBox="0 0 100 100" preserveAspectRatio="none">
                 <path d="M0,10 L100,0 L100,100 L0,90 Z" fill="none" stroke="#00d9ff" stroke-width="2" />
@@ -1882,6 +2373,7 @@
             </a>
         </div>
 
+        <!-- Peça inferior esquerda -->
         <div class="piece-container bottom-left">
             <svg class="piece-svg" viewBox="0 0 100 100" preserveAspectRatio="none">
                 <path d="M0,0 L70,0 L100,100 L0,100 Z" fill="none" stroke="#00d9ff" stroke-width="2" />
@@ -1893,6 +2385,7 @@
             </a>
         </div>
 
+        <!-- Peça inferior central -->
         <div class="piece-container bottom-center">
             <svg class="piece-svg" viewBox="0 0 100 100" preserveAspectRatio="none">
                 <path d="M10,0 L90,0 L100,100 L0,100 Z" fill="none" stroke="#00d9ff" stroke-width="2" />
@@ -1904,6 +2397,7 @@
             </a>
         </div>
 
+        <!-- Peça inferior direita -->
         <div class="piece-container bottom-right">
             <svg class="piece-svg" viewBox="0 0 100 100" preserveAspectRatio="none">
                 <path d="M30,0 L100,0 L100,100 L0,100 Z" fill="none" stroke="#00d9ff" stroke-width="2" />
@@ -1919,47 +2413,55 @@
             <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/7f/Batman_Logo.svg/2560px-Batman_Logo.svg.png"
                 alt="Bat Logo" width="180" height="180">
             <div style="margin-top:20px; font-size:20px; color:#00d9ff;">BAT SISTEMA ONLINE</div>
-            <div style="margin-top:5px; color:#88ffff;">16 widgets chegando como morcegos!</div>
+            <div style="margin-top:5px; color:#88ffff;">Aguardando decisão do Cavaleiro das Trevas</div>
         </div>
     </div>
 
     <script>
         // ===========================================
-        // BAT-HUD SYSTEM v6.0 - WIDGETS VISÍVEIS
+        // SISTEMA INTEGRADO BAT-HUD v6.0 - ENTRADA SUAVE
         // ===========================================
 
+        // ===========================================
+        // SISTEMA PRINCIPAL BAT-HUD (SIMPLIFICADO)
+        // ===========================================
         const BatHUD = {
             // ===========================================
             // CONFIGURAÇÕES
             // ===========================================
             config: {
-                // Desktop
-                widgetMinWidth: 300,
-                widgetMinHeight: 250,
-                widgetMaxWidth: 600,
-                widgetMaxHeight: 500,
-                // Mobile
-                widgetMobileMinWidth: 280,
-                widgetMobileMinHeight: 230,
-                widgetMobileMaxWidth: 320,
-                widgetMobileMaxHeight: 350,
-                
-                boundaryMargin: 10,
-                stackOffsetX: 20,
-                stackOffsetY: 20,
-                batAnimationDuration: 1500,
-                batDelayBetween: 200,
-                stackAnimationDuration: 600,
-                folderJumpHeight: 60
+                alertInterval: 180,
+                emergencyCountdown: 30,
+                minUsernameLength: 3,
+                minPasswordLength: 4,
+                maxUsernameLength: 20,
+                maxPasswordLength: 30,
+                widgetStackOffset: 20,
+                widgetMinWidth: 200,
+                widgetMinHeight: 140
             },
 
             // ===========================================
             // ESTADO DO SISTEMA
             // ===========================================
             state: {
+                secondsToNextAlert: 180,
+                emergencyCountdown: 30,
+                alertInterval: null,
+                emergencyInterval: null,
                 isLoggedIn: false,
                 currentUser: null,
-                widgets: {},
+                voiceRecording: false,
+                voiceInterval: null,
+                systemMonitorInterval: null,
+                threatInterval: null,
+                motionInterval: null,
+                threatCount: 3,
+                motionCells: [],
+                activeIntervals: [],
+                hiddenWidgets: new Set(),
+                minimizedWidgets: new Set(),
+                widgetPositions: {},
                 isDragging: false,
                 isResizing: false,
                 dragWidget: null,
@@ -1968,20 +2470,11 @@
                 startLeft: 0,
                 startTop: 0,
                 startWidth: 0,
-                startHeight: 0,
-                stackPosition: { x: 30, y: 30 },
-                activeIntervals: [],
-                batAnimations: [],
-                selectedWidget: null,
-                threatCount: 3,
-                motionCells: [],
-                voiceRecording: false,
-                dnaBars: [],
-                isMobile: false
+                startHeight: 0
             },
 
             // ===========================================
-            // DADOS DOS WIDGETS
+            // DADOS (MANTIDO ORIGINAL)
             // ===========================================
             data: {
                 users: JSON.parse(localStorage.getItem('wayne_users')) || [
@@ -1990,191 +2483,270 @@
                     { username: 'alfred', password: 'pennyworth' },
                     { username: 'gordon', password: 'commissioner' }
                 ],
-                
                 widgetTemplates: [
-                    // WIDGET 1: Radar Tático
                     {
                         id: 'radarWidget',
                         title: 'Radar Tático',
                         icon: 'fas fa-radar',
                         content: `
                             <div class="widget-content">
-                                <h4 class="responsive-title">RADAR TÁTICO BAT</h4>
                                 <div class="radar-display">
-                                    <div class="radar-grid"></div>
+                                    <div class="radar-grid">
+                                        <div class="radar-circle"></div>
+                                        <div class="radar-circle"></div>
+                                        <div class="radar-circle"></div>
+                                    </div>
                                     <div class="radar-sweep"></div>
-                                    <div class="radar-target" style="top: 30%; left: 40%;"></div>
-                                    <div class="radar-target" style="top: 60%; left: 70%;"></div>
-                                    <div class="radar-target" style="top: 20%; left: 80%;"></div>
+                                    <div class="radar-target friendly" style="top: 30%; left: 40%;"></div>
+                                    <div class="radar-target hostile" style="top: 60%; left: 70%;"></div>
+                                    <div class="radar-target neutral" style="top: 45%; left: 55%;"></div>
                                 </div>
                                 <div class="radar-stats">
                                     <div class="radar-stat">
                                         <div class="radar-stat-value">3</div>
-                                        <div class="radar-stat-label">ALVOS</div>
+                                        <div class="radar-stat-label">Alvos</div>
                                     </div>
                                     <div class="radar-stat">
-                                        <div class="radar-stat-value">1.2KM</div>
-                                        <div class="radar-stat-label">ALCANCE</div>
+                                        <div class="radar-stat-value">2.4km</div>
+                                        <div class="radar-stat-label">Alcance</div>
+                                    </div>
+                                    <div class="radar-stat">
+                                        <div class="radar-stat-value">360°</div>
+                                        <div class="radar-stat-label">Cobertura</div>
                                     </div>
                                 </div>
                             </div>
                         `
                     },
-
-                    // WIDGET 2: Sistema Bat-HUD
                     {
                         id: 'systemWidget',
-                        title: 'Sistema Bat-HUD',
+                        title: 'Sistema',
                         icon: 'fas fa-microchip',
                         content: `
                             <div class="widget-content">
-                                <h4 class="responsive-title">SISTEMA BAT-HUD</h4>
-                                <div class="system-metrics">
-                                    <div class="system-metric">
-                                        <div class="metric-header">
-                                            <span class="metric-label">CPU</span>
-                                            <span class="responsive-value">78%</span>
-                                        </div>
-                                        <div class="metric-bar">
-                                            <div class="metric-fill" style="width: 78%;"></div>
-                                        </div>
+                                <div class="system-metric">
+                                    <div class="metric-header">
+                                        <span class="metric-label">CPU</span>
+                                        <span class="metric-value" id="cpuValue">0%</span>
                                     </div>
-                                    <div class="system-metric">
-                                        <div class="metric-header">
-                                            <span class="metric-label">MEM</span>
-                                            <span class="responsive-value">64%</span>
-                                        </div>
-                                        <div class="metric-bar">
-                                            <div class="metric-fill" style="width: 64%;"></div>
-                                        </div>
+                                    <div class="metric-bar">
+                                        <div class="metric-fill" id="cpuBar" style="width: 0%"></div>
+                                    </div>
+                                </div>
+                                <div class="system-metric">
+                                    <div class="metric-header">
+                                        <span class="metric-label">Memória</span>
+                                        <span class="metric-value" id="memValue">0%</span>
+                                    </div>
+                                    <div class="metric-bar">
+                                        <div class="metric-fill" id="memBar" style="width: 0%"></div>
+                                    </div>
+                                </div>
+                                <div class="system-metric">
+                                    <div class="metric-header">
+                                        <span class="metric-label">Rede</span>
+                                        <span class="metric-value" id="netValue">0%</span>
+                                    </div>
+                                    <div class="metric-bar">
+                                        <div class="metric-fill" id="netBar" style="width: 0%"></div>
                                     </div>
                                 </div>
                             </div>
                         `
                     },
-
-                    // WIDGET 3: Detector de Ameaças
+                    {
+                        id: 'voiceWidget',
+                        title: 'Análise de Voz',
+                        icon: 'fas fa-microphone',
+                        content: `
+                            <div class="widget-content">
+                                <div class="voice-visualizer" id="voiceVisualizer"></div>
+                                <div class="voice-controls">
+                                    <button class="voice-btn" id="voiceRecordBtn" onclick="BatHUD.toggleVoiceRecording()">
+                                        <i class="fas fa-circle"></i> Gravar
+                                    </button>
+                                    <button class="voice-btn" onclick="BatHUD.clearVoiceData()">
+                                        <i class="fas fa-trash"></i> Limpar
+                                    </button>
+                                </div>
+                            </div>
+                        `
+                    },
+                    {
+                        id: 'biometricWidget',
+                        title: 'Scanner Biométrico',
+                        icon: 'fas fa-fingerprint',
+                        content: `
+                            <div class="widget-content">
+                                <div class="biometric-display">
+                                    <div class="fingerprint"></div>
+                                    <div class="scan-line"></div>
+                                </div>
+                                <div class="biometric-data">
+                                    <div class="bio-field">
+                                        <span class="bio-label">ID:</span>
+                                        <span class="bio-value">WAYNE-001</span>
+                                    </div>
+                                    <div class="bio-field">
+                                        <span class="bio-label">Acesso:</span>
+                                        <span class="bio-value">AUTORIZADO</span>
+                                    </div>
+                                    <div class="bio-field">
+                                        <span class="bio-label">Status:</span>
+                                        <span class="bio-value">ATIVO</span>
+                                    </div>
+                                </div>
+                            </div>
+                        `
+                    },
                     {
                         id: 'threatWidget',
-                        title: 'Detector',
+                        title: 'Ameaças',
                         icon: 'fas fa-exclamation-triangle',
                         content: `
                             <div class="widget-content">
-                                <h4 class="responsive-title">DETECTOR DE AMEAÇAS</h4>
                                 <div class="threat-scanner">
                                     <div class="threat-rings">
                                         <div class="threat-ring"></div>
                                         <div class="threat-ring"></div>
                                         <div class="threat-ring"></div>
                                     </div>
-                                    <div class="threat-level">ALTO</div>
+                                    <div class="threat-level">
+                                        <div class="threat-value" id="threatValue">3</div>
+                                        <div class="threat-label">Ameaças Ativas</div>
+                                    </div>
+                                </div>
+                                <div class="threat-list">
+                                    <div class="threat-item">
+                                        <span class="threat-name">Intruso Setor 4</span>
+                                        <span class="threat-severity">ALTA</span>
+                                    </div>
+                                    <div class="threat-item">
+                                        <span class="threat-name">Atividade Suspeita</span>
+                                        <span class="threat-severity">MÉDIA</span>
+                                    </div>
+                                    <div class="threat-item">
+                                        <span class="threat-name">Sinal Desconhecido</span>
+                                        <span class="threat-severity">BAIXA</span>
+                                    </div>
                                 </div>
                             </div>
                         `
                     },
-
-                    // WIDGET 4: Análise Forense
                     {
                         id: 'forensicWidget',
                         title: 'Forense',
                         icon: 'fas fa-dna',
                         content: `
                             <div class="widget-content">
-                                <h4 class="responsive-title">ANÁLISE FORENSE</h4>
-                                <div class="dna-strand" id="dnaStrand"></div>
-                                <div class="forensic-data">
-                                    <div class="forensic-field">
-                                        <span class="forensic-label">MATCH:</span>
-                                        <span class="forensic-value">87%</span>
-                                    </div>
-                                </div>
-                            </div>
-                        `
-                    },
-
-                    // WIDGET 5: Veículos Táticos
-                    {
-                        id: 'vehicleWidget',
-                        title: 'Veículos',
-                        icon: 'fas fa-car',
-                        content: `
-                            <div class="widget-content">
-                                <h4 class="responsive-title">VEÍCULOS TÁTICOS</h4>
-                                <div class="vehicle-status">
-                                    <div class="vehicle-card active">
-                                        <div class="vehicle-icon">🚗</div>
-                                        <div class="vehicle-name">BATMÓVEL</div>
-                                    </div>
-                                    <div class="vehicle-card">
-                                        <div class="vehicle-icon">🚁</div>
-                                        <div class="vehicle-name">BATWING</div>
-                                    </div>
-                                </div>
-                            </div>
-                        `
-                    },
-
-                    // WIDGET 6: Clima Gotham
-                    {
-                        id: 'weatherWidget',
-                        title: 'Clima',
-                        icon: 'fas fa-cloud-rain',
-                        content: `
-                            <div class="widget-content">
-                                <h4 class="responsive-title">CLIMA GOTHAM</h4>
-                                <div class="weather-main">
-                                    <div class="weather-icon-large">🌧️</div>
-                                    <div class="weather-temp">12°C</div>
-                                    <div class="weather-condition">Chuva</div>
-                                </div>
-                            </div>
-                        `
-                    },
-
-                    // WIDGET 7: Detector de Movimento
-                    {
-                        id: 'motionWidget',
-                        title: 'Movimento',
-                        icon: 'fas fa-running',
-                        content: `
-                            <div class="widget-content">
-                                <h4 class="responsive-title">DETECTOR DE MOVIMENTO</h4>
-                                <div class="motion-grid" id="motionGrid"></div>
-                                <div class="motion-info">
-                                    <span>ATIVAS: <span style="color: var(--danger-color);">3</span></span>
-                                </div>
-                            </div>
-                        `
-                    },
-
-                    // WIDGET 8: Análise Espectral
-                    {
-                        id: 'spectralWidget',
-                        title: 'Espectral',
-                        icon: 'fas fa-wave-square',
-                        content: `
-                            <div class="widget-content">
-                                <h4 class="responsive-title">ANÁLISE ESPECTRAL</h4>
-                                <div class="spectrum-display">
-                                    <div class="spectrum-graph"></div>
-                                    <div class="spectrum-info">
-                                        <div class="spectrum-item">
-                                            <span class="spectrum-value">2.4 GHz</span>
+                                <div class="forensic-display">
+                                    <div class="dna-strand" id="dnaStrand"></div>
+                                    <div class="forensic-data">
+                                        <div class="forensic-field">
+                                            <span class="forensic-label">Amostra:</span>
+                                            <span class="forensic-value">DNA-7829</span>
+                                        </div>
+                                        <div class="forensic-field">
+                                            <span class="forensic-label">Match:</span>
+                                            <span class="forensic-value">87.4%</span>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         `
                     },
-
-                    // WIDGET 9: Vigilância Satélite
+                    {
+                        id: 'vehicleWidget',
+                        title: 'Veículos',
+                        icon: 'fas fa-car',
+                        content: `
+                            <div class="widget-content">
+                                <div class="vehicle-status">
+                                    <div class="vehicle-card active">
+                                        <div class="vehicle-icon">
+                                            <i class="fas fa-car-side"></i>
+                                        </div>
+                                        <div class="vehicle-name">BATMÓVEL</div>
+                                        <div class="vehicle-stat">Online</div>
+                                    </div>
+                                    <div class="vehicle-card">
+                                        <div class="vehicle-icon">
+                                            <i class="fas fa-motorcycle"></i>
+                                        </div>
+                                        <div class="vehicle-name">BATCYCLE</div>
+                                        <div class="vehicle-stat">Standby</div>
+                                    </div>
+                                    <div class="vehicle-card active">
+                                        <div class="vehicle-icon">
+                                            <i class="fas fa-helicopter"></i>
+                                        </div>
+                                        <div class="vehicle-name">BATWING</div>
+                                        <div class="vehicle-stat">Aéreo</div>
+                                    </div>
+                                    <div class="vehicle-card">
+                                        <div class="vehicle-icon">
+                                            <i class="fas fa-ship"></i>
+                                        </div>
+                                        <div class="vehicle-name">BATBOAT</div>
+                                        <div class="vehicle-stat">Offline</div>
+                                    </div>
+                                </div>
+                            </div>
+                        `
+                    },
+                    {
+                        id: 'weatherWidget',
+                        title: 'Clima',
+                        icon: 'fas fa-cloud-rain',
+                        content: `
+                            <div class="widget-content">
+                                <div class="weather-main">
+                                    <div class="weather-icon-large">
+                                        <i class="fas fa-cloud-moon"></i>
+                                    </div>
+                                    <div class="weather-temp">12°C</div>
+                                    <div class="weather-condition">Nublado</div>
+                                </div>
+                            </div>
+                        `
+                    },
+                    {
+                        id: 'motionWidget',
+                        title: 'Movimento',
+                        icon: 'fas fa-running',
+                        content: `
+                            <div class="widget-content">
+                                <div class="motion-grid" id="motionGrid"></div>
+                            </div>
+                        `
+                    },
+                    {
+                        id: 'spectralWidget',
+                        title: 'Espectral',
+                        icon: 'fas fa-wave-square',
+                        content: `
+                            <div class="widget-content">
+                                <div class="spectrum-display">
+                                    <div class="spectrum-graph">
+                                        <div class="spectrum-bar"></div>
+                                        <div class="spectrum-bar"></div>
+                                        <div class="spectrum-bar"></div>
+                                        <div class="spectrum-bar"></div>
+                                        <div class="spectrum-bar"></div>
+                                        <div class="spectrum-bar"></div>
+                                        <div class="spectrum-bar"></div>
+                                        <div class="spectrum-bar"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        `
+                    },
                     {
                         id: 'satelliteWidget',
                         title: 'Satélite',
                         icon: 'fas fa-satellite',
                         content: `
                             <div class="widget-content">
-                                <h4 class="responsive-title">VIGILÂNCIA SATÉLITE</h4>
                                 <div class="satellite-view">
                                     <div class="earth-center"></div>
                                     <div class="satellite-icon">
@@ -2184,125 +2756,59 @@
                             </div>
                         `
                     },
-
-                    // WIDGET 10: Protocolo Emergência
-                    {
-                        id: 'emergencyWidget',
-                        title: 'Emergência',
-                        icon: 'fas fa-exclamation-circle',
-                        content: `
-                            <div class="widget-content">
-                                <h4 class="responsive-title">PROTOCOLO EMERGÊNCIA</h4>
-                                <div class="emergency-header">
-                                    <div class="emergency-status">STANDBY</div>
-                                </div>
-                                <div class="emergency-protocols">
-                                    <button class="protocol-btn" onclick="BatHUD.activateProtocol('lockdown')">
-                                        <span>LOCKDOWN</span>
-                                    </button>
-                                </div>
-                            </div>
-                        `
-                    },
-
-                    // WIDGET 11: Rastreamento de Alvos
                     {
                         id: 'trackingWidget',
                         title: 'Rastreamento',
                         icon: 'fas fa-crosshairs',
                         content: `
                             <div class="widget-content">
-                                <h4 class="responsive-title">RASTREAMENTO DE ALVOS</h4>
                                 <div class="tracking-radar">
                                     <div class="tracking-sweep"></div>
                                     <div class="target-dot" style="top: 30%; left: 40%;"></div>
+                                    <div class="target-dot" style="top: 60%; left: 70%;"></div>
+                                    <div class="target-dot" style="top: 45%; left: 25%;"></div>
                                 </div>
                             </div>
                         `
                     },
-
-                    // WIDGET 12: Estatísticas Combate
+                    {
+                        id: 'emergencyWidget',
+                        title: 'Emergência',
+                        icon: 'fas fa-exclamation-circle',
+                        content: `
+                            <div class="widget-content">
+                                <div class="emergency-header">
+                                    <div class="emergency-icon">
+                                        <i class="fas fa-shield-alt"></i>
+                                    </div>
+                                    <div class="emergency-status">Sistema Standby</div>
+                                </div>
+                            </div>
+                        `
+                    },
                     {
                         id: 'combatWidget',
                         title: 'Combate',
                         icon: 'fas fa-fist-raised',
                         content: `
                             <div class="widget-content">
-                                <h4 class="responsive-title">ESTATÍSTICAS COMBATE</h4>
                                 <div class="combat-stats">
                                     <div class="combat-card">
                                         <div class="combat-number">147</div>
-                                        <div class="combat-label">CONFRONTOS</div>
+                                        <div class="combat-label">Confrontos</div>
                                     </div>
-                                </div>
-                            </div>
-                        `
-                    },
-
-                    // WIDGET 13: Comunicações
-                    {
-                        id: 'commsWidget',
-                        title: 'Comunicações',
-                        icon: 'fas fa-broadcast-tower',
-                        content: `
-                            <div class="widget-content">
-                                <h4 class="responsive-title">COMUNICAÇÕES</h4>
-                                <div class="comms-grid">
-                                    <div class="comms-channel">
-                                        <div class="comms-name">BAT-CHANNEL</div>
-                                        <div class="comms-status">ATIVO</div>
+                                    <div class="combat-card">
+                                        <div class="combat-number">98%</div>
+                                        <div class="combat-label">Sucesso</div>
                                     </div>
-                                </div>
-                            </div>
-                        `
-                    },
-
-                    // WIDGET 14: Sistema de Energia
-                    {
-                        id: 'powerWidget',
-                        title: 'Energia',
-                        icon: 'fas fa-bolt',
-                        content: `
-                            <div class="widget-content">
-                                <h4 class="responsive-title">SISTEMA DE ENERGIA</h4>
-                                <div class="power-grid">
-                                    <div class="power-cell">
-                                        <div class="power-value">98%</div>
-                                        <div class="power-label">NÚCLEO</div>
+                                    <div class="combat-card">
+                                        <div class="combat-number">2.4</div>
+                                        <div class="combat-label">Tempo (min)</div>
                                     </div>
-                                </div>
-                            </div>
-                        `
-                    },
-
-                    // WIDGET 15: Scanner Biométrico
-                    {
-                        id: 'biometricWidget',
-                        title: 'Biométrico',
-                        icon: 'fas fa-fingerprint',
-                        content: `
-                            <div class="widget-content">
-                                <h4 class="responsive-title">SCANNER BIOMÉTRICO</h4>
-                                <div class="biometric-display">
-                                    <div class="fingerprint"></div>
-                                </div>
-                            </div>
-                        `
-                    },
-
-                    // WIDGET 16: Análise de Voz
-                    {
-                        id: 'voiceWidget',
-                        title: 'Voz',
-                        icon: 'fas fa-microphone',
-                        content: `
-                            <div class="widget-content">
-                                <h4 class="responsive-title">ANÁLISE DE VOZ</h4>
-                                <div class="voice-visualizer" id="voiceVisualizer"></div>
-                                <div class="voice-controls">
-                                    <button class="voice-btn" onclick="BatHUD.toggleVoiceRecording()">
-                                        GRAVAR
-                                    </button>
+                                    <div class="combat-card">
+                                        <div class="combat-number">512</div>
+                                        <div class="combat-label">Neutralizadas</div>
+                                    </div>
                                 </div>
                             </div>
                         `
@@ -2314,15 +2820,10 @@
             // INICIALIZAÇÃO
             // ===========================================
             init() {
-                this.detectMobile();
                 this.initializeSystem();
-                this.setupEventListeners();
                 this.setupRainEffect();
-            },
-
-            detectMobile() {
-                this.state.isMobile = window.innerWidth <= 768;
-                console.log('[SISTEMA] Modo:', this.state.isMobile ? 'MOBILE' : 'DESKTOP');
+                this.setupEventListeners();
+                this.restoreWidgetState();
             },
 
             initializeSystem() {
@@ -2332,10 +2833,112 @@
                     this.state.isLoggedIn = true;
                     this.showHUD();
                 }
+
                 this.startAlertSystem();
+                this.updateTimerDisplay();
+                this.startSystemMonitoring();
                 this.startThreatMonitoring();
+                this.loadWidgetLayout();
             },
 
+            // ===========================================
+            // SISTEMA DE ALERTA (ORIGINAL)
+            // ===========================================
+            startAlertSystem() {
+                this.clearIntervals();
+                
+                this.state.alertInterval = setInterval(() => {
+                    if (this.state.secondsToNextAlert > 0) {
+                        this.state.secondsToNextAlert--;
+                        this.updateTimerDisplay();
+                    } else {
+                        if (document.getElementById('emergencyAlert').style.display !== 'flex') {
+                            this.triggerEmergency();
+                        }
+                    }
+                }, 1000);
+                
+                this.state.activeIntervals.push(this.state.alertInterval);
+                this.updateTimerVisibility();
+            },
+
+            updateTimerDisplay() {
+                const mins = Math.floor(this.state.secondsToNextAlert / 60);
+                const secs = this.state.secondsToNextAlert % 60;
+                const timerElement = document.getElementById('nextAlertTime');
+                
+                if (timerElement) {
+                    timerElement.textContent = 
+                        `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+                }
+            },
+
+            updateTimerVisibility() {
+                const alertTimer = document.getElementById('alertTimer');
+                if (alertTimer) {
+                    alertTimer.style.display = this.state.isLoggedIn ? 'flex' : 'none';
+                }
+            },
+
+            triggerEmergency() {
+                const alertDiv = document.getElementById('emergencyAlert');
+                if (!alertDiv) return;
+                
+                alertDiv.style.display = 'flex';
+                this.state.emergencyCountdown = this.config.emergencyCountdown;
+
+                const updateCountdown = () => {
+                    if (this.state.emergencyCountdown <= 0) {
+                        this.dismissEmergency();
+                        return;
+                    }
+
+                    this.state.emergencyCountdown--;
+                    const mins = Math.floor(this.state.emergencyCountdown / 60);
+                    const secs = this.state.emergencyCountdown % 60;
+                    
+                    const countdownElement = document.getElementById('emergencyCountdown');
+                    if (countdownElement) {
+                        countdownElement.textContent = 
+                            `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+                    }
+                    
+                    requestAnimationFrame(updateCountdown);
+                };
+
+                this.state.emergencyInterval = setInterval(() => {
+                    requestAnimationFrame(updateCountdown);
+                }, 1000);
+                
+                this.state.activeIntervals.push(this.state.emergencyInterval);
+                this.playSound('error');
+            },
+
+            dismissEmergency() {
+                if (this.state.emergencyInterval) {
+                    clearInterval(this.state.emergencyInterval);
+                    this.state.emergencyInterval = null;
+                }
+                
+                const alertDiv = document.getElementById('emergencyAlert');
+                if (alertDiv) {
+                    alertDiv.style.display = 'none';
+                }
+                
+                this.state.secondsToNextAlert = this.config.alertInterval;
+                this.updateTimerDisplay();
+                this.playSound('success');
+            },
+
+            skipAlert() {
+                this.state.secondsToNextAlert = 0;
+                this.updateTimerDisplay();
+                this.playSound('click');
+            },
+
+            // ===========================================
+            // SISTEMA DE AUTENTICAÇÃO (ORIGINAL)
+            // ===========================================
             setupEventListeners() {
                 document.getElementById('loginForm').addEventListener('submit', (e) => {
                     e.preventDefault();
@@ -2353,37 +2956,20 @@
             setupGlobalEventListeners() {
                 document.addEventListener('mousemove', (e) => this.handleMouseMove(e));
                 document.addEventListener('mouseup', () => this.handleMouseUp());
-
-                document.addEventListener('touchmove', (e) => {
-                    e.preventDefault();
-                    this.handleTouchMove(e);
-                }, { passive: false });
-
+                
+                document.addEventListener('touchmove', (e) => this.handleTouchMove(e), { passive: false });
                 document.addEventListener('touchend', () => this.handleMouseUp());
-
-                window.addEventListener('resize', () => {
-                    this.detectMobile();
-                    this.constrainAllWidgets();
-                    this.adjustWidgetsContent();
-                });
             },
 
-            setupRainEffect() {
-                const rainOverlay = document.getElementById('rainOverlay');
-                document.addEventListener('mousemove', (e) => {
-                    const x = e.clientX / window.innerWidth * 100;
-                    const y = e.clientY / window.innerHeight * 100;
-                    rainOverlay.style.setProperty('--x', `${x}%`);
-                    rainOverlay.style.setProperty('--y', `${y}%`);
-                });
-            },
-
-            // ===========================================
-            // SISTEMA DE AUTENTICAÇÃO
-            // ===========================================
             handleLogin() {
                 const username = document.getElementById('loginUser').value.trim();
                 const password = document.getElementById('loginPass').value.trim();
+
+                if (!this.validateInput(username, password)) {
+                    this.showError('Credenciais inválidas');
+                    this.playSound('error');
+                    return;
+                }
 
                 const user = this.data.users.find(u =>
                     u.username === username && u.password === password
@@ -2394,8 +2980,10 @@
                     localStorage.setItem('wayne_current_user', username);
                     this.state.isLoggedIn = true;
                     this.showHUD();
+                    this.playSound('success');
                 } else {
                     this.showError('Credenciais inválidas');
+                    this.playSound('error');
                 }
             },
 
@@ -2404,13 +2992,19 @@
                 const password = document.getElementById('regPass').value.trim();
                 const confirm = document.getElementById('regConfirm').value.trim();
 
+                if (!this.validateInput(username, password, confirm)) {
+                    return;
+                }
+
                 if (password !== confirm) {
                     this.showError('Senhas não coincidem');
+                    this.playSound('error');
                     return;
                 }
 
                 if (this.data.users.find(u => u.username === username)) {
                     this.showError('Usuário já existe');
+                    this.playSound('error');
                     return;
                 }
 
@@ -2422,6 +3016,19 @@
                 this.state.isLoggedIn = true;
 
                 this.showHUD();
+                this.playSound('success');
+            },
+
+            validateInput(...inputs) {
+                for (const input of inputs) {
+                    if (!input || input.length < this.config.minUsernameLength) {
+                        return false;
+                    }
+                    if (input.length > this.config.maxUsernameLength) {
+                        return false;
+                    }
+                }
+                return true;
             },
 
             toggleForms() {
@@ -2429,6 +3036,7 @@
                 const registerForm = document.getElementById('registerForm');
                 const switchText = document.getElementById('switchText');
                 const switchLink = document.getElementById('switchLink');
+                const authError = document.getElementById('authError');
 
                 if (loginForm.style.display !== 'none') {
                     loginForm.style.display = 'none';
@@ -2441,270 +3049,75 @@
                     switchText.textContent = 'Não tem acesso?';
                     switchLink.textContent = 'Solicitar credencial';
                 }
+                authError.style.display = 'none';
+                this.playSound('click');
             },
 
+            // ===========================================
+            // MOSTRAR HUD COM ENTRADA SUAVE
+            // ===========================================
             showHUD() {
                 document.getElementById('authScreen').style.display = 'none';
                 document.getElementById('hudFrame').style.display = 'block';
                 document.getElementById('userIndicator').style.display = 'block';
                 document.getElementById('userName').textContent = this.state.currentUser.toUpperCase();
+                this.updateTimerVisibility();
 
-                // Carregar widgets com animação de morcegos
-                this.loadWidgetsAsBats();
+                // Carregar widgets com entrada suave
+                this.loadAndPositionWidgets();
                 
-                // Inicializar widgets especiais
-                setTimeout(() => {
-                    this.initForensicDNA();
-                    this.initMotionGrid();
-                    this.initVoiceVisualizer();
-                }, 2000);
+                // Animar entrada das peças (original)
+                this.animatePieces();
+                
+                // Animar entrada dos widgets com efeito suave
+                this.animateWidgetsEntry();
             },
 
-            logout() {
-                this.state.currentUser = null;
-                this.state.isLoggedIn = false;
-                localStorage.removeItem('wayne_current_user');
-
-                document.getElementById('hudFrame').style.display = 'none';
-                document.getElementById('userIndicator').style.display = 'none';
-                document.getElementById('authScreen').style.display = 'flex';
-
-                this.clearForms();
-            },
-
-            clearForms() {
-                document.getElementById('loginUser').value = '';
-                document.getElementById('loginPass').value = '';
-                document.getElementById('regUser').value = '';
-                document.getElementById('regPass').value = '';
-                document.getElementById('regConfirm').value = '';
-            },
-
-            showError(message) {
-                const authError = document.getElementById('authError');
-                authError.textContent = message;
-                authError.style.display = 'block';
-            },
-
-            // ===========================================
-            // ANIMAÇÃO DE MORCEGOS E PILHA
-            // ===========================================
-            loadWidgetsAsBats() {
+            loadAndPositionWidgets() {
                 const widgetsArea = document.getElementById('widgetsArea');
-                widgetsArea.innerHTML = '<div class="boundary-overlay"></div>';
+                widgetsArea.innerHTML = '';
 
-                // Criar widgets inicialmente ocultos
+                // Criar widgets empilhados no canto superior esquerdo (ORIGINAL)
                 this.data.widgetTemplates.forEach((template, index) => {
-                    const widget = this.createWidget(template, index);
+                    if (this.state.hiddenWidgets.has(template.id)) return;
+
+                    const widget = this.createWidget(template);
                     widgetsArea.appendChild(widget);
-                    this.state.widgets[template.id] = widget;
 
-                    // Esconder widget inicialmente
-                    widget.style.opacity = '0';
-                    widget.style.transform = 'scale(0)';
+                    // Posição inicial empilhada (EXATAMENTE COMO ORIGINAL)
+                    const offset = this.config.widgetStackOffset;
+                    const initialLeft = 20 + (index * offset);
+                    const initialTop = 20 + (index * offset);
+
+                    widget.style.left = initialLeft + 'px';
+                    widget.style.top = initialTop + 'px';
+                    widget.style.zIndex = 10 + index;
+
+                    // Salvar posição inicial
+                    this.state.widgetPositions[template.id] = {
+                        left: initialLeft,
+                        top: initialTop,
+                        width: widget.offsetWidth,
+                        height: widget.offsetHeight,
+                        zIndex: 10 + index
+                    };
                 });
 
-                // Iniciar animação sequencial de morcegos
-                this.animateBatsSequentially();
+                // Inicializar componentes dos widgets (ORIGINAL)
+                this.initVoiceVisualizer();
+                this.initForensicDNA();
+                this.initMotionGrid();
+                
+                // Inicializar drag and drop (ORIGINAL)
+                this.initWidgetsDragAndDrop();
             },
 
-            animateBatsSequentially() {
-                const widgets = Object.values(this.state.widgets);
-                
-                widgets.forEach((widget, index) => {
-                    setTimeout(() => {
-                        this.createBatAndFlyToWidget(widget, index);
-                    }, index * this.config.batDelayBetween);
-                });
-            },
-
-            createBatAndFlyToWidget(widget, index) {
-                const widgetsArea = document.getElementById('widgetsArea');
-                const areaRect = widgetsArea.getBoundingClientRect();
-                
-                // Configurações baseadas no dispositivo
-                const minWidth = this.state.isMobile ? this.config.widgetMobileMinWidth : this.config.widgetMinWidth;
-                const minHeight = this.state.isMobile ? this.config.widgetMobileMinHeight : this.config.widgetMinHeight;
-                
-                // Calcular posição final baseada no layout
-                let finalX, finalY;
-                
-                if (this.state.isMobile) {
-                    // MOBILE: Layout em coluna centralizada
-                    finalX = (areaRect.width - minWidth) / 2;
-                    finalY = 20 + (index * (minHeight + 20));
-                } else {
-                    // DESKTOP: Efeito de pilha
-                    const stackX = 30 + (index * this.config.stackOffsetX * 0.7);
-                    const stackY = 30 + (index * this.config.stackOffsetY * 0.6);
-                    
-                    const maxX = areaRect.width - minWidth - 30;
-                    const maxY = areaRect.height - minHeight - 30;
-                    
-                    finalX = Math.min(stackX, maxX);
-                    finalY = Math.min(stackY, maxY);
-                }
-                
-                // Criar morcego
-                const bat = this.createBatElement();
-                document.body.appendChild(bat);
-                
-                // Posição inicial aleatória
-                const startX = Math.random() * window.innerWidth;
-                const startY = -100;
-                
-                // Posição final
-                const endX = areaRect.left + finalX;
-                const endY = areaRect.top + finalY;
-                
-                // Configurar animação CSS
-                bat.style.setProperty('--start-x', `${startX}px`);
-                bat.style.setProperty('--start-y', `${startY}px`);
-                bat.style.setProperty('--end-x', `${endX}px`);
-                bat.style.setProperty('--end-y', `${endY}px`);
-                
-                bat.style.left = `${startX}px`;
-                bat.style.top = `${startY}px`;
-                bat.style.animation = `batFly ${this.config.batAnimationDuration}ms cubic-bezier(0.4, 0, 0.2, 1) forwards`;
-                
-                // Quando o morcego chegar, mostrar o widget
-                setTimeout(() => {
-                    this.showWidgetAtPosition(widget, finalX, finalY, index);
-                    bat.remove();
-                }, this.config.batAnimationDuration - 100);
-                
-                this.state.batAnimations.push(bat);
-            },
-
-            createBatElement() {
-                const bat = document.createElement('div');
-                bat.className = 'bat-effect';
-                bat.innerHTML = `
-                    <div class="bat-wing left"></div>
-                    <div class="bat-wing right"></div>
-                    <div class="bat-body"></div>
-                `;
-                return bat;
-            },
-
-            showWidgetAtPosition(widget, x, y, index) {
-                const widgetsArea = document.getElementById('widgetsArea');
-                const areaRect = widgetsArea.getBoundingClientRect();
-                
-                const minWidth = this.state.isMobile ? this.config.widgetMobileMinWidth : this.config.widgetMinWidth;
-                const minHeight = this.state.isMobile ? this.config.widgetMobileMinHeight : this.config.widgetMinHeight;
-                
-                // Verificar limites
-                const maxX = areaRect.width - minWidth - 20;
-                const maxY = areaRect.height - minHeight - 20;
-                
-                const finalX = Math.max(20, Math.min(x, maxX));
-                const finalY = Math.max(20, Math.min(y, maxY));
-                
-                // Posicionar widget
-                widget.style.left = `${finalX}px`;
-                widget.style.top = `${finalY}px`;
-                
-                if (!this.state.isMobile) {
-                    // DESKTOP: Adicionar efeito de pasta
-                    widget.classList.add('folder-stacked');
-                    
-                    // Adicionar rotação aleatória
-                    const rotation = (Math.random() * 1.5) - 0.75;
-                    widget.style.transform = `rotate(${rotation}deg)`;
-                    
-                    // Adicionar aba da pasta
-                    const folderTab = document.createElement('div');
-                    folderTab.className = 'folder-tab';
-                    
-                    const folderNumber = document.createElement('div');
-                    folderNumber.className = 'folder-number';
-                    folderNumber.textContent = (index + 1).toString().padStart(2, '0');
-                    
-                    widget.appendChild(folderTab);
-                    widget.appendChild(folderNumber);
-                } else {
-                    // MOBILE: Layout simples
-                    widget.classList.add('folder-stacked');
-                    widget.style.transform = 'none';
-                }
-                
-                // Animação de entrada
-                widget.classList.add('landing');
-                widget.style.opacity = '1';
-                widget.style.zIndex = index + 10;
-                
-                // Configurar eventos
-                this.setupWidgetEvents(widget, index);
-                
-                // Inicializar interações após animação
-                setTimeout(() => {
-                    widget.classList.remove('landing');
-                    this.initWidgetInteractions(widget);
-                }, 600);
-                
-                // Salvar posição
-                this.saveWidgetPosition(widget.id, { 
-                    left: finalX, 
-                    top: finalY, 
-                    zIndex: index + 10,
-                    rotation: this.state.isMobile ? 0 : rotation 
-                });
-            },
-
-            setupWidgetEvents(widget, index) {
-                let hoverTimeout;
-                
-                widget.addEventListener('mouseenter', () => {
-                    if (this.state.isMobile) return;
-                    
-                    clearTimeout(hoverTimeout);
-                    
-                    if (this.state.selectedWidget && this.state.selectedWidget !== widget) {
-                        this.state.selectedWidget.classList.remove('selected');
-                    }
-                    
-                    this.state.selectedWidget = widget;
-                    widget.classList.add('selected');
-                    widget.style.zIndex = '1000';
-                });
-                
-                widget.addEventListener('mouseleave', () => {
-                    if (this.state.isMobile) return;
-                    
-                    hoverTimeout = setTimeout(() => {
-                        if (!this.state.isDragging && !this.state.isResizing) {
-                            widget.classList.remove('selected');
-                            widget.style.zIndex = (index + 10).toString();
-                            this.state.selectedWidget = null;
-                        }
-                    }, 100);
-                });
-                
-                // Eventos de toque para mobile
-                if (this.state.isMobile) {
-                    widget.addEventListener('click', (e) => {
-                        if (e.target.closest('.widget-btn')) return;
-                        
-                        if (widget.classList.contains('selected')) {
-                            widget.classList.remove('selected');
-                        } else {
-                            if (this.state.selectedWidget) {
-                                this.state.selectedWidget.classList.remove('selected');
-                            }
-                            widget.classList.add('selected');
-                            this.state.selectedWidget = widget;
-                        }
-                    });
-                }
-            },
-
-            createWidget(template, index) {
+            createWidget(template) {
                 const widget = document.createElement('div');
                 widget.className = 'widget';
                 widget.id = template.id;
-                widget.dataset.index = index;
-
+                
+                // Conteúdo ORIGINAL dos widgets
                 widget.innerHTML = `
                     <div class="widget-header">
                         <div class="widget-title">
@@ -2725,101 +3138,142 @@
                     <div class="resize-handle"></div>
                 `;
 
+                // Aplicar estado minimizado se necessário
+                if (this.state.minimizedWidgets.has(template.id)) {
+                    widget.classList.add('minimized');
+                }
+
                 return widget;
             },
 
-            // ===========================================
-            // WIDGETS ESPECIAIS - INICIALIZAÇÃO
-            // ===========================================
-            initForensicDNA() {
-                const dnaStrand = document.getElementById('dnaStrand');
-                if (dnaStrand) {
-                    for (let i = 0; i < 20; i++) {
-                        const bar = document.createElement('div');
-                        bar.className = 'dna-bar';
-                        const delay = i * 0.1;
-                        bar.style.animationDelay = `${delay}s`;
-                        bar.style.height = `${40 + Math.random() * 60}%`;
-                        dnaStrand.appendChild(bar);
-                        this.state.dnaBars.push(bar);
-                    }
-                    
-                    setInterval(() => {
-                        this.state.dnaBars.forEach((bar, i) => {
-                            const newHeight = 40 + Math.random() * 60;
-                            bar.style.height = `${newHeight}%`;
-                        });
-                    }, 2000);
-                }
+            animatePieces() {
+                // Animação ORIGINAL das peças
+                const pieces = document.querySelectorAll('.piece-container');
+                pieces.forEach((piece, index) => {
+                    piece.style.opacity = '0';
+                    piece.style.transform = 'translateY(-20px)';
+                    setTimeout(() => {
+                        piece.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+                        piece.style.opacity = '1';
+                        piece.style.transform = 'translateY(0)';
+                    }, index * 100);
+                });
             },
 
-            initMotionGrid() {
-                const grid = document.getElementById('motionGrid');
-                if (grid) {
-                    const columns = this.state.isMobile ? 6 : 8;
-                    const rows = 6;
-                    const total = columns * rows;
+            animateWidgetsEntry() {
+                // NOVA ANIMAÇÃO: Entrada suave dos widgets
+                const widgets = document.querySelectorAll('.widget');
+                widgets.forEach((widget, index) => {
+                    // Adicionar classe para animação
+                    widget.classList.add('entering');
                     
-                    for (let i = 0; i < total; i++) {
-                        const cell = document.createElement('div');
-                        cell.className = 'motion-cell';
-                        grid.appendChild(cell);
-                        this.state.motionCells.push(cell);
-                    }
-
-                    setInterval(() => {
-                        this.state.motionCells.forEach(cell => cell.classList.remove('active'));
-                        
-                        const numActive = Math.floor(Math.random() * 5) + 2;
-                        for (let i = 0; i < numActive; i++) {
-                            const randomIndex = Math.floor(Math.random() * this.state.motionCells.length);
-                            this.state.motionCells[randomIndex].classList.add('active');
-                        }
-                    }, 2000);
-                }
+                    // Atrasar entrada para efeito cascata
+                    widget.style.animationDelay = `${index * 0.1}s`;
+                    
+                    // Remover estado inicial após animação
+                    setTimeout(() => {
+                        widget.style.opacity = '1';
+                        widget.style.transform = 'translateY(0)';
+                        widget.classList.remove('entering');
+                    }, 600 + (index * 100));
+                });
             },
 
-            initVoiceVisualizer() {
-                const visualizer = document.getElementById('voiceVisualizer');
-                if (visualizer) {
-                    const barsCount = this.state.isMobile ? 12 : 15;
-                    
-                    for (let i = 0; i < barsCount; i++) {
-                        const bar = document.createElement('div');
-                        bar.className = 'voice-bar';
-                        bar.style.setProperty('--i', i);
-                        bar.style.height = `${20 + Math.random() * 70}%`;
-                        visualizer.appendChild(bar);
-                    }
-                    
-                    setInterval(() => {
-                        const bars = visualizer.querySelectorAll('.voice-bar');
-                        bars.forEach((bar, i) => {
-                            const height = 10 + Math.random() * 80;
-                            bar.style.height = `${height}%`;
-                        });
-                    }, 300);
-                }
-            },
-
-            // ===========================================
-            // INTERAÇÕES DOS WIDGETS
-            // ===========================================
-            initWidgetInteractions(widget) {
-                const header = widget.querySelector('.widget-header');
-                const resizeHandle = widget.querySelector('.resize-handle');
-
-                header.addEventListener('mousedown', (e) => this.startDrag(e, widget));
-                resizeHandle.addEventListener('mousedown', (e) => this.startResize(e, widget));
-
-                header.addEventListener('touchstart', (e) => {
-                    e.preventDefault();
-                    this.startDrag(e, widget);
+            logout() {
+                this.playSound('logout');
+                
+                // Animação de saída (ORIGINAL)
+                const pieces = document.querySelectorAll('.piece-container');
+                pieces.forEach((piece, index) => {
+                    setTimeout(() => {
+                        piece.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
+                        piece.style.opacity = '0';
+                        piece.style.transform = 'translateY(20px)';
+                    }, index * 50);
                 });
 
-                resizeHandle.addEventListener('touchstart', (e) => {
-                    e.preventDefault();
-                    this.startResize(e, widget);
+                const widgets = document.querySelectorAll('.widget');
+                widgets.forEach((widget, index) => {
+                    setTimeout(() => {
+                        widget.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
+                        widget.style.opacity = '0';
+                        widget.style.transform = 'scale(0.8) translateY(20px)';
+                    }, index * 50);
+                });
+
+                setTimeout(() => {
+                    this.clearIntervals();
+                    
+                    this.state.currentUser = null;
+                    this.state.isLoggedIn = false;
+                    localStorage.removeItem('wayne_current_user');
+                    
+                    document.getElementById('hudFrame').style.display = 'none';
+                    document.getElementById('userIndicator').style.display = 'none';
+                    document.getElementById('authScreen').style.display = 'flex';
+                    document.getElementById('loginForm').style.display = 'flex';
+                    document.getElementById('registerForm').style.display = 'none';
+                    document.getElementById('switchText').textContent = 'Não tem acesso?';
+                    document.getElementById('switchLink').textContent = 'Solicitar credencial';
+                    document.getElementById('authError').style.display = 'none';
+                    
+                    this.updateTimerVisibility();
+                    this.clearForms();
+                    
+                    // Resetar estado dos widgets
+                    this.state.hiddenWidgets.clear();
+                    this.state.minimizedWidgets.clear();
+                    this.state.widgetPositions = {};
+                    this.saveWidgetState();
+                }, 300);
+            },
+
+            clearForms() {
+                document.getElementById('loginUser').value = '';
+                document.getElementById('loginPass').value = '';
+                document.getElementById('regUser').value = '';
+                document.getElementById('regPass').value = '';
+                document.getElementById('regConfirm').value = '';
+            },
+
+            showError(message) {
+                const authError = document.getElementById('authError');
+                const loginForm = document.getElementById('loginForm');
+                const registerForm = document.getElementById('registerForm');
+
+                authError.textContent = message;
+                authError.style.display = 'block';
+                
+                const currentForm = loginForm.style.display !== 'none' ? loginForm : registerForm;
+                currentForm.style.animation = 'none';
+                setTimeout(() => {
+                    currentForm.style.animation = 'shake 0.5s';
+                    setTimeout(() => {
+                        currentForm.style.animation = '';
+                    }, 500);
+                }, 10);
+            },
+
+            // ===========================================
+            // SISTEMA DE WIDGETS - DRAG & DROP (ORIGINAL)
+            // ===========================================
+            initWidgetsDragAndDrop() {
+                const widgets = document.querySelectorAll('.widget');
+                const widgetsArea = document.getElementById('widgetsArea');
+                
+                widgets.forEach(widget => {
+                    if (this.state.hiddenWidgets.has(widget.id)) return;
+
+                    const header = widget.querySelector('.widget-header');
+                    const resizeHandle = widget.querySelector('.resize-handle');
+
+                    // Eventos para o cabeçalho (arrastar)
+                    header.addEventListener('mousedown', (e) => this.startDrag(e, widget));
+                    header.addEventListener('touchstart', (e) => this.startDrag(e, widget));
+
+                    // Eventos para o resize handle
+                    resizeHandle.addEventListener('mousedown', (e) => this.startResize(e, widget));
+                    resizeHandle.addEventListener('touchstart', (e) => this.startResize(e, widget));
                 });
             },
 
@@ -2827,17 +3281,18 @@
                 e.preventDefault();
                 e.stopPropagation();
                 
-                if (widget.classList.contains('selected')) {
-                    widget.classList.remove('selected');
-                }
+                const widgetsArea = document.getElementById('widgetsArea');
+                const areaRect = widgetsArea.getBoundingClientRect();
+                const widgetRect = widget.getBoundingClientRect();
                 
                 this.state.isDragging = true;
                 this.state.dragWidget = widget;
                 this.state.isResizing = false;
                 
+                // Trazer widget para frente
                 widget.style.zIndex = 1000;
-                widget.classList.remove('folder-stacked');
                 
+                // Calcular offset do mouse
                 if (e.type === 'mousedown') {
                     this.state.startX = e.clientX;
                     this.state.startY = e.clientY;
@@ -2846,8 +3301,8 @@
                     this.state.startY = e.touches[0].clientY;
                 }
                 
-                this.state.startLeft = parseFloat(widget.style.left) || 0;
-                this.state.startTop = parseFloat(widget.style.top) || 0;
+                this.state.startLeft = widgetRect.left - areaRect.left;
+                this.state.startTop = widgetRect.top - areaRect.top;
                 
                 widget.classList.add('dragging');
             },
@@ -2856,17 +3311,18 @@
                 e.preventDefault();
                 e.stopPropagation();
                 
-                if (widget.classList.contains('selected')) {
-                    widget.classList.remove('selected');
-                }
+                const widgetsArea = document.getElementById('widgetsArea');
+                const areaRect = widgetsArea.getBoundingClientRect();
+                const widgetRect = widget.getBoundingClientRect();
                 
                 this.state.isResizing = true;
                 this.state.dragWidget = widget;
                 this.state.isDragging = false;
                 
+                // Trazer widget para frente
                 widget.style.zIndex = 1000;
-                widget.classList.remove('folder-stacked');
                 
+                // Calcular offset do mouse
                 if (e.type === 'mousedown') {
                     this.state.startX = e.clientX;
                     this.state.startY = e.clientY;
@@ -2875,10 +3331,10 @@
                     this.state.startY = e.touches[0].clientY;
                 }
                 
-                this.state.startLeft = parseFloat(widget.style.left) || 0;
-                this.state.startTop = parseFloat(widget.style.top) || 0;
-                this.state.startWidth = widget.offsetWidth;
-                this.state.startHeight = widget.offsetHeight;
+                this.state.startLeft = widgetRect.left - areaRect.left;
+                this.state.startTop = widgetRect.top - areaRect.top;
+                this.state.startWidth = widgetRect.width;
+                this.state.startHeight = widgetRect.height;
                 
                 widget.classList.add('resizing');
             },
@@ -2886,7 +3342,10 @@
             handleMouseMove(e) {
                 if (!this.state.isDragging && !this.state.isResizing) return;
                 if (!this.state.dragWidget) return;
-
+                
+                const widgetsArea = document.getElementById('widgetsArea');
+                const areaRect = widgetsArea.getBoundingClientRect();
+                
                 let clientX, clientY;
                 if (e.type === 'mousemove') {
                     clientX = e.clientX;
@@ -2895,74 +3354,56 @@
                     clientX = e.touches[0].clientX;
                     clientY = e.touches[0].clientY;
                 }
-
+                
                 const dx = clientX - this.state.startX;
                 const dy = clientY - this.state.startY;
-
+                
                 if (this.state.isDragging) {
-                    const newLeft = this.state.startLeft + dx;
-                    const newTop = this.state.startTop + dy;
+                    // Arrastar widget
+                    let newLeft = this.state.startLeft + dx;
+                    let newTop = this.state.startTop + dy;
                     
-                    const constrainedPosition = this.constrainWidgetPosition(
-                        newLeft, 
-                        newTop, 
-                        this.state.dragWidget.offsetWidth, 
-                        this.state.dragWidget.offsetHeight
-                    );
+                    // Limitar à área dos widgets
+                    const widgetRect = this.state.dragWidget.getBoundingClientRect();
+                    const margin = 10;
                     
-                    this.state.dragWidget.style.left = constrainedPosition.left + 'px';
-                    this.state.dragWidget.style.top = constrainedPosition.top + 'px';
+                    newLeft = Math.max(margin, Math.min(newLeft, areaRect.width - widgetRect.width - margin));
+                    newTop = Math.max(margin, Math.min(newTop, areaRect.height - widgetRect.height - margin));
+                    
+                    this.state.dragWidget.style.left = newLeft + 'px';
+                    this.state.dragWidget.style.top = newTop + 'px';
+                    
+                    // Atualizar posição salva
+                    this.state.widgetPositions[this.state.dragWidget.id] = {
+                        ...this.state.widgetPositions[this.state.dragWidget.id],
+                        left: newLeft,
+                        top: newTop
+                    };
+                    
                 } else if (this.state.isResizing) {
+                    // Redimensionar widget
                     let newWidth = this.state.startWidth + dx;
                     let newHeight = this.state.startHeight + dy;
-
-                    // Aplicar limites
-                    if (this.state.isMobile) {
-                        newWidth = Math.max(this.config.widgetMobileMinWidth,
-                            Math.min(newWidth, this.config.widgetMobileMaxWidth));
-                        newHeight = Math.max(this.config.widgetMobileMinHeight,
-                            Math.min(newHeight, this.config.widgetMobileMaxHeight));
-                    } else {
-                        newWidth = Math.max(this.config.widgetMinWidth,
-                            Math.min(newWidth, this.config.widgetMaxWidth));
-                        newHeight = Math.max(this.config.widgetMinHeight,
-                            Math.min(newHeight, this.config.widgetMaxHeight));
-                    }
-
+                    
+                    // Limitar tamanhos mínimo e máximo
+                    newWidth = Math.max(this.config.widgetMinWidth, 
+                        Math.min(newWidth, 400));
+                    newHeight = Math.max(this.config.widgetMinHeight, 
+                        Math.min(newHeight, 400));
+                    
+                    // Limitar à área dos widgets
+                    const maxWidth = areaRect.width - this.state.startLeft - 10;
+                    const maxHeight = areaRect.height - this.state.startTop - 10;
+                    
+                    newWidth = Math.min(newWidth, maxWidth);
+                    newHeight = Math.min(newHeight, maxHeight);
+                    
                     this.state.dragWidget.style.width = newWidth + 'px';
                     this.state.dragWidget.style.height = newHeight + 'px';
                     
-                    // Garantir que o widget ainda está dentro dos limites
-                    const currentLeft = parseFloat(this.state.dragWidget.style.left) || 0;
-                    const currentTop = parseFloat(this.state.dragWidget.style.top) || 0;
-                    const constrainedPosition = this.constrainWidgetPosition(
-                        currentLeft, 
-                        currentTop, 
-                        newWidth, 
-                        newHeight
-                    );
-                    
-                    if (currentLeft !== constrainedPosition.left || currentTop !== constrainedPosition.top) {
-                        this.state.dragWidget.style.left = constrainedPosition.left + 'px';
-                        this.state.dragWidget.style.top = constrainedPosition.top + 'px';
-                    }
+                    // Forçar reflow para conteúdo adaptável
+                    this.forceReflow(this.state.dragWidget);
                 }
-            },
-
-            constrainWidgetPosition(left, top, width, height) {
-                const widgetsArea = document.getElementById('widgetsArea');
-                const areaRect = widgetsArea.getBoundingClientRect();
-                
-                const maxLeft = areaRect.width - width - this.config.boundaryMargin;
-                const maxTop = areaRect.height - height - this.config.boundaryMargin;
-                
-                const constrainedLeft = Math.max(this.config.boundaryMargin, Math.min(left, maxLeft));
-                const constrainedTop = Math.max(this.config.boundaryMargin, Math.min(top, maxTop));
-                
-                return {
-                    left: constrainedLeft,
-                    top: constrainedTop
-                };
             },
 
             handleTouchMove(e) {
@@ -2971,33 +3412,13 @@
 
             handleMouseUp() {
                 if (this.state.isDragging || this.state.isResizing) {
-                    if (this.state.dragWidget && !this.state.dragWidget.classList.contains('minimized')) {
+                    if (this.state.dragWidget) {
                         this.state.dragWidget.classList.remove('dragging');
                         this.state.dragWidget.classList.remove('resizing');
                         
-                        if (!this.state.isResizing) {
-                            setTimeout(() => {
-                                this.state.dragWidget.classList.add('folder-stacked');
-                            }, 100);
-                        }
-                        
-                        const constrainedPosition = this.constrainWidgetPosition(
-                            parseFloat(this.state.dragWidget.style.left) || 0,
-                            parseFloat(this.state.dragWidget.style.top) || 0,
-                            this.state.dragWidget.offsetWidth,
-                            this.state.dragWidget.offsetHeight
-                        );
-                        
-                        this.state.dragWidget.style.left = constrainedPosition.left + 'px';
-                        this.state.dragWidget.style.top = constrainedPosition.top + 'px';
-                        
-                        this.saveWidgetPosition(this.state.dragWidget.id, {
-                            left: constrainedPosition.left,
-                            top: constrainedPosition.top,
-                            width: this.state.dragWidget.offsetWidth,
-                            height: this.state.dragWidget.offsetHeight,
-                            zIndex: parseInt(this.state.dragWidget.style.zIndex) || 10
-                        });
+                        // Salvar layout
+                        this.saveWidgetLayout();
+                        this.saveWidgetState();
                     }
                 }
                 
@@ -3006,12 +3427,65 @@
                 this.state.dragWidget = null;
             },
 
-            // ===========================================
-            // FUNÇÕES UTILITÁRIAS
-            // ===========================================
-            saveWidgetPosition(widgetId, position) {
-                const layout = JSON.parse(localStorage.getItem('bat-hud-widgets-layout')) || {};
-                layout[widgetId] = position;
+            forceReflow(widget) {
+                // Forçar reflow para conteúdo se adaptar
+                void widget.offsetWidth;
+                
+                // Ajustar conteúdo interno
+                const content = widget.querySelector('.widget-content');
+                if (content) {
+                    // Forçar reflow do conteúdo
+                    void content.offsetWidth;
+                }
+            },
+
+            loadWidgetLayout() {
+                const savedLayout = localStorage.getItem('bat-hud-widgets-layout');
+                if (!savedLayout) return;
+
+                try {
+                    const layout = JSON.parse(savedLayout);
+                    Object.keys(layout).forEach(widgetId => {
+                        const widget = document.getElementById(widgetId);
+                        if (widget) {
+                            const data = layout[widgetId];
+                            widget.style.left = data.left + 'px';
+                            widget.style.top = data.top + 'px';
+                            widget.style.width = data.width + 'px';
+                            widget.style.height = data.height + 'px';
+                            widget.style.zIndex = data.zIndex || 10;
+                            
+                            // Salvar no estado
+                            this.state.widgetPositions[widgetId] = data;
+                        }
+                    });
+                } catch (e) {
+                    console.error('Erro ao carregar layout:', e);
+                }
+            },
+
+            saveWidgetLayout() {
+                const widgets = document.querySelectorAll('.widget');
+                const layout = {};
+
+                widgets.forEach(widget => {
+                    if (this.state.hiddenWidgets.has(widget.id)) return;
+                    
+                    const rect = widget.getBoundingClientRect();
+                    const widgetsArea = document.getElementById('widgetsArea');
+                    const areaRect = widgetsArea.getBoundingClientRect();
+                    const left = parseFloat(widget.style.left) || rect.left - areaRect.left;
+                    const top = parseFloat(widget.style.top) || rect.top - areaRect.top;
+
+                    layout[widget.id] = {
+                        left: left,
+                        top: top,
+                        width: rect.width,
+                        height: rect.height,
+                        zIndex: parseInt(widget.style.zIndex) || 10
+                    };
+                });
+
                 localStorage.setItem('bat-hud-widgets-layout', JSON.stringify(layout));
             },
 
@@ -3019,131 +3493,318 @@
                 const widget = document.getElementById(widgetId);
                 if (widget) {
                     widget.style.display = 'none';
-                    const layout = JSON.parse(localStorage.getItem('bat-hud-widgets-layout')) || {};
-                    delete layout[widgetId];
-                    localStorage.setItem('bat-hud-widgets-layout', JSON.stringify(layout));
+                    this.state.hiddenWidgets.add(widgetId);
+                    this.saveWidgetState();
+                    this.playSound('click');
                 }
             },
 
             minimizeWidget(widgetId) {
                 const widget = document.getElementById(widgetId);
                 if (widget) {
-                    widget.classList.toggle('minimized');
+                    if (this.state.minimizedWidgets.has(widgetId)) {
+                        widget.classList.remove('minimized');
+                        this.state.minimizedWidgets.delete(widgetId);
+                    } else {
+                        widget.classList.add('minimized');
+                        this.state.minimizedWidgets.add(widgetId);
+                    }
+                    this.saveWidgetState();
+                    this.playSound('click');
                 }
             },
 
-            constrainAllWidgets() {
-                Object.values(this.state.widgets).forEach(widget => {
-                    if (widget.style.display !== 'none') {
-                        const left = parseFloat(widget.style.left) || 0;
-                        const top = parseFloat(widget.style.top) || 0;
-                        const width = widget.offsetWidth;
-                        const height = widget.offsetHeight;
-                        
-                        const constrainedPosition = this.constrainWidgetPosition(left, top, width, height);
-                        
-                        if (left !== constrainedPosition.left || top !== constrainedPosition.top) {
-                            widget.style.left = constrainedPosition.left + 'px';
-                            widget.style.top = constrainedPosition.top + 'px';
-                        }
+            saveWidgetState() {
+                const state = {
+                    hidden: Array.from(this.state.hiddenWidgets),
+                    minimized: Array.from(this.state.minimizedWidgets),
+                    positions: this.state.widgetPositions
+                };
+                localStorage.setItem('bat-hud-widgets-state', JSON.stringify(state));
+            },
+
+            restoreWidgetState() {
+                const savedState = localStorage.getItem('bat-hud-widgets-state');
+                if (!savedState) return;
+
+                try {
+                    const state = JSON.parse(savedState);
+                    state.hidden.forEach(widgetId => this.state.hiddenWidgets.add(widgetId));
+                    state.minimized.forEach(widgetId => this.state.minimizedWidgets.add(widgetId));
+                    if (state.positions) {
+                        this.state.widgetPositions = state.positions;
                     }
-                });
+                } catch (e) {
+                    console.error('Erro ao restaurar estado dos widgets:', e);
+                }
             },
 
             // ===========================================
-            // FUNÇÕES DOS WIDGETS
+            // MONITOR DE SISTEMA (ORIGINAL)
             // ===========================================
-            activateProtocol(type) {
-                const messages = {
-                    lockdown: 'PROTOCOLO DE LOCKDOWN ATIVADO!',
-                    evacuation: 'PROTOCOLO DE EVACUAÇÃO INICIADO!',
-                    signal: 'BAT-SINAL ATIVADO!',
-                    backup: 'REFORÇOS SOLICITADOS!'
-                };
+            startSystemMonitoring() {
+                if (this.state.systemMonitorInterval) {
+                    clearInterval(this.state.systemMonitorInterval);
+                }
+
+                this.state.systemMonitorInterval = setInterval(() => {
+                    if (this.state.hiddenWidgets.has('systemWidget')) return;
+                    
+                    const cpu = Math.floor(Math.random() * 40) + 30;
+                    const mem = Math.floor(Math.random() * 30) + 50;
+                    const net = Math.floor(Math.random() * 50) + 20;
+
+                    this.updateMetric('cpu', cpu);
+                    this.updateMetric('mem', mem);
+                    this.updateMetric('net', net);
+                }, 2000);
                 
-                alert(messages[type] || 'Protocolo Ativado');
+                this.state.activeIntervals.push(this.state.systemMonitorInterval);
+            },
+
+            updateMetric(type, value) {
+                const element = document.getElementById(`${type}Value`);
+                const bar = document.getElementById(`${type}Bar`);
+                
+                if (element) element.textContent = `${value}%`;
+                if (bar) bar.style.width = `${value}%`;
+            },
+
+            // ===========================================
+            // ANALISADOR DE VOZ (ORIGINAL)
+            // ===========================================
+            initVoiceVisualizer() {
+                const visualizer = document.getElementById('voiceVisualizer');
+                if (!visualizer) return;
+
+                visualizer.innerHTML = '';
+                for (let i = 0; i < 16; i++) {
+                    const bar = document.createElement('div');
+                    bar.className = 'voice-bar';
+                    bar.style.height = '3px';
+                    visualizer.appendChild(bar);
+                }
             },
 
             toggleVoiceRecording() {
                 this.state.voiceRecording = !this.state.voiceRecording;
-                alert(this.state.voiceRecording ? 'Gravação iniciada' : 'Gravação parada');
+                const btn = document.getElementById('voiceRecordBtn');
+
+                if (this.state.voiceRecording) {
+                    btn.classList.add('active');
+                    btn.innerHTML = '<i class="fas fa-stop"></i> Parar';
+                    this.startVoiceAnimation();
+                } else {
+                    btn.classList.remove('active');
+                    btn.innerHTML = '<i class="fas fa-circle"></i> Gravar';
+                    this.stopVoiceAnimation();
+                }
+                this.playSound('click');
+            },
+
+            startVoiceAnimation() {
+                const bars = document.querySelectorAll('#voiceVisualizer .voice-bar');
+                this.state.voiceInterval = setInterval(() => {
+                    bars.forEach(bar => {
+                        const height = Math.random() * 100 + 10;
+                        bar.style.height = `${height}%`;
+                    });
+                }, 100);
+                
+                this.state.activeIntervals.push(this.state.voiceInterval);
+            },
+
+            stopVoiceAnimation() {
+                if (this.state.voiceInterval) {
+                    clearInterval(this.state.voiceInterval);
+                    this.state.voiceInterval = null;
+                }
+            },
+
+            clearVoiceData() {
+                const bars = document.querySelectorAll('#voiceVisualizer .voice-bar');
+                bars.forEach(bar => {
+                    bar.style.height = '3px';
+                });
+                this.playSound('click');
             },
 
             // ===========================================
-            // MONITORAMENTO DE AMEAÇAS
+            // DETECTOR DE AMEAÇAS (ORIGINAL)
             // ===========================================
             startThreatMonitoring() {
-                setInterval(() => {
+                if (this.state.threatInterval) {
+                    clearInterval(this.state.threatInterval);
+                }
+
+                this.state.threatInterval = setInterval(() => {
+                    if (this.state.hiddenWidgets.has('threatWidget')) return;
+                    
                     this.state.threatCount = Math.floor(Math.random() * 5) + 1;
-                    const threatValue = document.querySelector('#threatWidget .threat-level');
-                    if (threatValue) {
-                        const levels = ['BAIXO', 'MÉDIO', 'ALTO', 'CRÍTICO'];
-                        threatValue.textContent = levels[this.state.threatCount - 1];
-                        
-                        const colors = [this.state.threatCount === 1 ? 'var(--success-color)' : 
-                                       this.state.threatCount === 2 ? 'var(--warning-color)' : 
-                                       this.state.threatCount === 3 ? 'var(--danger-color)' : 
-                                       'var(--purple-color)'];
-                        threatValue.style.color = colors[0];
+                    const threatElement = document.getElementById('threatValue');
+                    if (threatElement) {
+                        threatElement.textContent = this.state.threatCount;
                     }
                 }, 5000);
+                
+                this.state.activeIntervals.push(this.state.threatInterval);
             },
 
             // ===========================================
-            // SISTEMA DE ALERTA
+            // ANALISADOR FORENSE - DNA (ORIGINAL)
             // ===========================================
-            startAlertSystem() {
-                this.state.alertInterval = setInterval(() => {
-                    const timer = document.getElementById('nextAlertTime');
-                    if (timer) {
-                        const current = timer.textContent.split(':');
-                        let minutes = parseInt(current[0]);
-                        let seconds = parseInt(current[1]);
-
-                        seconds--;
-                        if (seconds < 0) {
-                            seconds = 59;
-                            minutes--;
-                        }
-
-                        if (minutes < 0) {
-                            this.triggerEmergency();
-                            minutes = 1;
-                            seconds = 0;
-                        }
-
-                        timer.textContent = 
-                            `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
-                    }
-                }, 1000);
-
-                this.state.activeIntervals.push(this.state.alertInterval);
-            },
-
-            triggerEmergency() {
-                const alertDiv = document.getElementById('emergencyAlert');
-                if (alertDiv) {
-                    alertDiv.style.display = 'flex';
-                    document.body.style.overflow = 'hidden';
+            initForensicDNA() {
+                const dnaStrand = document.getElementById('dnaStrand');
+                if (!dnaStrand) return;
+                
+                dnaStrand.innerHTML = '';
+                for (let i = 0; i < 12; i++) {
+                    const bar = document.createElement('div');
+                    bar.className = 'dna-bar';
+                    const delay = i * 0.1;
+                    bar.style.animationDelay = `${delay}s`;
+                    dnaStrand.appendChild(bar);
                 }
             },
 
-            dismissEmergency() {
-                const alertDiv = document.getElementById('emergencyAlert');
-                if (alertDiv) {
-                    alertDiv.style.display = 'none';
-                    document.body.style.overflow = 'auto';
-                    const timer = document.getElementById('nextAlertTime');
-                    if (timer) {
-                        timer.textContent = '01:00';
+            // ===========================================
+            // DETECTOR DE MOVIMENTO (ORIGINAL)
+            // ===========================================
+            initMotionGrid() {
+                const grid = document.getElementById('motionGrid');
+                if (!grid) return;
+                
+                grid.innerHTML = '';
+                const isMobile = window.innerWidth < 768;
+                const totalCells = isMobile ? 24 : 40;
+                
+                const cols = isMobile ? 6 : 8;
+                const rows = Math.ceil(totalCells / cols);
+                
+                // Atualizar grid CSS
+                grid.style.gridTemplateColumns = `repeat(${cols}, 1fr)`;
+                grid.style.gridTemplateRows = `repeat(${rows}, 1fr)`;
+                
+                for (let i = 0; i < totalCells; i++) {
+                    const cell = document.createElement('div');
+                    cell.className = 'motion-cell';
+                    grid.appendChild(cell);
+                    this.state.motionCells.push(cell);
+                }
+
+                if (this.state.motionInterval) {
+                    clearInterval(this.state.motionInterval);
+                }
+
+                // Simular detecções de movimento aleatórias
+                this.state.motionInterval = setInterval(() => {
+                    if (this.state.hiddenWidgets.has('motionWidget')) return;
+                    
+                    this.state.motionCells.forEach(cell => cell.classList.remove('active'));
+                    
+                    const numActive = Math.floor(Math.random() * 6) + 2;
+                    for (let i = 0; i < numActive; i++) {
+                        const randomIndex = Math.floor(Math.random() * this.state.motionCells.length);
+                        this.state.motionCells[randomIndex].classList.add('active');
                     }
+                }, 2000);
+                
+                this.state.activeIntervals.push(this.state.motionInterval);
+            },
+
+            // ===========================================
+            // EFEITOS DE SOM (ORIGINAL)
+            // ===========================================
+            playSound(type) {
+                try {
+                    const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                    const oscillator = audioContext.createOscillator();
+                    const gainNode = audioContext.createGain();
+
+                    oscillator.connect(gainNode);
+                    gainNode.connect(audioContext.destination);
+
+                    switch (type) {
+                        case 'click':
+                            oscillator.frequency.setValueAtTime(800, audioContext.currentTime);
+                            gainNode.gain.setValueAtTime(0.1, audioContext.currentTime);
+                            gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.1);
+                            oscillator.start();
+                            oscillator.stop(audioContext.currentTime + 0.1);
+                            break;
+                        case 'success':
+                            oscillator.frequency.setValueAtTime(523.25, audioContext.currentTime);
+                            gainNode.gain.setValueAtTime(0.2, audioContext.currentTime);
+                            gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.3);
+                            oscillator.start();
+                            oscillator.stop(audioContext.currentTime + 0.3);
+                            break;
+                        case 'error':
+                            oscillator.frequency.setValueAtTime(349.23, audioContext.currentTime);
+                            gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+                            gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.5);
+                            oscillator.start();
+                            oscillator.stop(audioContext.currentTime + 0.5);
+                            break;
+                        case 'logout':
+                            oscillator.frequency.setValueAtTime(659.25, audioContext.currentTime);
+                            gainNode.gain.setValueAtTime(0.2, audioContext.currentTime);
+                            gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.4);
+                            oscillator.start();
+                            oscillator.stop(audioContext.currentTime + 0.4);
+                            break;
+                    }
+                } catch (e) {
+                    console.log('Audio não disponível');
                 }
             },
 
-            skipAlert() {
-                const timer = document.getElementById('nextAlertTime');
-                if (timer) {
-                    timer.textContent = '01:00';
+            // ===========================================
+            // EFEITO DE CHUVA (ORIGINAL)
+            // ===========================================
+            setupRainEffect() {
+                const rainOverlay = document.getElementById('rainOverlay');
+                document.addEventListener('mousemove', (e) => {
+                    const x = e.clientX / window.innerWidth * 100;
+                    const y = e.clientY / window.innerHeight * 100;
+                    rainOverlay.style.setProperty('--x', `${x}%`);
+                    rainOverlay.style.setProperty('--y', `${y}%`);
+                });
+            },
+
+            // ===========================================
+            // UTILITÁRIOS (ORIGINAL)
+            // ===========================================
+            clearIntervals() {
+                this.state.activeIntervals.forEach(interval => {
+                    if (interval) clearInterval(interval);
+                });
+                this.state.activeIntervals = [];
+                
+                // Limpar intervalos específicos
+                if (this.state.voiceInterval) {
+                    clearInterval(this.state.voiceInterval);
+                    this.state.voiceInterval = null;
+                }
+                if (this.state.systemMonitorInterval) {
+                    clearInterval(this.state.systemMonitorInterval);
+                    this.state.systemMonitorInterval = null;
+                }
+                if (this.state.threatInterval) {
+                    clearInterval(this.state.threatInterval);
+                    this.state.threatInterval = null;
+                }
+                if (this.state.motionInterval) {
+                    clearInterval(this.state.motionInterval);
+                    this.state.motionInterval = null;
+                }
+                if (this.state.emergencyInterval) {
+                    clearInterval(this.state.emergencyInterval);
+                    this.state.emergencyInterval = null;
+                }
+                if (this.state.alertInterval) {
+                    clearInterval(this.state.alertInterval);
+                    this.state.alertInterval = null;
                 }
             },
 
@@ -3160,16 +3821,17 @@
         // Inicializar o sistema
         BatHUD.autoInit();
 
-        // Expor funções globais
+        // Expor funções globais necessárias
         window.BatHUD = BatHUD;
         window.toggleForms = () => BatHUD.toggleForms();
         window.logout = () => BatHUD.logout();
         window.dismissEmergency = () => BatHUD.dismissEmergency();
         window.skipAlert = () => BatHUD.skipAlert();
+        window.toggleVoiceRecording = () => BatHUD.toggleVoiceRecording();
+        window.clearVoiceData = () => BatHUD.clearVoiceData();
         window.minimizeWidget = (widgetId) => BatHUD.minimizeWidget(widgetId);
         window.hideWidget = (widgetId) => BatHUD.hideWidget(widgetId);
-        window.activateProtocol = (type) => BatHUD.activateProtocol(type);
-        window.toggleVoiceRecording = () => BatHUD.toggleVoiceRecording();
     </script>
 </body>
+
 </html>
