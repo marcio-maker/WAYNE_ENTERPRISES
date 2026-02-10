@@ -28,9 +28,6 @@
             --building-color: #111622;
             --window-color: #2a3a5a;
             --window-glow: #4a6fa5;
-            --building-dark: #0d111c;
-            --building-medium: #141a2a;
-            --building-light: #1a2235;
             --whatsapp-dark: rgba(13, 20, 24, 0.92);
             --whatsapp-darker: rgba(9, 14, 17, 0.95);
             --batman-yellow: #f5c518;
@@ -39,8 +36,6 @@
             --text-light: #f0f0f0;
             --text-muted: #a0a0a0;
             --unread-indicator: #ff4757;
-            --gothic-purple: #2a1e5c;
-            --gothic-blue: #1a2342;
         }
 
         body {
@@ -62,7 +57,7 @@
         .night-sky {
             position: absolute;
             inset: 0;
-            background: radial-gradient(ellipse at center, var(--gothic-blue) 0%, var(--bg-darker) 70%);
+            background: radial-gradient(ellipse at center, #0c1020 0%, var(--bg-darker) 70%);
             z-index: 1;
         }
 
@@ -81,7 +76,7 @@
 
         .cloud {
             position: absolute;
-            background-color: rgba(30, 40, 70, 0.5);
+            background-color: rgba(20, 30, 50, 0.4);
             border-radius: 50%;
             filter: blur(30px);
             z-index: 3;
@@ -214,168 +209,66 @@
             border-radius: 4px;
         }
 
-        /* ===== CENÁRIO GOTHAM CITY ATUALIZADO ===== */
-        .city-container {
+        .buildings {
             position: absolute;
             bottom: 0;
             width: 100%;
-            height: 220px;
+            height: 150px;
+            display: flex;
+            justify-content: center;
+            align-items: flex-end;
             z-index: 7;
             background: linear-gradient(to top, #040814, transparent);
-            overflow: hidden;
         }
 
-        .skyline {
-            position: relative;
-            width: 100%;
-            height: 100%;
-            display: flex;
-            justify-content: space-around;
-            align-items: flex-end;
-        }
-
-        /* Edifícios principais - mais altos */
         .building {
-            position: relative;
-            background: linear-gradient(to bottom, var(--building-light), var(--building-dark));
+            width: clamp(30px, 4vw, 60px);
+            background-color: var(--building-color);
+            margin: 0 3px;
             border-radius: 4px 4px 0 0;
-            box-shadow: 
-                inset 0 0 8px rgba(0, 10, 30, 0.8),
-                0 5px 15px rgba(0, 0, 0, 0.5);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            min-width: 20px;
+            box-shadow: inset 0 0 8px rgba(0, 10, 30, 0.8);
         }
 
-        /* Janelas em padrões diferentes para cada prédio */
-        .window-row {
-            display: flex;
-            justify-content: space-around;
-            width: 100%;
-            margin: 4px 0;
+        .building:nth-child(1) {
+            height: 120px;
+        }
+
+        .building:nth-child(2) {
+            height: 100px;
+        }
+
+        .building:nth-child(3) {
+            height: 140px;
+        }
+
+        .building:nth-child(4) {
+            height: 90px;
+        }
+
+        .building:nth-child(5) {
+            height: 110px;
+        }
+
+        .building:nth-child(6) {
+            height: 80px;
+        }
+
+        .building:nth-child(7) {
+            height: 120px;
         }
 
         .window {
-            width: 8px;
-            height: 12px;
+            width: 60%;
+            height: 10px;
             background-color: var(--window-color);
-            border-radius: 1px;
-            margin: 0 1px;
+            margin: 6px auto;
+            border-radius: 2px;
         }
 
         .window.glow {
             background-color: var(--window-glow);
             box-shadow: 0 0 5px rgba(74, 111, 165, 0.8);
             animation: window-glow 3s infinite alternate;
-        }
-
-        /* Prédios góticos com arquitetura única */
-        .gothic-building {
-            background: linear-gradient(to bottom, var(--gothic-purple), var(--building-dark));
-            position: relative;
-        }
-
-        .gothic-building::before {
-            content: "";
-            position: absolute;
-            top: -10px;
-            left: 0;
-            width: 100%;
-            height: 10px;
-            background: linear-gradient(45deg, transparent 5px, var(--gothic-purple) 0);
-            background-size: 10px 10px;
-        }
-
-        .gothic-building::after {
-            content: "";
-            position: absolute;
-            top: -20px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 15px;
-            height: 20px;
-            background: var(--gothic-purple);
-            clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
-        }
-
-        .tall-building {
-            background: linear-gradient(to bottom, var(--building-medium), var(--building-dark));
-            min-width: 25px;
-        }
-
-        .tall-building::after {
-            content: "";
-            position: absolute;
-            top: -15px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 30px;
-            height: 15px;
-            background: var(--building-medium);
-            border-radius: 50% 50% 0 0;
-        }
-
-        .modern-building {
-            background: linear-gradient(135deg, var(--building-light), var(--building-dark));
-            border-left: 2px solid rgba(120, 160, 255, 0.2);
-            border-right: 2px solid rgba(120, 160, 255, 0.2);
-        }
-
-        /* Prédios menores para profundidade */
-        .mid-building {
-            background: linear-gradient(to bottom, var(--building-medium), var(--building-dark));
-            min-width: 15px;
-        }
-
-        .small-building {
-            background: var(--building-dark);
-            min-width: 12px;
-        }
-
-        /* Prédios com antenas */
-        .building-with-antenna::before {
-            content: "";
-            position: absolute;
-            top: -25px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 2px;
-            height: 25px;
-            background: linear-gradient(to top, #666, #999);
-        }
-
-        .building-with-antenna::after {
-            content: "";
-            position: absolute;
-            top: -25px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 8px;
-            height: 8px;
-            background: var(--primary-color);
-            border-radius: 50%;
-            animation: antenna-glow 2s infinite alternate;
-        }
-
-        /* Prédios distantes (background) */
-        .distant-buildings {
-            position: absolute;
-            bottom: 0;
-            width: 100%;
-            height: 150px;
-            display: flex;
-            justify-content: space-between;
-            padding: 0 10%;
-            opacity: 0.6;
-            filter: blur(0.5px);
-            z-index: 6;
-        }
-
-        .distant-building {
-            background: linear-gradient(to bottom, rgba(20, 30, 50, 0.8), rgba(10, 15, 25, 0.9));
-            border-radius: 2px 2px 0 0;
-            min-width: 8px;
         }
 
         /* ===== CHAT ARRASTÁVEL E OTIMIZADO ===== */
@@ -402,7 +295,6 @@
             touch-action: none;
             -webkit-user-drag: none;
             user-select: none;
-            visibility: hidden;
         }
 
         .chat-container.dragging {
@@ -428,50 +320,24 @@
                 inset 0 1px 0 rgba(255, 255, 255, 0.08);
         }
 
-        /* Indicador de arrastar - mais visível no mobile */
+        /* Indicador de arrastar */
         .drag-indicator {
             position: absolute;
             top: 8px;
             left: 50%;
             transform: translateX(-50%);
-            width: 60px;
-            height: 5px;
-            background-color: rgba(120, 160, 255, 0.3);
-            border-radius: 3px;
+            width: 40px;
+            height: 4px;
+            background-color: rgba(255, 255, 255, 0.2);
+            border-radius: 2px;
             z-index: 1001;
             cursor: move;
-            transition: all 0.3s;
+            transition: background-color 0.3s;
         }
 
-        .chat-container.dragging .drag-indicator {
-            background-color: rgba(120, 160, 255, 0.7);
-            width: 80px;
-            height: 6px;
-        }
-
+        .chat-container.dragging .drag-indicator,
         .drag-indicator:hover {
             background-color: rgba(120, 160, 255, 0.5);
-        }
-
-        /* Áreas adicionais de arraste para mobile */
-        .drag-side-left {
-            position: absolute;
-            left: 0;
-            top: 0;
-            width: 40px;
-            height: 100%;
-            cursor: move;
-            z-index: 999;
-        }
-
-        .drag-side-right {
-            position: absolute;
-            right: 0;
-            top: 0;
-            width: 40px;
-            height: 100%;
-            cursor: move;
-            z-index: 999;
         }
 
         .chat-header {
@@ -805,20 +671,6 @@
                 animation-delay: 2s;
             }
 
-            .drag-indicator {
-                width: 50px;
-                height: 4px;
-            }
-
-            .chat-container.dragging .drag-indicator {
-                width: 70px;
-                height: 5px;
-            }
-
-            .drag-side-left, .drag-side-right {
-                width: 30px;
-            }
-
             .signal-beam {
                 width: min(400px, 82vw);
                 height: calc(100vh - 160px);
@@ -835,13 +687,22 @@
                 font-size: 32px;
             }
 
-            .city-container {
-                height: 180px;
-            }
-
-            .distant-buildings {
+            .buildings {
                 height: 120px;
             }
+
+            .building {
+                width: 25px;
+                margin: 0 2px;
+            }
+
+            .building:nth-child(1) { height: 100px; }
+            .building:nth-child(2) { height: 85px; }
+            .building:nth-child(3) { height: 110px; }
+            .building:nth-child(4) { height: 75px; }
+            .building:nth-child(5) { height: 95px; }
+            .building:nth-child(6) { height: 70px; }
+            .building:nth-child(7) { height: 105px; }
 
             .signal-source {
                 width: 70px;
@@ -869,10 +730,6 @@
                 top: 5px;
             }
 
-            .drag-side-left, .drag-side-right {
-                width: 25px;
-            }
-
             .signal-beam {
                 width: 88vw;
                 height: calc(100vh - 150px);
@@ -887,13 +744,22 @@
                 font-size: 28px;
             }
 
-            .city-container {
-                height: 150px;
-            }
-
-            .distant-buildings {
+            .buildings {
                 height: 100px;
             }
+
+            .building {
+                width: 22px;
+                margin: 0 1px;
+            }
+
+            .building:nth-child(1) { height: 85px; }
+            .building:nth-child(2) { height: 70px; }
+            .building:nth-child(3) { height: 95px; }
+            .building:nth-child(4) { height: 65px; }
+            .building:nth-child(5) { height: 80px; }
+            .building:nth-child(6) { height: 60px; }
+            .building:nth-child(7) { height: 90px; }
 
             .chat-header {
                 padding: 12px 14px;
@@ -919,10 +785,6 @@
                 max-height: 340px;
             }
 
-            .drag-side-left, .drag-side-right {
-                width: 20px;
-            }
-
             .signal-beam {
                 width: 92vw;
             }
@@ -934,14 +796,6 @@
 
             .bat-logo::after {
                 font-size: 24px;
-            }
-
-            .city-container {
-                height: 130px;
-            }
-
-            .distant-buildings {
-                height: 90px;
             }
 
             .message-content {
@@ -964,10 +818,6 @@
                 top: 15px;
             }
 
-            .drag-side-left, .drag-side-right {
-                width: 35px;
-            }
-
             .signal-beam {
                 width: min(550px, 90vw);
                 height: calc(100vh - 200px);
@@ -982,13 +832,22 @@
                 font-size: 60px;
             }
 
-            .city-container {
-                height: 250px;
-            }
-
-            .distant-buildings {
+            .buildings {
                 height: 180px;
             }
+
+            .building {
+                width: clamp(35px, 4vw, 80px);
+                margin: 0 6px;
+            }
+
+            .building:nth-child(1) { height: 150px; }
+            .building:nth-child(2) { height: 130px; }
+            .building:nth-child(3) { height: 170px; }
+            .building:nth-child(4) { height: 110px; }
+            .building:nth-child(5) { height: 140px; }
+            .building:nth-child(6) { height: 100px; }
+            .building:nth-child(7) { height: 160px; }
         }
 
         /* Desktop (1025px+) */
@@ -998,18 +857,6 @@
                 max-height: 500px;
                 right: 20px;
                 top: 20px;
-            }
-
-            .drag-side-left, .drag-side-right {
-                width: 45px;
-            }
-
-            .city-container {
-                height: 280px;
-            }
-
-            .distant-buildings {
-                height: 200px;
             }
         }
 
@@ -1226,17 +1073,6 @@
             }
         }
 
-        @keyframes antenna-glow {
-            0% {
-                opacity: 0.3;
-                box-shadow: 0 0 3px var(--primary-color);
-            }
-            100% {
-                opacity: 1;
-                box-shadow: 0 0 8px var(--primary-color);
-            }
-        }
-
         /* ===== BOTÕES DE NAVEGAÇÃO ===== */
         .nav-buttons {
             position: absolute;
@@ -1343,10 +1179,6 @@
         <!-- Sistema de Chat Arrastável -->
         <div class="chat-container" id="chatContainer">
             <div class="drag-indicator"></div>
-            <!-- Áreas de arraste laterais -->
-            <div class="drag-side-left" id="dragSideLeft"></div>
-            <div class="drag-side-right" id="dragSideRight"></div>
-            
             <div class="chat-controls">
                 <button class="chat-btn" id="collapseBtn" title="Recolher">
                     <span id="collapseIcon">−</span>
@@ -1390,268 +1222,44 @@
 
         <div class="signal-source"></div>
 
-        <!-- Prédios distantes (background) -->
-        <div class="distant-buildings">
-            <div class="distant-building" style="height: 70px;"></div>
-            <div class="distant-building" style="height: 90px;"></div>
-            <div class="distant-building" style="height: 60px;"></div>
-            <div class="distant-building" style="height: 80px;"></div>
-            <div class="distant-building" style="height: 50px;"></div>
-            <div class="distant-building" style="height: 75px;"></div>
-            <div class="distant-building" style="height: 65px;"></div>
-        </div>
-
-        <!-- CENÁRIO GOTHAM CITY COMPLETO -->
-        <div class="city-container">
-            <div class="skyline">
-                <!-- Prédio 1: Moderno e alto -->
-                <div class="building tall-building" style="height: 180px; min-width: 30px;">
-                    <div class="window-row">
-                        <div class="window glow"></div>
-                        <div class="window"></div>
-                        <div class="window glow"></div>
-                    </div>
-                    <div class="window-row">
-                        <div class="window"></div>
-                        <div class="window glow"></div>
-                        <div class="window"></div>
-                    </div>
-                    <div class="window-row">
-                        <div class="window glow"></div>
-                        <div class="window"></div>
-                        <div class="window glow"></div>
-                    </div>
-                    <div class="window-row">
-                        <div class="window"></div>
-                        <div class="window glow"></div>
-                        <div class="window"></div>
-                    </div>
-                </div>
-
-                <!-- Prédio 2: Gótico -->
-                <div class="building gothic-building" style="height: 220px; min-width: 25px;">
-                    <div class="window-row">
-                        <div class="window"></div>
-                        <div class="window glow"></div>
-                    </div>
-                    <div class="window-row">
-                        <div class="window glow"></div>
-                        <div class="window"></div>
-                    </div>
-                    <div class="window-row">
-                        <div class="window"></div>
-                        <div class="window glow"></div>
-                    </div>
-                    <div class="window-row">
-                        <div class="window glow"></div>
-                        <div class="window"></div>
-                    </div>
-                    <div class="window-row">
-                        <div class="window"></div>
-                        <div class="window glow"></div>
-                    </div>
-                </div>
-
-                <!-- Prédio 3: Médio com antena -->
-                <div class="building building-with-antenna modern-building" style="height: 160px; min-width: 22px;">
-                    <div class="window-row">
-                        <div class="window glow"></div>
-                        <div class="window"></div>
-                    </div>
-                    <div class="window-row">
-                        <div class="window"></div>
-                        <div class="window glow"></div>
-                    </div>
-                    <div class="window-row">
-                        <div class="window glow"></div>
-                        <div class="window"></div>
-                    </div>
-                    <div class="window-row">
-                        <div class="window"></div>
-                        <div class="window glow"></div>
-                    </div>
-                </div>
-
-                <!-- Prédio 4: Pequeno -->
-                <div class="building small-building" style="height: 120px; min-width: 18px;">
-                    <div class="window-row">
-                        <div class="window glow"></div>
-                    </div>
-                    <div class="window-row">
-                        <div class="window"></div>
-                    </div>
-                    <div class="window-row">
-                        <div class="window glow"></div>
-                    </div>
-                </div>
-
-                <!-- Prédio 5: Médio -->
-                <div class="building mid-building" style="height: 140px; min-width: 20px;">
-                    <div class="window-row">
-                        <div class="window"></div>
-                        <div class="window glow"></div>
-                    </div>
-                    <div class="window-row">
-                        <div class="window glow"></div>
-                        <div class="window"></div>
-                    </div>
-                    <div class="window-row">
-                        <div class="window"></div>
-                        <div class="window glow"></div>
-                    </div>
-                </div>
-
-                <!-- Prédio 6: Gótico estreito -->
-                <div class="building gothic-building" style="height: 200px; min-width: 18px;">
-                    <div class="window-row">
-                        <div class="window glow"></div>
-                    </div>
-                    <div class="window-row">
-                        <div class="window"></div>
-                    </div>
-                    <div class="window-row">
-                        <div class="window glow"></div>
-                    </div>
-                    <div class="window-row">
-                        <div class="window"></div>
-                    </div>
-                    <div class="window-row">
-                        <div class="window glow"></div>
-                    </div>
-                </div>
-
-                <!-- Prédio 7: Moderno e largo -->
-                <div class="building modern-building" style="height: 170px; min-width: 35px;">
-                    <div class="window-row">
-                        <div class="window"></div>
-                        <div class="window glow"></div>
-                        <div class="window"></div>
-                        <div class="window glow"></div>
-                    </div>
-                    <div class="window-row">
-                        <div class="window glow"></div>
-                        <div class="window"></div>
-                        <div class="window glow"></div>
-                        <div class="window"></div>
-                    </div>
-                    <div class="window-row">
-                        <div class="window"></div>
-                        <div class="window glow"></div>
-                        <div class="window"></div>
-                        <div class="window glow"></div>
-                    </div>
-                </div>
-
-                <!-- Prédio 8: Alto com antena -->
-                <div class="building building-with-antenna tall-building" style="height: 190px; min-width: 28px;">
-                    <div class="window-row">
-                        <div class="window glow"></div>
-                        <div class="window"></div>
-                    </div>
-                    <div class="window-row">
-                        <div class="window"></div>
-                        <div class="window glow"></div>
-                    </div>
-                    <div class="window-row">
-                        <div class="window glow"></div>
-                        <div class="window"></div>
-                    </div>
-                    <div class="window-row">
-                        <div class="window"></div>
-                        <div class="window glow"></div>
-                    </div>
-                </div>
-
-                <!-- Prédio 9: Médio -->
-                <div class="building mid-building" style="height: 130px; min-width: 16px;">
-                    <div class="window-row">
-                        <div class="window glow"></div>
-                        <div class="window"></div>
-                    </div>
-                    <div class="window-row">
-                        <div class="window"></div>
-                        <div class="window glow"></div>
-                    </div>
-                    <div class="window-row">
-                        <div class="window glow"></div>
-                        <div class="window"></div>
-                    </div>
-                </div>
-
-                <!-- Prédio 10: Pequeno -->
-                <div class="building small-building" style="height: 110px; min-width: 15px;">
-                    <div class="window-row">
-                        <div class="window glow"></div>
-                    </div>
-                    <div class="window-row">
-                        <div class="window"></div>
-                    </div>
-                </div>
-
-                <!-- Prédio 11: Gótico -->
-                <div class="building gothic-building" style="height: 180px; min-width: 22px;">
-                    <div class="window-row">
-                        <div class="window"></div>
-                        <div class="window glow"></div>
-                    </div>
-                    <div class="window-row">
-                        <div class="window glow"></div>
-                        <div class="window"></div>
-                    </div>
-                    <div class="window-row">
-                        <div class="window"></div>
-                        <div class="window glow"></div>
-                    </div>
-                    <div class="window-row">
-                        <div class="window glow"></div>
-                        <div class="window"></div>
-                    </div>
-                </div>
-
-                <!-- Prédio 12: Moderno -->
-                <div class="building modern-building" style="height: 150px; min-width: 25px;">
-                    <div class="window-row">
-                        <div class="window glow"></div>
-                        <div class="window"></div>
-                        <div class="window glow"></div>
-                    </div>
-                    <div class="window-row">
-                        <div class="window"></div>
-                        <div class="window glow"></div>
-                        <div class="window"></div>
-                    </div>
-                    <div class="window-row">
-                        <div class="window glow"></div>
-                        <div class="window"></div>
-                        <div class="window glow"></div>
-                    </div>
-                </div>
-
-                <!-- Prédio 13: Pequeno -->
-                <div class="building small-building" style="height: 100px; min-width: 14px;">
-                    <div class="window-row">
-                        <div class="window"></div>
-                    </div>
-                    <div class="window-row">
-                        <div class="window glow"></div>
-                    </div>
-                </div>
-
-                <!-- Prédio 14: Médio -->
-                <div class="building mid-building" style="height: 140px; min-width: 19px;">
-                    <div class="window-row">
-                        <div class="window glow"></div>
-                        <div class="window"></div>
-                    </div>
-                    <div class="window-row">
-                        <div class="window"></div>
-                        <div class="window glow"></div>
-                    </div>
-                    <div class="window-row">
-                        <div class="window glow"></div>
-                        <div class="window"></div>
-                    </div>
-                </div>
+        <div class="buildings">
+            <div class="building">
+                <div class="window"></div>
+                <div class="window glow"></div>
+                <div class="window"></div>
+                <div class="window glow"></div>
+            </div>
+            <div class="building">
+                <div class="window glow"></div>
+                <div class="window"></div>
+                <div class="window glow"></div>
+            </div>
+            <div class="building">
+                <div class="window"></div>
+                <div class="window"></div>
+                <div class="window glow"></div>
+                <div class="window"></div>
+            </div>
+            <div class="building">
+                <div class="window glow"></div>
+                <div class="window"></div>
+                <div class="window glow"></div>
+            </div>
+            <div class="building">
+                <div class="window"></div>
+                <div class="window glow"></div>
+                <div class="window"></div>
+                <div class="window glow"></div>
+            </div>
+            <div class="building">
+                <div class="window glow"></div>
+                <div class="window"></div>
+            </div>
+            <div class="building">
+                <div class="window"></div>
+                <div class="window glow"></div>
+                <div class="window"></div>
+                <div class="window glow"></div>
             </div>
         </div>
     </div>
@@ -1668,8 +1276,6 @@
             // ========== ELEMENTOS DO CHAT ARRASTÁVEL ==========
             const chatContainer = document.getElementById('chatContainer');
             const dragIndicator = chatContainer.querySelector('.drag-indicator');
-            const dragSideLeft = document.getElementById('dragSideLeft');
-            const dragSideRight = document.getElementById('dragSideRight');
             const messagesContainer = document.getElementById('messagesContainer');
             const goButton = document.getElementById('goButton');
             const buttonText = document.getElementById('buttonText');
@@ -1688,8 +1294,7 @@
             let dragOffset = { x: 0, y: 0 };
             let currentPosition = { ...initialPosition };
             let lastTouchTime = 0;
-            let lastTapTime = 0;
-            const tapThreshold = 300; // ms
+            const doubleTapThreshold = 300; // ms para prevenir duplo toque
 
             // ========== INICIALIZAÇÃO ==========
             initChatPosition();
@@ -1783,88 +1388,64 @@
 
             function setupDragAndDrop() {
                 // Elementos que podem iniciar o arraste
-                const draggableElements = [
-                    dragIndicator,
-                    dragSideLeft,
-                    dragSideRight,
-                    chatHeader
-                ];
+                const draggableElements = [dragIndicator, chatHeader];
                 
-                // Adicionar eventos para todos os elementos arrastáveis
+                // Configurar eventos para cada elemento arrastável
                 draggableElements.forEach(element => {
-                    if (element) {
-                        // Eventos para mouse
-                        element.addEventListener('mousedown', startDrag);
-                        
-                        // Eventos para touch
-                        element.addEventListener('touchstart', handleTouchStart, { passive: false });
-                    }
+                    // Mouse events - para desktop
+                    element.addEventListener('mousedown', startDrag);
+                    
+                    // Touch events - para mobile
+                    element.addEventListener('touchstart', handleTouchStart, { passive: false });
                 });
                 
                 // Prevenir arrasto padrão de imagens
                 document.addEventListener('dragstart', (e) => e.preventDefault());
                 
-                // Sair do modo de arrasto
+                // Eventos globais para parar o arraste
                 document.addEventListener('mouseup', stopDrag);
                 document.addEventListener('touchend', stopDrag);
                 document.addEventListener('touchcancel', stopDrag);
                 
-                // Mover durante o arrasto
+                // Eventos globais para mover durante o arraste
                 document.addEventListener('mousemove', handleDrag);
                 document.addEventListener('touchmove', handleTouchMove, { passive: false });
                 
                 // Prevenir menu de contexto no mobile
                 chatContainer.addEventListener('contextmenu', (e) => e.preventDefault());
-                
-                // Feedback visual para áreas de arraste laterais
-                if (dragSideLeft && dragSideRight) {
-                    [dragSideLeft, dragSideRight].forEach(side => {
-                        side.addEventListener('mouseenter', () => {
-                            if (!isDragging) {
-                                side.style.backgroundColor = 'rgba(120, 160, 255, 0.1)';
-                            }
-                        });
-                        
-                        side.addEventListener('mouseleave', () => {
-                            if (!isDragging) {
-                                side.style.backgroundColor = 'transparent';
-                            }
-                        });
-                    });
-                }
             }
 
             function startDrag(e) {
                 e.preventDefault();
                 e.stopPropagation();
                 
-                // Prevenir toque rápido duplo
+                // Prevenir duplo toque rápido
                 const now = Date.now();
-                if (now - lastTapTime < tapThreshold) return;
-                lastTapTime = now;
+                if (now - lastTouchTime < doubleTapThreshold) return;
+                lastTouchTime = now;
                 
                 isDragging = true;
                 chatContainer.classList.add('dragging');
                 
+                // Capturar posição inicial do mouse
                 const rect = chatContainer.getBoundingClientRect();
                 if (e.type === 'mousedown') {
                     dragOffset.x = e.clientX - rect.left;
                     dragOffset.y = e.clientY - rect.top;
                 }
                 
+                // Desabilitar seleção de texto durante o arraste
                 document.body.style.userSelect = 'none';
                 document.body.style.cursor = 'grabbing';
-                
-                // Feedback visual para áreas laterais durante arraste
-                if (dragSideLeft && dragSideRight) {
-                    dragSideLeft.style.backgroundColor = 'rgba(120, 160, 255, 0.15)';
-                    dragSideRight.style.backgroundColor = 'rgba(120, 160, 255, 0.15)';
-                }
             }
 
             function handleTouchStart(e) {
+                // Prevenir duplo toque rápido
                 const now = Date.now();
-                if (now - lastTouchTime < 300) return; // Prevenir toque rápido
+                if (now - lastTouchTime < doubleTapThreshold) {
+                    e.preventDefault();
+                    return;
+                }
                 lastTouchTime = now;
                 
                 const touch = e.touches[0];
@@ -1872,28 +1453,41 @@
                 dragOffset.x = touch.clientX - rect.left;
                 dragOffset.y = touch.clientY - rect.top;
                 
-                startDrag(e);
+                // Chamar startDrag com o evento de touch
+                const fakeMouseEvent = new MouseEvent('mousedown', {
+                    clientX: touch.clientX,
+                    clientY: touch.clientY,
+                    bubbles: true
+                });
+                startDrag(fakeMouseEvent);
+                
+                // Prevenir scroll da página durante o arraste
+                e.preventDefault();
             }
 
             function handleDrag(e) {
                 if (!isDragging) return;
-                e.preventDefault();
                 
-                let x = e.clientX - dragOffset.x;
-                let y = e.clientY - dragOffset.y;
+                let x, y;
+                
+                if (e.type === 'mousemove') {
+                    x = e.clientX - dragOffset.x;
+                    y = e.clientY - dragOffset.y;
+                }
                 
                 updatePosition(x, y);
+                e.preventDefault();
             }
 
             function handleTouchMove(e) {
                 if (!isDragging) return;
-                e.preventDefault();
                 
                 const touch = e.touches[0];
-                let x = touch.clientX - dragOffset.x;
-                let y = touch.clientY - dragOffset.y;
+                const x = touch.clientX - dragOffset.x;
+                const y = touch.clientY - dragOffset.y;
                 
                 updatePosition(x, y);
+                e.preventDefault();
             }
 
             function updatePosition(x, y) {
@@ -1907,12 +1501,12 @@
                 x = Math.max(5, Math.min(x, maxX - 5));
                 y = Math.max(5, Math.min(y, maxY - 5));
                 
-                // Aplicar posição imediatamente
+                // Aplicar posição imediatamente - MOVIMENTO LIVRE
                 chatContainer.style.left = `${x}px`;
                 chatContainer.style.top = `${y}px`;
                 currentPosition = { x, y };
                 
-                // Transição suave apenas para posição final
+                // Remover transição durante o arraste para máxima fluidez
                 chatContainer.style.transition = 'none';
             }
 
@@ -1921,22 +1515,19 @@
                 
                 isDragging = false;
                 chatContainer.classList.remove('dragging');
+                
+                // Restaurar seleção de texto
                 document.body.style.userSelect = '';
                 document.body.style.cursor = '';
                 
-                // Limpar feedback visual das áreas laterais
-                if (dragSideLeft && dragSideRight) {
-                    dragSideLeft.style.backgroundColor = 'transparent';
-                    dragSideRight.style.backgroundColor = 'transparent';
-                }
-                
-                // Aplicar snap APENAS APÓS soltar
+                // Aplicar snap APENAS APÓS soltar (opcional)
                 applySnapAfterRelease();
                 
                 // Pequeno efeito de "drop"
                 chatContainer.style.transform = 'scale(0.98)';
                 setTimeout(() => {
                     chatContainer.style.transform = '';
+                    chatContainer.style.transition = 'transform 0.1s ease';
                 }, 100);
             }
 
@@ -1978,12 +1569,6 @@
                     setTimeout(() => {
                         chatContainer.style.transition = '';
                     }, 200);
-                    
-                    // Feedback de snap
-                    chatContainer.style.boxShadow = '0 0 0 2px rgba(120, 160, 255, 0.4)';
-                    setTimeout(() => {
-                        chatContainer.style.boxShadow = '';
-                    }, 300);
                 }
             }
 
@@ -2188,9 +1773,8 @@
             }, 2100);
 
             console.log('✅ Bat-Sinal com chat arrastável inicializado!');
-            console.log('🏙️  Cenário Gotham City expandido com 14 prédios detalhados');
             console.log('🎯 Drag livre para qualquer direção habilitado');
-            console.log('📱 Áreas de arraste laterais ativas no mobile');
+            console.log('📱 Funciona perfeitamente em mobile');
             console.log('🧲 Snap apenas após soltar');
         });
     </script>
