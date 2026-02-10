@@ -30,17 +30,19 @@
         /* =========================================== */
         /* SISTEMA DE ENTRADA SUAVE DOS WIDGETS */
         /* =========================================== */
-        
+
         /* Efeito de entrada suave dos widgets */
         @keyframes widgetFloatIn {
             0% {
                 opacity: 0;
                 transform: translateY(20px) scale(0.98);
             }
+
             70% {
                 opacity: 0.8;
                 transform: translateY(-3px) scale(1.01);
             }
+
             100% {
                 opacity: 1;
                 transform: translateY(0) scale(1);
@@ -53,10 +55,12 @@
                 box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4),
                     0 0 20px rgba(0, 217, 255, 0.1);
             }
+
             50% {
                 box-shadow: 0 12px 40px rgba(0, 0, 0, 0.6),
                     0 0 25px rgba(0, 217, 255, 0.2);
             }
+
             100% {
                 box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4),
                     0 0 20px rgba(0, 217, 255, 0.1);
@@ -66,7 +70,7 @@
         /* Classe para animação de entrada */
         .widget.entering {
             animation: widgetFloatIn 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards,
-                      widgetEntryGlow 1.5s ease-in-out;
+                widgetEntryGlow 1.5s ease-in-out;
         }
 
         /* =========================================== */
@@ -376,6 +380,7 @@
         }
 
         @keyframes batPulse {
+
             0%,
             100% {
                 opacity: 0.3;
@@ -858,6 +863,7 @@
         }
 
         @keyframes pulse {
+
             0%,
             100% {
                 transform: scale(1);
@@ -1025,6 +1031,7 @@
         }
 
         @keyframes scanPulse {
+
             0%,
             100% {
                 box-shadow: 0 0 15px var(--success-color);
@@ -1150,10 +1157,13 @@
         }
 
         @keyframes threatPulse {
-            0%, 100% {
+
+            0%,
+            100% {
                 opacity: 0.3;
                 transform: translate(-50%, -50%) scale(1);
             }
+
             50% {
                 opacity: 1;
                 transform: translate(-50%, -50%) scale(1.1);
@@ -1243,9 +1253,12 @@
         }
 
         @keyframes dnaFloat {
-            0%, 100% {
+
+            0%,
+            100% {
                 height: 30%;
             }
+
             50% {
                 height: 100%;
             }
@@ -1318,9 +1331,12 @@
         }
 
         @keyframes vehiclePulse {
-            0%, 100% {
+
+            0%,
+            100% {
                 transform: scale(1);
             }
+
             50% {
                 transform: scale(1.1);
             }
@@ -1357,9 +1373,12 @@
         }
 
         @keyframes weatherFloat {
-            0%, 100% {
+
+            0%,
+            100% {
                 transform: translateY(0);
             }
+
             50% {
                 transform: translateY(-6px);
             }
@@ -1403,9 +1422,12 @@
         }
 
         @keyframes motionBlink {
-            0%, 100% {
+
+            0%,
+            100% {
                 opacity: 1;
             }
+
             50% {
                 opacity: 0.3;
             }
@@ -1440,9 +1462,12 @@
         }
 
         @keyframes spectrumWave {
-            0%, 100% {
+
+            0%,
+            100% {
                 height: 20%;
             }
+
             50% {
                 height: 80%;
             }
@@ -1488,18 +1513,22 @@
                 top: 10%;
                 left: 50%;
             }
+
             25% {
                 top: 50%;
                 left: 90%;
             }
+
             50% {
                 top: 90%;
                 left: 50%;
             }
+
             75% {
                 top: 50%;
                 left: 10%;
             }
+
             100% {
                 top: 10%;
                 left: 50%;
@@ -1533,6 +1562,7 @@
             0% {
                 transform: rotate(0deg);
             }
+
             100% {
                 transform: rotate(360deg);
             }
@@ -1549,10 +1579,13 @@
         }
 
         @keyframes targetBlink {
-            0%, 100% {
+
+            0%,
+            100% {
                 opacity: 1;
                 transform: scale(1);
             }
+
             50% {
                 opacity: 0.5;
                 transform: scale(1.2);
@@ -1581,10 +1614,13 @@
         }
 
         @keyframes emergencyPulse {
-            0%, 100% {
+
+            0%,
+            100% {
                 transform: scale(1);
                 opacity: 1;
             }
+
             50% {
                 transform: scale(1.2);
                 opacity: 0.7;
@@ -1885,6 +1921,7 @@
         /* ANIMAÇÕES GLOBAIS */
         /* =========================================== */
         @keyframes shake {
+
             0%,
             100% {
                 transform: translateX(0);
@@ -2047,6 +2084,7 @@
         }
 
         @media (max-width: 480px) {
+
             .top-left,
             .top-right,
             .bottom-left,
@@ -2122,6 +2160,7 @@
 
         /* Ajuste para landscape em mobile */
         @media (max-width: 768px) and (orientation: landscape) {
+
             .top-left,
             .top-right,
             .bottom-left,
@@ -2409,11 +2448,18 @@
             </a>
         </div>
 
-        <div class="hint">
-            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/7f/Batman_Logo.svg/2560px-Batman_Logo.svg.png"
-                alt="Bat Logo" width="180" height="180">
-            <div style="margin-top:20px; font-size:20px; color:#00d9ff;">BAT SISTEMA ONLINE</div>
-            <div style="margin-top:5px; color:#88ffff;">Aguardando decisão do Cavaleiro das Trevas</div>
+        <div class="hint" style="text-align: center;">
+            <img src="baixados.png" alt="Bat Logo" width="180" height="180"
+                style="filter: drop-shadow(0 0 12px var(--primary-color));">
+
+            <div
+                style="margin-top:20px; font-size:20px; color: var(--primary-color); font-weight: bold; letter-spacing: 1px;">
+                BAT SISTEMA ONLINE
+            </div>
+
+            <div style="margin-top:5px; color: var(--text-secondary); opacity: 0.9;">
+                Aguardando decisão do Cavaleiro das Trevas
+            </div>
         </div>
     </div>
 
@@ -2846,7 +2892,7 @@
             // ===========================================
             startAlertSystem() {
                 this.clearIntervals();
-                
+
                 this.state.alertInterval = setInterval(() => {
                     if (this.state.secondsToNextAlert > 0) {
                         this.state.secondsToNextAlert--;
@@ -2857,7 +2903,7 @@
                         }
                     }
                 }, 1000);
-                
+
                 this.state.activeIntervals.push(this.state.alertInterval);
                 this.updateTimerVisibility();
             },
@@ -2866,9 +2912,9 @@
                 const mins = Math.floor(this.state.secondsToNextAlert / 60);
                 const secs = this.state.secondsToNextAlert % 60;
                 const timerElement = document.getElementById('nextAlertTime');
-                
+
                 if (timerElement) {
-                    timerElement.textContent = 
+                    timerElement.textContent =
                         `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
                 }
             },
@@ -2883,7 +2929,7 @@
             triggerEmergency() {
                 const alertDiv = document.getElementById('emergencyAlert');
                 if (!alertDiv) return;
-                
+
                 alertDiv.style.display = 'flex';
                 this.state.emergencyCountdown = this.config.emergencyCountdown;
 
@@ -2896,20 +2942,20 @@
                     this.state.emergencyCountdown--;
                     const mins = Math.floor(this.state.emergencyCountdown / 60);
                     const secs = this.state.emergencyCountdown % 60;
-                    
+
                     const countdownElement = document.getElementById('emergencyCountdown');
                     if (countdownElement) {
-                        countdownElement.textContent = 
+                        countdownElement.textContent =
                             `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
                     }
-                    
+
                     requestAnimationFrame(updateCountdown);
                 };
 
                 this.state.emergencyInterval = setInterval(() => {
                     requestAnimationFrame(updateCountdown);
                 }, 1000);
-                
+
                 this.state.activeIntervals.push(this.state.emergencyInterval);
                 this.playSound('error');
             },
@@ -2919,12 +2965,12 @@
                     clearInterval(this.state.emergencyInterval);
                     this.state.emergencyInterval = null;
                 }
-                
+
                 const alertDiv = document.getElementById('emergencyAlert');
                 if (alertDiv) {
                     alertDiv.style.display = 'none';
                 }
-                
+
                 this.state.secondsToNextAlert = this.config.alertInterval;
                 this.updateTimerDisplay();
                 this.playSound('success');
@@ -2956,7 +3002,7 @@
             setupGlobalEventListeners() {
                 document.addEventListener('mousemove', (e) => this.handleMouseMove(e));
                 document.addEventListener('mouseup', () => this.handleMouseUp());
-                
+
                 document.addEventListener('touchmove', (e) => this.handleTouchMove(e), { passive: false });
                 document.addEventListener('touchend', () => this.handleMouseUp());
             },
@@ -3065,10 +3111,10 @@
 
                 // Carregar widgets com entrada suave
                 this.loadAndPositionWidgets();
-                
+
                 // Animar entrada das peças (original)
                 this.animatePieces();
-                
+
                 // Animar entrada dos widgets com efeito suave
                 this.animateWidgetsEntry();
             },
@@ -3107,7 +3153,7 @@
                 this.initVoiceVisualizer();
                 this.initForensicDNA();
                 this.initMotionGrid();
-                
+
                 // Inicializar drag and drop (ORIGINAL)
                 this.initWidgetsDragAndDrop();
             },
@@ -3116,7 +3162,7 @@
                 const widget = document.createElement('div');
                 widget.className = 'widget';
                 widget.id = template.id;
-                
+
                 // Conteúdo ORIGINAL dos widgets
                 widget.innerHTML = `
                     <div class="widget-header">
@@ -3166,10 +3212,10 @@
                 widgets.forEach((widget, index) => {
                     // Adicionar classe para animação
                     widget.classList.add('entering');
-                    
+
                     // Atrasar entrada para efeito cascata
                     widget.style.animationDelay = `${index * 0.1}s`;
-                    
+
                     // Remover estado inicial após animação
                     setTimeout(() => {
                         widget.style.opacity = '1';
@@ -3181,7 +3227,7 @@
 
             logout() {
                 this.playSound('logout');
-                
+
                 // Animação de saída (ORIGINAL)
                 const pieces = document.querySelectorAll('.piece-container');
                 pieces.forEach((piece, index) => {
@@ -3203,11 +3249,11 @@
 
                 setTimeout(() => {
                     this.clearIntervals();
-                    
+
                     this.state.currentUser = null;
                     this.state.isLoggedIn = false;
                     localStorage.removeItem('wayne_current_user');
-                    
+
                     document.getElementById('hudFrame').style.display = 'none';
                     document.getElementById('userIndicator').style.display = 'none';
                     document.getElementById('authScreen').style.display = 'flex';
@@ -3216,10 +3262,10 @@
                     document.getElementById('switchText').textContent = 'Não tem acesso?';
                     document.getElementById('switchLink').textContent = 'Solicitar credencial';
                     document.getElementById('authError').style.display = 'none';
-                    
+
                     this.updateTimerVisibility();
                     this.clearForms();
-                    
+
                     // Resetar estado dos widgets
                     this.state.hiddenWidgets.clear();
                     this.state.minimizedWidgets.clear();
@@ -3243,7 +3289,7 @@
 
                 authError.textContent = message;
                 authError.style.display = 'block';
-                
+
                 const currentForm = loginForm.style.display !== 'none' ? loginForm : registerForm;
                 currentForm.style.animation = 'none';
                 setTimeout(() => {
@@ -3260,7 +3306,7 @@
             initWidgetsDragAndDrop() {
                 const widgets = document.querySelectorAll('.widget');
                 const widgetsArea = document.getElementById('widgetsArea');
-                
+
                 widgets.forEach(widget => {
                     if (this.state.hiddenWidgets.has(widget.id)) return;
 
@@ -3280,18 +3326,18 @@
             startDrag(e, widget) {
                 e.preventDefault();
                 e.stopPropagation();
-                
+
                 const widgetsArea = document.getElementById('widgetsArea');
                 const areaRect = widgetsArea.getBoundingClientRect();
                 const widgetRect = widget.getBoundingClientRect();
-                
+
                 this.state.isDragging = true;
                 this.state.dragWidget = widget;
                 this.state.isResizing = false;
-                
+
                 // Trazer widget para frente
                 widget.style.zIndex = 1000;
-                
+
                 // Calcular offset do mouse
                 if (e.type === 'mousedown') {
                     this.state.startX = e.clientX;
@@ -3300,28 +3346,28 @@
                     this.state.startX = e.touches[0].clientX;
                     this.state.startY = e.touches[0].clientY;
                 }
-                
+
                 this.state.startLeft = widgetRect.left - areaRect.left;
                 this.state.startTop = widgetRect.top - areaRect.top;
-                
+
                 widget.classList.add('dragging');
             },
 
             startResize(e, widget) {
                 e.preventDefault();
                 e.stopPropagation();
-                
+
                 const widgetsArea = document.getElementById('widgetsArea');
                 const areaRect = widgetsArea.getBoundingClientRect();
                 const widgetRect = widget.getBoundingClientRect();
-                
+
                 this.state.isResizing = true;
                 this.state.dragWidget = widget;
                 this.state.isDragging = false;
-                
+
                 // Trazer widget para frente
                 widget.style.zIndex = 1000;
-                
+
                 // Calcular offset do mouse
                 if (e.type === 'mousedown') {
                     this.state.startX = e.clientX;
@@ -3330,22 +3376,22 @@
                     this.state.startX = e.touches[0].clientX;
                     this.state.startY = e.touches[0].clientY;
                 }
-                
+
                 this.state.startLeft = widgetRect.left - areaRect.left;
                 this.state.startTop = widgetRect.top - areaRect.top;
                 this.state.startWidth = widgetRect.width;
                 this.state.startHeight = widgetRect.height;
-                
+
                 widget.classList.add('resizing');
             },
 
             handleMouseMove(e) {
                 if (!this.state.isDragging && !this.state.isResizing) return;
                 if (!this.state.dragWidget) return;
-                
+
                 const widgetsArea = document.getElementById('widgetsArea');
                 const areaRect = widgetsArea.getBoundingClientRect();
-                
+
                 let clientX, clientY;
                 if (e.type === 'mousemove') {
                     clientX = e.clientX;
@@ -3354,53 +3400,53 @@
                     clientX = e.touches[0].clientX;
                     clientY = e.touches[0].clientY;
                 }
-                
+
                 const dx = clientX - this.state.startX;
                 const dy = clientY - this.state.startY;
-                
+
                 if (this.state.isDragging) {
                     // Arrastar widget
                     let newLeft = this.state.startLeft + dx;
                     let newTop = this.state.startTop + dy;
-                    
+
                     // Limitar à área dos widgets
                     const widgetRect = this.state.dragWidget.getBoundingClientRect();
                     const margin = 10;
-                    
+
                     newLeft = Math.max(margin, Math.min(newLeft, areaRect.width - widgetRect.width - margin));
                     newTop = Math.max(margin, Math.min(newTop, areaRect.height - widgetRect.height - margin));
-                    
+
                     this.state.dragWidget.style.left = newLeft + 'px';
                     this.state.dragWidget.style.top = newTop + 'px';
-                    
+
                     // Atualizar posição salva
                     this.state.widgetPositions[this.state.dragWidget.id] = {
                         ...this.state.widgetPositions[this.state.dragWidget.id],
                         left: newLeft,
                         top: newTop
                     };
-                    
+
                 } else if (this.state.isResizing) {
                     // Redimensionar widget
                     let newWidth = this.state.startWidth + dx;
                     let newHeight = this.state.startHeight + dy;
-                    
+
                     // Limitar tamanhos mínimo e máximo
-                    newWidth = Math.max(this.config.widgetMinWidth, 
+                    newWidth = Math.max(this.config.widgetMinWidth,
                         Math.min(newWidth, 400));
-                    newHeight = Math.max(this.config.widgetMinHeight, 
+                    newHeight = Math.max(this.config.widgetMinHeight,
                         Math.min(newHeight, 400));
-                    
+
                     // Limitar à área dos widgets
                     const maxWidth = areaRect.width - this.state.startLeft - 10;
                     const maxHeight = areaRect.height - this.state.startTop - 10;
-                    
+
                     newWidth = Math.min(newWidth, maxWidth);
                     newHeight = Math.min(newHeight, maxHeight);
-                    
+
                     this.state.dragWidget.style.width = newWidth + 'px';
                     this.state.dragWidget.style.height = newHeight + 'px';
-                    
+
                     // Forçar reflow para conteúdo adaptável
                     this.forceReflow(this.state.dragWidget);
                 }
@@ -3415,13 +3461,13 @@
                     if (this.state.dragWidget) {
                         this.state.dragWidget.classList.remove('dragging');
                         this.state.dragWidget.classList.remove('resizing');
-                        
+
                         // Salvar layout
                         this.saveWidgetLayout();
                         this.saveWidgetState();
                     }
                 }
-                
+
                 this.state.isDragging = false;
                 this.state.isResizing = false;
                 this.state.dragWidget = null;
@@ -3430,7 +3476,7 @@
             forceReflow(widget) {
                 // Forçar reflow para conteúdo se adaptar
                 void widget.offsetWidth;
-                
+
                 // Ajustar conteúdo interno
                 const content = widget.querySelector('.widget-content');
                 if (content) {
@@ -3454,7 +3500,7 @@
                             widget.style.width = data.width + 'px';
                             widget.style.height = data.height + 'px';
                             widget.style.zIndex = data.zIndex || 10;
-                            
+
                             // Salvar no estado
                             this.state.widgetPositions[widgetId] = data;
                         }
@@ -3470,7 +3516,7 @@
 
                 widgets.forEach(widget => {
                     if (this.state.hiddenWidgets.has(widget.id)) return;
-                    
+
                     const rect = widget.getBoundingClientRect();
                     const widgetsArea = document.getElementById('widgetsArea');
                     const areaRect = widgetsArea.getBoundingClientRect();
@@ -3549,7 +3595,7 @@
 
                 this.state.systemMonitorInterval = setInterval(() => {
                     if (this.state.hiddenWidgets.has('systemWidget')) return;
-                    
+
                     const cpu = Math.floor(Math.random() * 40) + 30;
                     const mem = Math.floor(Math.random() * 30) + 50;
                     const net = Math.floor(Math.random() * 50) + 20;
@@ -3558,14 +3604,14 @@
                     this.updateMetric('mem', mem);
                     this.updateMetric('net', net);
                 }, 2000);
-                
+
                 this.state.activeIntervals.push(this.state.systemMonitorInterval);
             },
 
             updateMetric(type, value) {
                 const element = document.getElementById(`${type}Value`);
                 const bar = document.getElementById(`${type}Bar`);
-                
+
                 if (element) element.textContent = `${value}%`;
                 if (bar) bar.style.width = `${value}%`;
             },
@@ -3610,7 +3656,7 @@
                         bar.style.height = `${height}%`;
                     });
                 }, 100);
-                
+
                 this.state.activeIntervals.push(this.state.voiceInterval);
             },
 
@@ -3639,14 +3685,14 @@
 
                 this.state.threatInterval = setInterval(() => {
                     if (this.state.hiddenWidgets.has('threatWidget')) return;
-                    
+
                     this.state.threatCount = Math.floor(Math.random() * 5) + 1;
                     const threatElement = document.getElementById('threatValue');
                     if (threatElement) {
                         threatElement.textContent = this.state.threatCount;
                     }
                 }, 5000);
-                
+
                 this.state.activeIntervals.push(this.state.threatInterval);
             },
 
@@ -3656,7 +3702,7 @@
             initForensicDNA() {
                 const dnaStrand = document.getElementById('dnaStrand');
                 if (!dnaStrand) return;
-                
+
                 dnaStrand.innerHTML = '';
                 for (let i = 0; i < 12; i++) {
                     const bar = document.createElement('div');
@@ -3673,18 +3719,18 @@
             initMotionGrid() {
                 const grid = document.getElementById('motionGrid');
                 if (!grid) return;
-                
+
                 grid.innerHTML = '';
                 const isMobile = window.innerWidth < 768;
                 const totalCells = isMobile ? 24 : 40;
-                
+
                 const cols = isMobile ? 6 : 8;
                 const rows = Math.ceil(totalCells / cols);
-                
+
                 // Atualizar grid CSS
                 grid.style.gridTemplateColumns = `repeat(${cols}, 1fr)`;
                 grid.style.gridTemplateRows = `repeat(${rows}, 1fr)`;
-                
+
                 for (let i = 0; i < totalCells; i++) {
                     const cell = document.createElement('div');
                     cell.className = 'motion-cell';
@@ -3699,16 +3745,16 @@
                 // Simular detecções de movimento aleatórias
                 this.state.motionInterval = setInterval(() => {
                     if (this.state.hiddenWidgets.has('motionWidget')) return;
-                    
+
                     this.state.motionCells.forEach(cell => cell.classList.remove('active'));
-                    
+
                     const numActive = Math.floor(Math.random() * 6) + 2;
                     for (let i = 0; i < numActive; i++) {
                         const randomIndex = Math.floor(Math.random() * this.state.motionCells.length);
                         this.state.motionCells[randomIndex].classList.add('active');
                     }
                 }, 2000);
-                
+
                 this.state.activeIntervals.push(this.state.motionInterval);
             },
 
@@ -3780,7 +3826,7 @@
                     if (interval) clearInterval(interval);
                 });
                 this.state.activeIntervals = [];
-                
+
                 // Limpar intervalos específicos
                 if (this.state.voiceInterval) {
                     clearInterval(this.state.voiceInterval);
