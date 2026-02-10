@@ -1,10 +1,9 @@
 <!DOCTYPE html>
 <html lang="pt-br">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WAYNE ENTERPRISES - BAT-HUD SYSTEM v6.0 INTEGRADO</title>
+    <title>WAYNE ENTERPRISES - BAT-HUD SYSTEM v6.0 FINAL</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         /* =========================================== */
@@ -30,44 +29,32 @@
         /* =========================================== */
         /* SISTEMA DE ENTRADA SUAVE DOS WIDGETS */
         /* =========================================== */
-
-        /* Efeito de entrada suave dos widgets */
         @keyframes widgetFloatIn {
             0% {
                 opacity: 0;
                 transform: translateY(20px) scale(0.98);
             }
-
             70% {
                 opacity: 0.8;
                 transform: translateY(-3px) scale(1.01);
             }
-
             100% {
                 opacity: 1;
                 transform: translateY(0) scale(1);
             }
         }
 
-        /* Efeito de glow sutil na entrada */
         @keyframes widgetEntryGlow {
-            0% {
+            0%, 100% {
                 box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4),
                     0 0 20px rgba(0, 217, 255, 0.1);
             }
-
             50% {
                 box-shadow: 0 12px 40px rgba(0, 0, 0, 0.6),
                     0 0 25px rgba(0, 217, 255, 0.2);
             }
-
-            100% {
-                box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4),
-                    0 0 20px rgba(0, 217, 255, 0.1);
-            }
         }
 
-        /* Classe para animação de entrada */
         .widget.entering {
             animation: widgetFloatIn 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards,
                 widgetEntryGlow 1.5s ease-in-out;
@@ -137,7 +124,6 @@
                 transform: scale(1);
                 opacity: 0.3;
             }
-
             100% {
                 transform: scale(1.2);
                 opacity: 0.6;
@@ -212,7 +198,6 @@
                 background: rgba(255, 0, 0, 0.95);
                 box-shadow: 0 0 100px rgba(255, 0, 0, 0.8) inset;
             }
-
             100% {
                 background: rgba(255, 50, 50, 0.95);
                 box-shadow: 0 0 150px rgba(255, 0, 0, 1) inset;
@@ -259,7 +244,6 @@
                 opacity: 0;
                 transform: translateY(20px);
             }
-
             to {
                 opacity: 1;
                 transform: translateY(0);
@@ -315,7 +299,6 @@
                 opacity: 0;
                 transform: translateY(-20px);
             }
-
             to {
                 opacity: 1;
                 transform: translateY(0);
@@ -380,12 +363,9 @@
         }
 
         @keyframes batPulse {
-
-            0%,
-            100% {
+            0%, 100% {
                 opacity: 0.3;
             }
-
             50% {
                 opacity: 1;
             }
@@ -564,7 +544,6 @@
             overflow: hidden;
         }
 
-        /* Container principal dos widgets (para posição inicial) */
         .widgets-container {
             position: relative;
             width: 100%;
@@ -598,12 +577,10 @@
             flex-direction: column;
             resize: both;
             overflow: auto;
-            /* Estado inicial para animação */
             opacity: 0;
             transform: translateY(20px);
         }
 
-        /* Remove o resize padrão do navegador mas mantém nossa funcionalidade */
         .widget::-webkit-resizer {
             display: none;
         }
@@ -697,7 +674,6 @@
         /* =========================================== */
         /* CONTEÚDO RESPONSIVO DOS WIDGETS */
         /* =========================================== */
-        /* Sistema de escalonamento automático */
         .widget-content {
             flex: 1;
             display: flex;
@@ -706,7 +682,6 @@
             min-height: 0;
         }
 
-        /* Elementos visuais que escalam */
         .radar-display,
         .voice-visualizer,
         .biometric-display,
@@ -721,7 +696,6 @@
             overflow: hidden;
         }
 
-        /* Containers de dados */
         .radar-stats,
         .voice-controls,
         .biometric-data,
@@ -734,9 +708,7 @@
             flex-shrink: 0;
         }
 
-        /* Sistema de escalas fluidas */
         .widget {
-            /* Tamanhos de fonte responsivos */
             --font-title: clamp(10px, 1.2vw, 12px);
             --font-value: clamp(14px, 2vw, 24px);
             --font-label: clamp(8px, 0.8vw, 10px);
@@ -761,12 +733,6 @@
         .bio-label,
         .forensic-label {
             font-size: var(--font-label);
-        }
-
-        .radar-stat-value,
-        .threat-value,
-        .weather-temp {
-            font-size: var(--font-value);
         }
 
         .metric-label,
@@ -833,7 +799,6 @@
             0% {
                 transform: rotate(0deg);
             }
-
             100% {
                 transform: rotate(360deg);
             }
@@ -863,13 +828,10 @@
         }
 
         @keyframes pulse {
-
-            0%,
-            100% {
+            0%, 100% {
                 transform: scale(1);
                 opacity: 1;
             }
-
             50% {
                 transform: scale(1.3);
                 opacity: 0.7;
@@ -952,7 +914,6 @@
             0% {
                 transform: translateX(-100%);
             }
-
             100% {
                 transform: translateX(100%);
             }
@@ -1031,13 +992,10 @@
         }
 
         @keyframes scanPulse {
-
-            0%,
-            100% {
+            0%, 100% {
                 box-shadow: 0 0 15px var(--success-color);
                 opacity: 1;
             }
-
             50% {
                 box-shadow: 0 0 30px var(--success-color);
                 opacity: 0.7;
@@ -1080,7 +1038,6 @@
             0% {
                 top: 0;
             }
-
             100% {
                 top: 100%;
             }
@@ -1157,13 +1114,10 @@
         }
 
         @keyframes threatPulse {
-
-            0%,
-            100% {
+            0%, 100% {
                 opacity: 0.3;
                 transform: translate(-50%, -50%) scale(1);
             }
-
             50% {
                 opacity: 1;
                 transform: translate(-50%, -50%) scale(1.1);
@@ -1253,12 +1207,9 @@
         }
 
         @keyframes dnaFloat {
-
-            0%,
-            100% {
+            0%, 100% {
                 height: 30%;
             }
-
             50% {
                 height: 100%;
             }
@@ -1331,12 +1282,9 @@
         }
 
         @keyframes vehiclePulse {
-
-            0%,
-            100% {
+            0%, 100% {
                 transform: scale(1);
             }
-
             50% {
                 transform: scale(1.1);
             }
@@ -1373,12 +1321,9 @@
         }
 
         @keyframes weatherFloat {
-
-            0%,
-            100% {
+            0%, 100% {
                 transform: translateY(0);
             }
-
             50% {
                 transform: translateY(-6px);
             }
@@ -1422,12 +1367,9 @@
         }
 
         @keyframes motionBlink {
-
-            0%,
-            100% {
+            0%, 100% {
                 opacity: 1;
             }
-
             50% {
                 opacity: 0.3;
             }
@@ -1462,12 +1404,9 @@
         }
 
         @keyframes spectrumWave {
-
-            0%,
-            100% {
+            0%, 100% {
                 height: 20%;
             }
-
             50% {
                 height: 80%;
             }
@@ -1513,22 +1452,18 @@
                 top: 10%;
                 left: 50%;
             }
-
             25% {
                 top: 50%;
                 left: 90%;
             }
-
             50% {
                 top: 90%;
                 left: 50%;
             }
-
             75% {
                 top: 50%;
                 left: 10%;
             }
-
             100% {
                 top: 10%;
                 left: 50%;
@@ -1562,7 +1497,6 @@
             0% {
                 transform: rotate(0deg);
             }
-
             100% {
                 transform: rotate(360deg);
             }
@@ -1579,13 +1513,10 @@
         }
 
         @keyframes targetBlink {
-
-            0%,
-            100% {
+            0%, 100% {
                 opacity: 1;
                 transform: scale(1);
             }
-
             50% {
                 opacity: 0.5;
                 transform: scale(1.2);
@@ -1614,13 +1545,10 @@
         }
 
         @keyframes emergencyPulse {
-
-            0%,
-            100% {
+            0%, 100% {
                 transform: scale(1);
                 opacity: 1;
             }
-
             50% {
                 transform: scale(1.2);
                 opacity: 0.7;
@@ -1678,7 +1606,7 @@
         }
 
         /* =========================================== */
-        /* PEÇAS DA INTERFACE (ORIGINAL) */
+        /* PEÇAS DA INTERFACE */
         /* =========================================== */
         .piece-container {
             position: absolute;
@@ -1778,7 +1706,7 @@
             text-shadow: 0 0 15px var(--primary-color);
         }
 
-        /* POSICIONAMENTO DAS PEÇAS */
+        /* POSICIONAMENTO DAS PEÇAS - DESKTOP */
         .top-left {
             top: 0;
             left: 0;
@@ -1921,30 +1849,19 @@
         /* ANIMAÇÕES GLOBAIS */
         /* =========================================== */
         @keyframes shake {
-
-            0%,
-            100% {
+            0%, 100% {
                 transform: translateX(0);
             }
-
-            10%,
-            30%,
-            50%,
-            70%,
-            90% {
+            10%, 30%, 50%, 70%, 90% {
                 transform: translateX(-5px);
             }
-
-            20%,
-            40%,
-            60%,
-            80% {
+            20%, 40%, 60%, 80% {
                 transform: translateX(5px);
             }
         }
 
         /* =========================================== */
-        /* RESPONSIVIDADE MOBILE */
+        /* RESPONSIVIDADE MOBILE - CORRIGIDA */
         /* =========================================== */
         @media (max-width: 768px) {
             .hud-frame {
@@ -1952,6 +1869,7 @@
                 position: relative;
             }
 
+            /* Peças superiores e inferiores */
             .top-left,
             .top-right,
             .bottom-left,
@@ -1967,10 +1885,19 @@
                 height: 35px !important;
             }
 
-            .mid-left,
-            .mid-right {
+            /* PEÇAS LATERAIS CORRIGIDAS - posição vertical mantida */
+            .mid-left {
+                top: 65px; /* Ajustado para nova altura do top-left */
+                left: 0;
                 width: 25px;
-                height: calc(100% - 130px);
+                height: calc(100% - 130px); /* 65px top + 65px bottom */
+            }
+
+            .mid-right {
+                top: 65px; /* Ajustado para nova altura do top-right */
+                right: 0;
+                width: 25px;
+                height: calc(100% - 130px); /* 65px top + 65px bottom */
             }
 
             .piece-link-text {
@@ -1989,7 +1916,7 @@
                 max-width: 120px;
             }
 
-            /* ÁREA DOS WIDGETS MOBILE */
+            /* Área dos widgets ajustada */
             .widgets-area {
                 top: 65px;
                 left: 25px;
@@ -2041,7 +1968,7 @@
                 right: 5px;
             }
 
-            /* Ajustes de tamanhos para mobile */
+            /* Ajustes de conteúdo mobile */
             .fingerprint {
                 width: 50px;
                 height: 50px;
@@ -2084,7 +2011,7 @@
         }
 
         @media (max-width: 480px) {
-
+            /* Peças superiores e inferiores */
             .top-left,
             .top-right,
             .bottom-left,
@@ -2100,10 +2027,19 @@
                 height: 30px !important;
             }
 
-            .mid-left,
-            .mid-right {
+            /* PEÇAS LATERAIS CORRIGIDAS para mobile muito pequeno */
+            .mid-left {
+                top: 55px; /* Ajustado para nova altura */
+                left: 0;
                 width: 20px;
-                height: calc(100% - 110px);
+                height: calc(100% - 110px); /* 55px top + 55px bottom */
+            }
+
+            .mid-right {
+                top: 55px; /* Ajustado para nova altura */
+                right: 0;
+                width: 20px;
+                height: calc(100% - 110px); /* 55px top + 55px bottom */
             }
 
             .piece-link-text {
@@ -2114,6 +2050,7 @@
                 font-size: 14px;
             }
 
+            /* Área dos widgets ajustada */
             .widgets-area {
                 top: 55px;
                 left: 20px;
@@ -2127,7 +2064,6 @@
                 padding: 8px;
             }
 
-            /* Ajustes adicionais para telas muito pequenas */
             .widget {
                 --font-title: 9px;
                 --font-value: 12px;
@@ -2160,7 +2096,6 @@
 
         /* Ajuste para landscape em mobile */
         @media (max-width: 768px) and (orientation: landscape) {
-
             .top-left,
             .top-right,
             .bottom-left,
@@ -2170,7 +2105,8 @@
 
             .mid-left,
             .mid-right {
-                height: calc(100% - 100px);
+                top: 50px; /* Ajustado para landscape */
+                height: calc(100% - 100px); /* 50px top + 50px bottom */
             }
 
             .widgets-area {
@@ -2184,9 +2120,7 @@
             }
         }
 
-        /* Suporte para iOS */
         @supports (-webkit-touch-callout: none) {
-
             input,
             textarea {
                 font-size: 16px !important;
@@ -2211,7 +2145,7 @@
         }
 
         .widget.hidden {
-            display: none;
+            display: none !important;
         }
 
         .widget.minimized .widget-body {
@@ -2228,9 +2162,6 @@
             display: none;
         }
 
-        /* =========================================== */
-        /* CONTROLES DE WIDGETS RESTAURADOS */
-        /* =========================================== */
         .widget-controls {
             display: flex !important;
         }
@@ -2252,14 +2183,12 @@
             opacity: 1;
         }
 
-        /* Para garantir que os widgets não fiquem muito pequenos */
         .widget {
             max-width: 90vw;
             max-height: 90vh;
         }
     </style>
 </head>
-
 <body>
     <!-- Efeito de chuva Gotham -->
     <div class="rain-overlay" id="rainOverlay"></div>
@@ -2449,8 +2378,8 @@
         </div>
 
         <div class="hint" style="text-align: center;">
-            <img src="baixados.png" alt="Bat Logo" width="180" height="180"
-                style="filter: drop-shadow(0 0 12px var(--primary-color));">
+            <!-- Imagem substituída por ícone para evitar erro -->
+            <div class="piece-link-icon" style="font-size: 100px; margin-bottom: 20px;">🦇</div>
 
             <div
                 style="margin-top:20px; font-size:20px; color: var(--primary-color); font-weight: bold; letter-spacing: 1px;">
@@ -2465,16 +2394,10 @@
 
     <script>
         // ===========================================
-        // SISTEMA INTEGRADO BAT-HUD v6.0 - ENTRADA SUAVE
+        // SISTEMA INTEGRADO BAT-HUD v6.0 - CORREÇÃO DO FECHAMENTO DE WIDGETS
         // ===========================================
 
-        // ===========================================
-        // SISTEMA PRINCIPAL BAT-HUD (SIMPLIFICADO)
-        // ===========================================
         const BatHUD = {
-            // ===========================================
-            // CONFIGURAÇÕES
-            // ===========================================
             config: {
                 alertInterval: 180,
                 emergencyCountdown: 30,
@@ -2487,9 +2410,6 @@
                 widgetMinHeight: 140
             },
 
-            // ===========================================
-            // ESTADO DO SISTEMA
-            // ===========================================
             state: {
                 secondsToNextAlert: 180,
                 emergencyCountdown: 30,
@@ -2519,9 +2439,6 @@
                 startHeight: 0
             },
 
-            // ===========================================
-            // DADOS (MANTIDO ORIGINAL)
-            // ===========================================
             data: {
                 users: JSON.parse(localStorage.getItem('wayne_users')) || [
                     { username: 'batman', password: 'darkknight' },
@@ -2533,7 +2450,7 @@
                     {
                         id: 'radarWidget',
                         title: 'Radar Tático',
-                        icon: 'fas fa-radar',
+                        icon: 'fas fa-satellite',
                         content: `
                             <div class="widget-content">
                                 <div class="radar-display">
@@ -2862,9 +2779,6 @@
                 ]
             },
 
-            // ===========================================
-            // INICIALIZAÇÃO
-            // ===========================================
             init() {
                 this.initializeSystem();
                 this.setupRainEffect();
@@ -2887,9 +2801,6 @@
                 this.loadWidgetLayout();
             },
 
-            // ===========================================
-            // SISTEMA DE ALERTA (ORIGINAL)
-            // ===========================================
             startAlertSystem() {
                 this.clearIntervals();
 
@@ -2982,9 +2893,6 @@
                 this.playSound('click');
             },
 
-            // ===========================================
-            // SISTEMA DE AUTENTICAÇÃO (ORIGINAL)
-            // ===========================================
             setupEventListeners() {
                 document.getElementById('loginForm').addEventListener('submit', (e) => {
                     e.preventDefault();
@@ -3099,9 +3007,6 @@
                 this.playSound('click');
             },
 
-            // ===========================================
-            // MOSTRAR HUD COM ENTRADA SUAVE
-            // ===========================================
             showHUD() {
                 document.getElementById('authScreen').style.display = 'none';
                 document.getElementById('hudFrame').style.display = 'block';
@@ -3109,13 +3014,8 @@
                 document.getElementById('userName').textContent = this.state.currentUser.toUpperCase();
                 this.updateTimerVisibility();
 
-                // Carregar widgets com entrada suave
                 this.loadAndPositionWidgets();
-
-                // Animar entrada das peças (original)
                 this.animatePieces();
-
-                // Animar entrada dos widgets com efeito suave
                 this.animateWidgetsEntry();
             },
 
@@ -3123,14 +3023,12 @@
                 const widgetsArea = document.getElementById('widgetsArea');
                 widgetsArea.innerHTML = '';
 
-                // Criar widgets empilhados no canto superior esquerdo (ORIGINAL)
                 this.data.widgetTemplates.forEach((template, index) => {
                     if (this.state.hiddenWidgets.has(template.id)) return;
 
                     const widget = this.createWidget(template);
                     widgetsArea.appendChild(widget);
 
-                    // Posição inicial empilhada (EXATAMENTE COMO ORIGINAL)
                     const offset = this.config.widgetStackOffset;
                     const initialLeft = 20 + (index * offset);
                     const initialTop = 20 + (index * offset);
@@ -3139,7 +3037,6 @@
                     widget.style.top = initialTop + 'px';
                     widget.style.zIndex = 10 + index;
 
-                    // Salvar posição inicial
                     this.state.widgetPositions[template.id] = {
                         left: initialLeft,
                         top: initialTop,
@@ -3149,12 +3046,9 @@
                     };
                 });
 
-                // Inicializar componentes dos widgets (ORIGINAL)
                 this.initVoiceVisualizer();
                 this.initForensicDNA();
                 this.initMotionGrid();
-
-                // Inicializar drag and drop (ORIGINAL)
                 this.initWidgetsDragAndDrop();
             },
 
@@ -3162,8 +3056,8 @@
                 const widget = document.createElement('div');
                 widget.className = 'widget';
                 widget.id = template.id;
+                widget.dataset.widgetId = template.id; // Adicionado para identificação
 
-                // Conteúdo ORIGINAL dos widgets
                 widget.innerHTML = `
                     <div class="widget-header">
                         <div class="widget-title">
@@ -3184,7 +3078,6 @@
                     <div class="resize-handle"></div>
                 `;
 
-                // Aplicar estado minimizado se necessário
                 if (this.state.minimizedWidgets.has(template.id)) {
                     widget.classList.add('minimized');
                 }
@@ -3193,7 +3086,6 @@
             },
 
             animatePieces() {
-                // Animação ORIGINAL das peças
                 const pieces = document.querySelectorAll('.piece-container');
                 pieces.forEach((piece, index) => {
                     piece.style.opacity = '0';
@@ -3207,16 +3099,11 @@
             },
 
             animateWidgetsEntry() {
-                // NOVA ANIMAÇÃO: Entrada suave dos widgets
                 const widgets = document.querySelectorAll('.widget');
                 widgets.forEach((widget, index) => {
-                    // Adicionar classe para animação
                     widget.classList.add('entering');
-
-                    // Atrasar entrada para efeito cascata
                     widget.style.animationDelay = `${index * 0.1}s`;
 
-                    // Remover estado inicial após animação
                     setTimeout(() => {
                         widget.style.opacity = '1';
                         widget.style.transform = 'translateY(0)';
@@ -3228,7 +3115,6 @@
             logout() {
                 this.playSound('logout');
 
-                // Animação de saída (ORIGINAL)
                 const pieces = document.querySelectorAll('.piece-container');
                 pieces.forEach((piece, index) => {
                     setTimeout(() => {
@@ -3266,7 +3152,6 @@
                     this.updateTimerVisibility();
                     this.clearForms();
 
-                    // Resetar estado dos widgets
                     this.state.hiddenWidgets.clear();
                     this.state.minimizedWidgets.clear();
                     this.state.widgetPositions = {};
@@ -3300,12 +3185,8 @@
                 }, 10);
             },
 
-            // ===========================================
-            // SISTEMA DE WIDGETS - DRAG & DROP (ORIGINAL)
-            // ===========================================
             initWidgetsDragAndDrop() {
                 const widgets = document.querySelectorAll('.widget');
-                const widgetsArea = document.getElementById('widgetsArea');
 
                 widgets.forEach(widget => {
                     if (this.state.hiddenWidgets.has(widget.id)) return;
@@ -3313,11 +3194,9 @@
                     const header = widget.querySelector('.widget-header');
                     const resizeHandle = widget.querySelector('.resize-handle');
 
-                    // Eventos para o cabeçalho (arrastar)
                     header.addEventListener('mousedown', (e) => this.startDrag(e, widget));
                     header.addEventListener('touchstart', (e) => this.startDrag(e, widget));
 
-                    // Eventos para o resize handle
                     resizeHandle.addEventListener('mousedown', (e) => this.startResize(e, widget));
                     resizeHandle.addEventListener('touchstart', (e) => this.startResize(e, widget));
                 });
@@ -3335,10 +3214,8 @@
                 this.state.dragWidget = widget;
                 this.state.isResizing = false;
 
-                // Trazer widget para frente
                 widget.style.zIndex = 1000;
 
-                // Calcular offset do mouse
                 if (e.type === 'mousedown') {
                     this.state.startX = e.clientX;
                     this.state.startY = e.clientY;
@@ -3365,10 +3242,8 @@
                 this.state.dragWidget = widget;
                 this.state.isDragging = false;
 
-                // Trazer widget para frente
                 widget.style.zIndex = 1000;
 
-                // Calcular offset do mouse
                 if (e.type === 'mousedown') {
                     this.state.startX = e.clientX;
                     this.state.startY = e.clientY;
@@ -3405,11 +3280,9 @@
                 const dy = clientY - this.state.startY;
 
                 if (this.state.isDragging) {
-                    // Arrastar widget
                     let newLeft = this.state.startLeft + dx;
                     let newTop = this.state.startTop + dy;
 
-                    // Limitar à área dos widgets
                     const widgetRect = this.state.dragWidget.getBoundingClientRect();
                     const margin = 10;
 
@@ -3419,7 +3292,6 @@
                     this.state.dragWidget.style.left = newLeft + 'px';
                     this.state.dragWidget.style.top = newTop + 'px';
 
-                    // Atualizar posição salva
                     this.state.widgetPositions[this.state.dragWidget.id] = {
                         ...this.state.widgetPositions[this.state.dragWidget.id],
                         left: newLeft,
@@ -3427,17 +3299,14 @@
                     };
 
                 } else if (this.state.isResizing) {
-                    // Redimensionar widget
                     let newWidth = this.state.startWidth + dx;
                     let newHeight = this.state.startHeight + dy;
 
-                    // Limitar tamanhos mínimo e máximo
                     newWidth = Math.max(this.config.widgetMinWidth,
                         Math.min(newWidth, 400));
                     newHeight = Math.max(this.config.widgetMinHeight,
                         Math.min(newHeight, 400));
 
-                    // Limitar à área dos widgets
                     const maxWidth = areaRect.width - this.state.startLeft - 10;
                     const maxHeight = areaRect.height - this.state.startTop - 10;
 
@@ -3447,7 +3316,6 @@
                     this.state.dragWidget.style.width = newWidth + 'px';
                     this.state.dragWidget.style.height = newHeight + 'px';
 
-                    // Forçar reflow para conteúdo adaptável
                     this.forceReflow(this.state.dragWidget);
                 }
             },
@@ -3462,7 +3330,6 @@
                         this.state.dragWidget.classList.remove('dragging');
                         this.state.dragWidget.classList.remove('resizing');
 
-                        // Salvar layout
                         this.saveWidgetLayout();
                         this.saveWidgetState();
                     }
@@ -3474,13 +3341,10 @@
             },
 
             forceReflow(widget) {
-                // Forçar reflow para conteúdo se adaptar
                 void widget.offsetWidth;
 
-                // Ajustar conteúdo interno
                 const content = widget.querySelector('.widget-content');
                 if (content) {
-                    // Forçar reflow do conteúdo
                     void content.offsetWidth;
                 }
             },
@@ -3501,12 +3365,11 @@
                             widget.style.height = data.height + 'px';
                             widget.style.zIndex = data.zIndex || 10;
 
-                            // Salvar no estado
                             this.state.widgetPositions[widgetId] = data;
                         }
                     });
                 } catch (e) {
-                    console.error('Erro ao carregar layout:', e);
+                    console.warn('Layout não carregado');
                 }
             },
 
@@ -3536,12 +3399,23 @@
             },
 
             hideWidget(widgetId) {
+                console.log('Fechando widget:', widgetId);
                 const widget = document.getElementById(widgetId);
+                
                 if (widget) {
-                    widget.style.display = 'none';
-                    this.state.hiddenWidgets.add(widgetId);
-                    this.saveWidgetState();
-                    this.playSound('click');
+                    // Adicionar animação de fechamento
+                    widget.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
+                    widget.style.opacity = '0';
+                    widget.style.transform = 'scale(0.8) translateY(20px)';
+                    
+                    // Remover após animação
+                    setTimeout(() => {
+                        widget.style.display = 'none';
+                        this.state.hiddenWidgets.add(widgetId);
+                        this.saveWidgetState();
+                        this.playSound('click');
+                        console.log('Widget fechado:', widgetId, 'Set:', this.state.hiddenWidgets);
+                    }, 300);
                 }
             },
 
@@ -3549,11 +3423,20 @@
                 const widget = document.getElementById(widgetId);
                 if (widget) {
                     if (this.state.minimizedWidgets.has(widgetId)) {
+                        // Restaurar widget
                         widget.classList.remove('minimized');
                         this.state.minimizedWidgets.delete(widgetId);
+                        // Animar abertura
+                        widget.style.animation = 'widgetFloatIn 0.5s ease-out forwards';
                     } else {
+                        // Minimizar widget
                         widget.classList.add('minimized');
                         this.state.minimizedWidgets.add(widgetId);
+                        // Animar minimização
+                        widget.style.transform = 'scale(0.95)';
+                        setTimeout(() => {
+                            widget.style.transform = '';
+                        }, 300);
                     }
                     this.saveWidgetState();
                     this.playSound('click');
@@ -3567,6 +3450,7 @@
                     positions: this.state.widgetPositions
                 };
                 localStorage.setItem('bat-hud-widgets-state', JSON.stringify(state));
+                console.log('Estado salvo:', state);
             },
 
             restoreWidgetState() {
@@ -3575,19 +3459,21 @@
 
                 try {
                     const state = JSON.parse(savedState);
-                    state.hidden.forEach(widgetId => this.state.hiddenWidgets.add(widgetId));
-                    state.minimized.forEach(widgetId => this.state.minimizedWidgets.add(widgetId));
+                    if (state.hidden) {
+                        state.hidden.forEach(widgetId => this.state.hiddenWidgets.add(widgetId));
+                    }
+                    if (state.minimized) {
+                        state.minimized.forEach(widgetId => this.state.minimizedWidgets.add(widgetId));
+                    }
                     if (state.positions) {
                         this.state.widgetPositions = state.positions;
                     }
+                    console.log('Estado restaurado:', state);
                 } catch (e) {
-                    console.error('Erro ao restaurar estado dos widgets:', e);
+                    console.warn('Estado não restaurado');
                 }
             },
 
-            // ===========================================
-            // MONITOR DE SISTEMA (ORIGINAL)
-            // ===========================================
             startSystemMonitoring() {
                 if (this.state.systemMonitorInterval) {
                     clearInterval(this.state.systemMonitorInterval);
@@ -3616,9 +3502,6 @@
                 if (bar) bar.style.width = `${value}%`;
             },
 
-            // ===========================================
-            // ANALISADOR DE VOZ (ORIGINAL)
-            // ===========================================
             initVoiceVisualizer() {
                 const visualizer = document.getElementById('voiceVisualizer');
                 if (!visualizer) return;
@@ -3675,9 +3558,6 @@
                 this.playSound('click');
             },
 
-            // ===========================================
-            // DETECTOR DE AMEAÇAS (ORIGINAL)
-            // ===========================================
             startThreatMonitoring() {
                 if (this.state.threatInterval) {
                     clearInterval(this.state.threatInterval);
@@ -3696,9 +3576,6 @@
                 this.state.activeIntervals.push(this.state.threatInterval);
             },
 
-            // ===========================================
-            // ANALISADOR FORENSE - DNA (ORIGINAL)
-            // ===========================================
             initForensicDNA() {
                 const dnaStrand = document.getElementById('dnaStrand');
                 if (!dnaStrand) return;
@@ -3713,9 +3590,6 @@
                 }
             },
 
-            // ===========================================
-            // DETECTOR DE MOVIMENTO (ORIGINAL)
-            // ===========================================
             initMotionGrid() {
                 const grid = document.getElementById('motionGrid');
                 if (!grid) return;
@@ -3727,7 +3601,6 @@
                 const cols = isMobile ? 6 : 8;
                 const rows = Math.ceil(totalCells / cols);
 
-                // Atualizar grid CSS
                 grid.style.gridTemplateColumns = `repeat(${cols}, 1fr)`;
                 grid.style.gridTemplateRows = `repeat(${rows}, 1fr)`;
 
@@ -3742,7 +3615,6 @@
                     clearInterval(this.state.motionInterval);
                 }
 
-                // Simular detecções de movimento aleatórias
                 this.state.motionInterval = setInterval(() => {
                     if (this.state.hiddenWidgets.has('motionWidget')) return;
 
@@ -3758,56 +3630,51 @@
                 this.state.activeIntervals.push(this.state.motionInterval);
             },
 
-            // ===========================================
-            // EFEITOS DE SOM (ORIGINAL)
-            // ===========================================
             playSound(type) {
                 try {
-                    const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-                    const oscillator = audioContext.createOscillator();
-                    const gainNode = audioContext.createGain();
+                    // Som simplificado para compatibilidade
+                    const audioContext = window.AudioContext || window.webkitAudioContext;
+                    if (!audioContext) return;
+                    
+                    const context = new audioContext();
+                    const oscillator = context.createOscillator();
+                    const gainNode = context.createGain();
 
                     oscillator.connect(gainNode);
-                    gainNode.connect(audioContext.destination);
+                    gainNode.connect(context.destination);
+
+                    let frequency = 800;
+                    let duration = 0.1;
 
                     switch (type) {
                         case 'click':
-                            oscillator.frequency.setValueAtTime(800, audioContext.currentTime);
-                            gainNode.gain.setValueAtTime(0.1, audioContext.currentTime);
-                            gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.1);
-                            oscillator.start();
-                            oscillator.stop(audioContext.currentTime + 0.1);
+                            frequency = 800;
+                            duration = 0.1;
                             break;
                         case 'success':
-                            oscillator.frequency.setValueAtTime(523.25, audioContext.currentTime);
-                            gainNode.gain.setValueAtTime(0.2, audioContext.currentTime);
-                            gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.3);
-                            oscillator.start();
-                            oscillator.stop(audioContext.currentTime + 0.3);
+                            frequency = 523.25;
+                            duration = 0.3;
                             break;
                         case 'error':
-                            oscillator.frequency.setValueAtTime(349.23, audioContext.currentTime);
-                            gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
-                            gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.5);
-                            oscillator.start();
-                            oscillator.stop(audioContext.currentTime + 0.5);
+                            frequency = 349.23;
+                            duration = 0.5;
                             break;
                         case 'logout':
-                            oscillator.frequency.setValueAtTime(659.25, audioContext.currentTime);
-                            gainNode.gain.setValueAtTime(0.2, audioContext.currentTime);
-                            gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.4);
-                            oscillator.start();
-                            oscillator.stop(audioContext.currentTime + 0.4);
+                            frequency = 659.25;
+                            duration = 0.4;
                             break;
                     }
+
+                    oscillator.frequency.value = frequency;
+                    gainNode.gain.value = 0.1;
+
+                    oscillator.start();
+                    oscillator.stop(context.currentTime + duration);
                 } catch (e) {
-                    console.log('Audio não disponível');
+                    // Som não essencial, apenas ignora erros
                 }
             },
 
-            // ===========================================
-            // EFEITO DE CHUVA (ORIGINAL)
-            // ===========================================
             setupRainEffect() {
                 const rainOverlay = document.getElementById('rainOverlay');
                 document.addEventListener('mousemove', (e) => {
@@ -3818,16 +3685,12 @@
                 });
             },
 
-            // ===========================================
-            // UTILITÁRIOS (ORIGINAL)
-            // ===========================================
             clearIntervals() {
                 this.state.activeIntervals.forEach(interval => {
                     if (interval) clearInterval(interval);
                 });
                 this.state.activeIntervals = [];
 
-                // Limpar intervalos específicos
                 if (this.state.voiceInterval) {
                     clearInterval(this.state.voiceInterval);
                     this.state.voiceInterval = null;
@@ -3854,20 +3717,21 @@
                 }
             },
 
-            // ===========================================
-            // INICIALIZAÇÃO AUTOMÁTICA
-            // ===========================================
             autoInit() {
-                document.addEventListener('DOMContentLoaded', () => {
+                if (document.readyState === 'loading') {
+                    document.addEventListener('DOMContentLoaded', () => {
+                        this.init();
+                    });
+                } else {
                     this.init();
-                });
+                }
             }
         };
 
-        // Inicializar o sistema
+        // Inicializar automaticamente
         BatHUD.autoInit();
 
-        // Expor funções globais necessárias
+        // Expor funções globais
         window.BatHUD = BatHUD;
         window.toggleForms = () => BatHUD.toggleForms();
         window.logout = () => BatHUD.logout();
@@ -3879,5 +3743,4 @@
         window.hideWidget = (widgetId) => BatHUD.hideWidget(widgetId);
     </script>
 </body>
-
 </html>
