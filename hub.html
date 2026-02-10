@@ -60,6 +60,17 @@
                 widgetEntryGlow 1.5s ease-in-out;
         }
 
+        @keyframes widgetExit {
+            0% {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
+            100% {
+                opacity: 0;
+                transform: scale(0.8) translateY(20px);
+            }
+        }
+
         /* =========================================== */
         /* CONFIGURAÇÕES GERAIS */
         /* =========================================== */
@@ -80,6 +91,7 @@
             font-family: 'Arial', sans-serif;
             color: var(--text-primary);
             touch-action: manipulation;
+            position: relative;
         }
 
         /* =========================================== */
@@ -1606,7 +1618,7 @@
         }
 
         /* =========================================== */
-        /* PEÇAS DA INTERFACE */
+        /* PEÇAS DA INTERFACE - CORRIGIDAS */
         /* =========================================== */
         .piece-container {
             position: absolute;
@@ -1634,8 +1646,8 @@
         }
 
         .piece-container:hover .piece-svg path {
-            stroke: #fff;
-            stroke-width: 3;
+            stroke: #fff !important;
+            stroke-width: 3 !important;
         }
 
         .piece-bg {
@@ -1875,29 +1887,29 @@
             .bottom-left,
             .bottom-right {
                 width: 35%;
-                height: 65px !important;
+                height: 65px;
             }
 
             .top-center,
             .bottom-center {
                 width: 30%;
                 left: 35%;
-                height: 35px !important;
+                height: 35px;
             }
 
-            /* PEÇAS LATERAIS CORRIGIDAS - posição vertical mantida */
+            /* PEÇAS LATERAIS CORRIGIDAS */
             .mid-left {
-                top: 65px; /* Ajustado para nova altura do top-left */
+                top: 65px;
                 left: 0;
                 width: 25px;
-                height: calc(100% - 130px); /* 65px top + 65px bottom */
+                height: calc(100% - 130px);
             }
 
             .mid-right {
-                top: 65px; /* Ajustado para nova altura do top-right */
+                top: 65px;
                 right: 0;
                 width: 25px;
-                height: calc(100% - 130px); /* 65px top + 65px bottom */
+                height: calc(100% - 130px);
             }
 
             .piece-link-text {
@@ -1928,6 +1940,8 @@
                 min-width: 160px;
                 min-height: 120px;
                 padding: 10px;
+                max-width: calc(100vw - 50px) !important;
+                max-height: calc(100vh - 130px) !important;
             }
 
             .widget-title {
@@ -2017,29 +2031,29 @@
             .bottom-left,
             .bottom-right {
                 width: 40%;
-                height: 55px !important;
+                height: 55px;
             }
 
             .top-center,
             .bottom-center {
                 width: 20%;
                 left: 40%;
-                height: 30px !important;
+                height: 30px;
             }
 
             /* PEÇAS LATERAIS CORRIGIDAS para mobile muito pequeno */
             .mid-left {
-                top: 55px; /* Ajustado para nova altura */
+                top: 55px;
                 left: 0;
                 width: 20px;
-                height: calc(100% - 110px); /* 55px top + 55px bottom */
+                height: calc(100% - 110px);
             }
 
             .mid-right {
-                top: 55px; /* Ajustado para nova altura */
+                top: 55px;
                 right: 0;
                 width: 20px;
-                height: calc(100% - 110px); /* 55px top + 55px bottom */
+                height: calc(100% - 110px);
             }
 
             .piece-link-text {
@@ -2062,6 +2076,8 @@
                 min-width: 140px;
                 min-height: 100px;
                 padding: 8px;
+                max-width: calc(100vw - 40px) !important;
+                max-height: calc(100vh - 110px) !important;
             }
 
             .widget {
@@ -2100,13 +2116,13 @@
             .top-right,
             .bottom-left,
             .bottom-right {
-                height: 50px !important;
+                height: 50px;
             }
 
             .mid-left,
             .mid-right {
-                top: 50px; /* Ajustado para landscape */
-                height: calc(100% - 100px); /* 50px top + 50px bottom */
+                top: 50px;
+                height: calc(100% - 100px);
             }
 
             .widgets-area {
@@ -2394,7 +2410,7 @@
 
     <script>
         // ===========================================
-        // SISTEMA INTEGRADO BAT-HUD v6.0 - CORREÇÃO DO FECHAMENTO DE WIDGETS
+        // SISTEMA INTEGRADO BAT-HUD v6.0 - REVISÃO FINAL
         // ===========================================
 
         const BatHUD = {
@@ -2436,7 +2452,13 @@
                 startLeft: 0,
                 startTop: 0,
                 startWidth: 0,
-                startHeight: 0
+                startHeight: 0,
+                dragListeners: {
+                    mousemove: null,
+                    touchmove: null,
+                    mouseup: null,
+                    touchend: null
+                }
             },
 
             data: {
@@ -2844,7 +2866,11 @@
                 alertDiv.style.display = 'flex';
                 this.state.emergencyCountdown = this.config.emergencyCountdown;
 
-                const updateCountdown = () => {
+                if (this.state.emergencyInterval) {
+                    clearInterval(this.state.emergencyInterval);
+                }
+
+                this.state.emergencyInterval = setInterval(() => {
                     if (this.state.emergencyCountdown <= 0) {
                         this.dismissEmergency();
                         return;
@@ -2859,12 +2885,6 @@
                         countdownElement.textContent =
                             `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
                     }
-
-                    requestAnimationFrame(updateCountdown);
-                };
-
-                this.state.emergencyInterval = setInterval(() => {
-                    requestAnimationFrame(updateCountdown);
                 }, 1000);
 
                 this.state.activeIntervals.push(this.state.emergencyInterval);
@@ -2908,11 +2928,7 @@
             },
 
             setupGlobalEventListeners() {
-                document.addEventListener('mousemove', (e) => this.handleMouseMove(e));
-                document.addEventListener('mouseup', () => this.handleMouseUp());
-
-                document.addEventListener('touchmove', (e) => this.handleTouchMove(e), { passive: false });
-                document.addEventListener('touchend', () => this.handleMouseUp());
+                // Listeners serão adicionados quando necessário
             },
 
             handleLogin() {
@@ -3033,17 +3049,23 @@
                     const initialLeft = 20 + (index * offset);
                     const initialTop = 20 + (index * offset);
 
-                    widget.style.left = initialLeft + 'px';
-                    widget.style.top = initialTop + 'px';
-                    widget.style.zIndex = 10 + index;
+                    // Restaurar posição salva se existir
+                    if (this.state.widgetPositions[template.id]) {
+                        const pos = this.state.widgetPositions[template.id];
+                        widget.style.left = pos.left + 'px';
+                        widget.style.top = pos.top + 'px';
+                        if (pos.width) widget.style.width = pos.width + 'px';
+                        if (pos.height) widget.style.height = pos.height + 'px';
+                        widget.style.zIndex = pos.zIndex || 10 + index;
+                    } else {
+                        widget.style.left = initialLeft + 'px';
+                        widget.style.top = initialTop + 'px';
+                        widget.style.zIndex = 10 + index;
+                    }
 
-                    this.state.widgetPositions[template.id] = {
-                        left: initialLeft,
-                        top: initialTop,
-                        width: widget.offsetWidth,
-                        height: widget.offsetHeight,
-                        zIndex: 10 + index
-                    };
+                    if (this.state.minimizedWidgets.has(template.id)) {
+                        widget.classList.add('minimized');
+                    }
                 });
 
                 this.initVoiceVisualizer();
@@ -3056,7 +3078,7 @@
                 const widget = document.createElement('div');
                 widget.className = 'widget';
                 widget.id = template.id;
-                widget.dataset.widgetId = template.id; // Adicionado para identificação
+                widget.dataset.widgetId = template.id;
 
                 widget.innerHTML = `
                     <div class="widget-header">
@@ -3077,10 +3099,6 @@
                     </div>
                     <div class="resize-handle"></div>
                 `;
-
-                if (this.state.minimizedWidgets.has(template.id)) {
-                    widget.classList.add('minimized');
-                }
 
                 return widget;
             },
@@ -3114,6 +3132,9 @@
 
             logout() {
                 this.playSound('logout');
+
+                // Remover listeners de drag and drop
+                this.removeDragListeners();
 
                 const pieces = document.querySelectorAll('.piece-container');
                 pieces.forEach((piece, index) => {
@@ -3195,10 +3216,10 @@
                     const resizeHandle = widget.querySelector('.resize-handle');
 
                     header.addEventListener('mousedown', (e) => this.startDrag(e, widget));
-                    header.addEventListener('touchstart', (e) => this.startDrag(e, widget));
+                    header.addEventListener('touchstart', (e) => this.startDrag(e, widget), { passive: true });
 
                     resizeHandle.addEventListener('mousedown', (e) => this.startResize(e, widget));
-                    resizeHandle.addEventListener('touchstart', (e) => this.startResize(e, widget));
+                    resizeHandle.addEventListener('touchstart', (e) => this.startResize(e, widget), { passive: true });
                 });
             },
 
@@ -3215,6 +3236,7 @@
                 this.state.isResizing = false;
 
                 widget.style.zIndex = 1000;
+                widget.classList.add('dragging');
 
                 if (e.type === 'mousedown') {
                     this.state.startX = e.clientX;
@@ -3227,7 +3249,8 @@
                 this.state.startLeft = widgetRect.left - areaRect.left;
                 this.state.startTop = widgetRect.top - areaRect.top;
 
-                widget.classList.add('dragging');
+                // Adicionar listeners
+                this.addDragListeners();
             },
 
             startResize(e, widget) {
@@ -3243,6 +3266,7 @@
                 this.state.isDragging = false;
 
                 widget.style.zIndex = 1000;
+                widget.classList.add('resizing');
 
                 if (e.type === 'mousedown') {
                     this.state.startX = e.clientX;
@@ -3257,7 +3281,32 @@
                 this.state.startWidth = widgetRect.width;
                 this.state.startHeight = widgetRect.height;
 
-                widget.classList.add('resizing');
+                // Adicionar listeners
+                this.addDragListeners();
+            },
+
+            addDragListeners() {
+                this.removeDragListeners();
+
+                this.state.dragListeners.mousemove = (e) => this.handleMouseMove(e);
+                this.state.dragListeners.touchmove = (e) => this.handleTouchMove(e);
+                this.state.dragListeners.mouseup = () => this.handleMouseUp();
+                this.state.dragListeners.touchend = () => this.handleMouseUp();
+
+                document.addEventListener('mousemove', this.state.dragListeners.mousemove);
+                document.addEventListener('touchmove', this.state.dragListeners.touchmove, { passive: false });
+                document.addEventListener('mouseup', this.state.dragListeners.mouseup);
+                document.addEventListener('touchend', this.state.dragListeners.touchend);
+            },
+
+            removeDragListeners() {
+                Object.keys(this.state.dragListeners).forEach(event => {
+                    const listener = this.state.dragListeners[event];
+                    if (listener) {
+                        document.removeEventListener(event, listener);
+                        this.state.dragListeners[event] = null;
+                    }
+                });
             },
 
             handleMouseMove(e) {
@@ -3272,6 +3321,7 @@
                     clientX = e.clientX;
                     clientY = e.clientY;
                 } else if (e.type === 'touchmove') {
+                    if (e.cancelable) e.preventDefault();
                     clientX = e.touches[0].clientX;
                     clientY = e.touches[0].clientY;
                 }
@@ -3295,7 +3345,9 @@
                     this.state.widgetPositions[this.state.dragWidget.id] = {
                         ...this.state.widgetPositions[this.state.dragWidget.id],
                         left: newLeft,
-                        top: newTop
+                        top: newTop,
+                        width: widgetRect.width,
+                        height: widgetRect.height
                     };
 
                 } else if (this.state.isResizing) {
@@ -3316,7 +3368,14 @@
                     this.state.dragWidget.style.width = newWidth + 'px';
                     this.state.dragWidget.style.height = newHeight + 'px';
 
-                    this.forceReflow(this.state.dragWidget);
+                    // Forçar reflow para atualizar o layout
+                    void this.state.dragWidget.offsetWidth;
+
+                    this.state.widgetPositions[this.state.dragWidget.id] = {
+                        ...this.state.widgetPositions[this.state.dragWidget.id],
+                        width: newWidth,
+                        height: newHeight
+                    };
                 }
             },
 
@@ -3337,16 +3396,13 @@
 
                 this.state.isDragging = false;
                 this.state.isResizing = false;
-                this.state.dragWidget = null;
-            },
-
-            forceReflow(widget) {
-                void widget.offsetWidth;
-
-                const content = widget.querySelector('.widget-content');
-                if (content) {
-                    void content.offsetWidth;
+                
+                if (this.state.dragWidget) {
+                    this.state.dragWidget.style.zIndex = this.state.widgetPositions[this.state.dragWidget.id]?.zIndex || 10;
                 }
+                
+                this.state.dragWidget = null;
+                this.removeDragListeners();
             },
 
             loadWidgetLayout() {
@@ -3355,58 +3411,40 @@
 
                 try {
                     const layout = JSON.parse(savedLayout);
-                    Object.keys(layout).forEach(widgetId => {
-                        const widget = document.getElementById(widgetId);
-                        if (widget) {
-                            const data = layout[widgetId];
-                            widget.style.left = data.left + 'px';
-                            widget.style.top = data.top + 'px';
-                            widget.style.width = data.width + 'px';
-                            widget.style.height = data.height + 'px';
-                            widget.style.zIndex = data.zIndex || 10;
-
-                            this.state.widgetPositions[widgetId] = data;
-                        }
-                    });
+                    this.state.widgetPositions = layout;
                 } catch (e) {
-                    console.warn('Layout não carregado');
+                    console.warn('Layout não carregado:', e);
                 }
             },
 
             saveWidgetLayout() {
-                const widgets = document.querySelectorAll('.widget');
                 const layout = {};
+                Object.keys(this.state.widgetPositions).forEach(widgetId => {
+                    const widget = document.getElementById(widgetId);
+                    if (widget && !this.state.hiddenWidgets.has(widgetId)) {
+                        const rect = widget.getBoundingClientRect();
+                        const left = parseFloat(widget.style.left) || 0;
+                        const top = parseFloat(widget.style.top) || 0;
 
-                widgets.forEach(widget => {
-                    if (this.state.hiddenWidgets.has(widget.id)) return;
-
-                    const rect = widget.getBoundingClientRect();
-                    const widgetsArea = document.getElementById('widgetsArea');
-                    const areaRect = widgetsArea.getBoundingClientRect();
-                    const left = parseFloat(widget.style.left) || rect.left - areaRect.left;
-                    const top = parseFloat(widget.style.top) || rect.top - areaRect.top;
-
-                    layout[widget.id] = {
-                        left: left,
-                        top: top,
-                        width: rect.width,
-                        height: rect.height,
-                        zIndex: parseInt(widget.style.zIndex) || 10
-                    };
+                        layout[widgetId] = {
+                            left: left,
+                            top: top,
+                            width: rect.width,
+                            height: rect.height,
+                            zIndex: parseInt(widget.style.zIndex) || 10
+                        };
+                    }
                 });
 
                 localStorage.setItem('bat-hud-widgets-layout', JSON.stringify(layout));
             },
 
             hideWidget(widgetId) {
-                console.log('Fechando widget:', widgetId);
                 const widget = document.getElementById(widgetId);
                 
                 if (widget) {
                     // Adicionar animação de fechamento
-                    widget.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
-                    widget.style.opacity = '0';
-                    widget.style.transform = 'scale(0.8) translateY(20px)';
+                    widget.style.animation = 'widgetExit 0.3s ease-out forwards';
                     
                     // Remover após animação
                     setTimeout(() => {
@@ -3414,7 +3452,6 @@
                         this.state.hiddenWidgets.add(widgetId);
                         this.saveWidgetState();
                         this.playSound('click');
-                        console.log('Widget fechado:', widgetId, 'Set:', this.state.hiddenWidgets);
                     }, 300);
                 }
             },
@@ -3450,7 +3487,6 @@
                     positions: this.state.widgetPositions
                 };
                 localStorage.setItem('bat-hud-widgets-state', JSON.stringify(state));
-                console.log('Estado salvo:', state);
             },
 
             restoreWidgetState() {
@@ -3468,9 +3504,8 @@
                     if (state.positions) {
                         this.state.widgetPositions = state.positions;
                     }
-                    console.log('Estado restaurado:', state);
                 } catch (e) {
-                    console.warn('Estado não restaurado');
+                    console.warn('Estado não restaurado:', e);
                 }
             },
 
@@ -3532,8 +3567,12 @@
             },
 
             startVoiceAnimation() {
-                const bars = document.querySelectorAll('#voiceVisualizer .voice-bar');
+                if (this.state.voiceInterval) {
+                    clearInterval(this.state.voiceInterval);
+                }
+
                 this.state.voiceInterval = setInterval(() => {
+                    const bars = document.querySelectorAll('#voiceVisualizer .voice-bar');
                     bars.forEach(bar => {
                         const height = Math.random() * 100 + 10;
                         bar.style.height = `${height}%`;
@@ -3604,6 +3643,7 @@
                 grid.style.gridTemplateColumns = `repeat(${cols}, 1fr)`;
                 grid.style.gridTemplateRows = `repeat(${rows}, 1fr)`;
 
+                this.state.motionCells = [];
                 for (let i = 0; i < totalCells; i++) {
                     const cell = document.createElement('div');
                     cell.className = 'motion-cell';
@@ -3632,7 +3672,6 @@
 
             playSound(type) {
                 try {
-                    // Som simplificado para compatibilidade
                     const audioContext = window.AudioContext || window.webkitAudioContext;
                     if (!audioContext) return;
                     
@@ -3671,7 +3710,7 @@
                     oscillator.start();
                     oscillator.stop(context.currentTime + duration);
                 } catch (e) {
-                    // Som não essencial, apenas ignora erros
+                    // Som não essencial
                 }
             },
 
